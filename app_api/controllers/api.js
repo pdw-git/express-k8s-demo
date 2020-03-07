@@ -36,3 +36,33 @@ module.exports.getStatus = function(req, res){
 
 };
 
+/**
+ * get info
+ *
+ * GET aip/info
+ *
+ * Returns information relating to the running application.
+ *
+ * @param req
+ * @param res
+ */
+module.exports.getInfo = function(req, res){
+
+    const methodname = 'getInfo(req,res)';
+
+    const info = require('../../info');
+
+    logger._debug({filename: filename, methodname: methodname, message: 'started'});
+
+    res.status(config.status.good);
+
+    res.json(info);
+
+
+    logger._info({filename: filename, methodname: methodname, message: 'sent good status'});
+
+    logger._debug({filename: filename, methodname: methodname, message: 'completed'});
+
+
+};
+

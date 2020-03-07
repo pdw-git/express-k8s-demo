@@ -1,33 +1,29 @@
 'use strict';
 
-var assert = require('assert');
+const testData = require('../testData');
+const assert = require('assert');
+const request = require('request');
+const logger = require('../testLog.js');
+const apiOptions = {server: "http://localhost:3000"};
+const apiPath = "/api";
 
-var request = require('request');
+const path = require('path');
+const scriptName = path.basename(__filename);
 
-var logger = require('../testLog.js');
-
-var apiOptions = {server: "http://192.168.148.134:3000"};
-
-var apiPath = "/api";
-
-var path = require('path');
-var scriptName = path.basename(__filename);
-
-var requestOptions = {
-    url: apiOptions.server + apiPath + "/status",
+const requestOptions = {
+    url: apiOptions.server + apiPath + "/info",
     method: "GET",
     json: {},
     qs: {}
 };
 
-var GOOD_STATUS = 200;
+const GOOD_STATUS = testData.GOOD_STATUS;
 
-
-var getStatusGoodExpectedResults = {
+const getStatusGoodExpectedResults = {
 
     body: {
-        status: GOOD_STATUS,
-        msg: 'good status sent from api'
+        applicationName: "express-api-app",
+        version: "1.0.0.0"
     },
     status: GOOD_STATUS
 
@@ -35,11 +31,11 @@ var getStatusGoodExpectedResults = {
 
 /**
  * Mocha Unit test
- * api.getStatus
- * Checks the responses from GET /api/status
+ * api.getInfo
+ * Checks the responses from GET /api/info
  */
 describe('api', function(){
-    describe('getStatus', function(){
+    describe('getInfo', function(){
         describe('good status', function(){
             it('should be status: 200 and body'+ getStatusGoodExpectedResults.body.msg
                 , function(done){
