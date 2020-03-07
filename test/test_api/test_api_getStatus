@@ -1,0 +1,91 @@
+'use strict';
+
+var assert = require('assert');
+
+var request = require('request');
+
+var logger = require('../testLog.js');
+
+var apiOptions = {server: "http://192.168.148.134:3000"};
+
+var apiPath = "/api";
+
+var path = require('path');
+var scriptName = path.basename(__filename);
+
+var requestOptions = {
+    url: apiOptions.server + apiPath + "/status",
+    method: "GET",
+    json: {},
+    qs: {}
+};
+
+var GOOD_STATUS = 200;
+
+
+var getStatusGoodExpectedResults = {
+
+    body: {
+        status: GOOD_STATUS,
+        msg: 'good status sent from api'
+    },
+    status: GOOD_STATUS
+
+};
+
+/**
+ * Mocha Unit test
+ * api.getStatus
+ * Checks the responses from GET /api/status
+ */
+describe('api', function(){
+    describe('getStatus', function(){
+        describe('good status', function(){
+            it('should be status: 200 and body'+ getStatusGoodExpectedResults.body.msg
+                , function(done){
+
+                request(requestOptions, function(err, res, body){
+
+                    //assert if there was an error with the request
+
+                    assert.ifError(err);
+
+                    //assert if the status code is not as expected
+                    assert.equal(
+                        getStatusGoodExpectedResults.status,
+                            res.statusCode,
+                            'Did not get expected status code'
+                    );
+
+                    logger.log(scriptName, "res.statusCode OK");
+
+                    //assert if the status in the response body is not as expected
+                    assert.equal(
+                        getStatusGoodExpectedResults.body.status,
+                        body.status,
+                        'Did not get expected status code in body'
+                    );
+
+                    logger.log(scriptName, 'body.status OK');
+
+                    //assert if the msg in the body is not as expected
+                    assert.equal(
+                        getStatusGoodExpectedResults.body.msg,
+                        body.msg,
+                        'Did not get expected msg in body'
+                    );
+
+                    logger.log(scriptName, "body.msg OK");
+
+                    done();
+
+                });
+
+            });
+
+        });
+
+    });
+
+});
+

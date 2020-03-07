@@ -1,0 +1,15 @@
+{
+  "inProduction": false,
+  "minLogLevel": "debug",
+  "apiServerAddress": "192.168.148.134:3000",
+  "appServerAddress": "192.168.148.134:3000",
+  "apiRoute": "/api",
+  "status": {
+    "good": 200,
+    "notFound": 404,
+    "error": 500,
+    "created": 201,
+    "accepted": 202,
+    "success_noContent": 204
+  }
+}
