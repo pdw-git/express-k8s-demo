@@ -4,11 +4,11 @@
  *
  * Created by Peter Whitehead 23 September 2018
  *
- * Baseline application that serves and API and web pages
+ * Baseline application that serves an API and basic web pages
  *
- * Copyright Peter Whitehead @2018
+ * Copyright Peter Whitehead @2020
  *
- * Licensed under Apache Commons
+ * Licensed under Apache-2.0
  */
 
 const config = require('./app_config/config.json');
