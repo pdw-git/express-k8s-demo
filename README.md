@@ -20,6 +20,7 @@ Pointing a browser at http://<localhost>:3000 will show a basic home page
 The following RESTful APIs are provided for testing
 
 GET api/info - returns infomation about the application
+
 GET api/status - returns static status information
 
 There is some baisc logging and error handling but this code is not suitable for production use. 
