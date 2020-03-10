@@ -7,7 +7,6 @@ testFunctions.testStatusAndBody(testData.getInfoExpectedGoodResults);
 testFunctions.testStatusAndBody(testData.getStatusExpectedGoodResults);
 testFunctions.testStatusAndBody(testData.getInvalidAPI_MethodExpectedPageNotFound);
 
-
 describe('end test', function(){
 
     it('should print a final message', function(done){
