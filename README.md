@@ -11,7 +11,7 @@ Run git clone against this repository to extract the code to a target directory.
 
 ## Running the application with npm
 
-From within the target directoryd run:
+From within the target directory run:
  
 npm install 
 
