@@ -3,13 +3,9 @@
  created 7th September 2018
 
  */
-//const request = require('request');
 const logger = require('../../app_utilities/logger');
-//const messages = require('../../app_utilities/messages').messages;
-//const params = require('../../app_utilities/checkParams.js');
 const pageConfig = require('../../app_config/pageConfig');
 const config = require('../../app_config/config');
-
 const filename = "app_server/controllers/pages.js";
 
 
