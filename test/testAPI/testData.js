@@ -26,8 +26,23 @@ module.exports.getInfoExpectedGoodResults = {
     result: "good status",
     expectedResultMsg: "status 200 and body with application name and version",
     body: {
-        applicationName: "express-api-app",
-        version: "1.0.0.0"
+        "author" : "Peter Whitehead",
+        "email" : "peter.whitehead@atos.net",
+        "applicationName" : "express-api-app",
+        "version" : "1.0.0.0",
+        "description" : "A simple nodejs express based API server including an index page: NOT PRODUCTION CODE",
+        "GIT" :{
+            "repo" : "pdw-git/express-api",
+            "visibility" : "private"
+        },
+        "docker" : {
+            "repo" : "https://dockerhub.com/boselane6633/express-api",
+            "visibility" : "private"
+        },
+        "api":  {
+            "info" : "GET application information",
+            "status" : "GET application status"
+        }
     },
     status: GOOD_STATUS,
     requestOptions: {
@@ -52,7 +67,7 @@ module.exports.getStatusExpectedGoodResults = {
     expectedResultMsg: "status 200 and body with status and status message",
     body: {
         status: GOOD_STATUS,
-        msg: 'Sending good status'
+        msg: "Sending good status"
     },
     status: GOOD_STATUS,
     requestOptions: {
