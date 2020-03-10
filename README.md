@@ -1,26 +1,49 @@
 # express-api
-Express based API server
 
-This is a simple API server built on Node.js and the Express framework. It has been created as an educational tool for use to explore development and deployment patterns. 
+## Express based API server
 
-To install the application ensure you have npm and nodejs available on the target system. Execute a git clone this repository to your own target directory. From within the target director run npm install to pull all the necessary dependencies. 
+This is a simple API server built on Node.js and the Express framework. It has been created as an educational 
+tool for use to explore development and deployment patterns. This is not production ready code. 
 
-Once the code is installed run npm start which will initiate the application. On success you will see the following on the console:
+To install the application ensure you have npm and nodejs available on the target system. 
 
->> express-api@1.0.0 start /home/whitep/WebstormProjects/express-api
+Run git clone against this repository to extract the code to a target directory.
+
+## Running the application with npm
+
+From within the target directoryd run:
+ 
+npm install 
+
+to pull all the necessary dependencies and start the application.
+
+On success you will see the following on the console:
+
+>> express-api@1.0.0 start _home directory_/WebstormProjects/express-api
 
 >>node ./bin/www --debug
 
 >>info: application logging level: debug {"timestamp":"2020-03-09T17:12:52.646Z"}
 
-NOTE: by default the applciation starts in debug mode and has verbose tracing enbaled
+NOTE: by default the application starts in debug mode and has verbose tracing enabled
 
-Pointing a browser at http://<localhost>:3000 will show a basic home page
+Pointing a browser at http://localhost:3000 will show a basic home page
 
 The following RESTful APIs are provided for testing
 
->>GET api/info - returns infomation about the application
+>>GET api/info - returns information about the application
 
 >>GET api/status - returns static status information
 
-There is some baisc logging and error handling but this code is not suitable for production use. 
+There is some basic logging and error handling but this code is not suitable for production use. 
+
+Tests for the API are included and can be executed by typing; 
+
+npm test
+
+in the installed source directory
+
+## Docker
+
+A Dockerfile is provided to enable the creation of a container image for testing of docker and kubernetes 
+deployment patterns
