@@ -1,9 +1,8 @@
 {
   "inProduction": false,
   "minLogLevel": "debug",
-  "apiServerAddress": "192.168.148.134:3000",
-  "appServerAddress": "192.168.148.134:3000",
   "apiRoute": "/api",
+  "port": 3000,
   "status": {
     "good": 200,
     "notFound": 404,
