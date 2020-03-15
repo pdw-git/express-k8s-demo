@@ -2,7 +2,9 @@
   "inProduction": false,
   "minLogLevel": "debug",
   "apiRoute": "/api",
+  "apiVersion": "1.0.0",
   "defaultPort": 3000,
+  "ip": "localhost",
   "status": {
     "good": 200,
     "notFound": 404,

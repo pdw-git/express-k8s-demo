@@ -11,5 +11,6 @@ const controller = require('../controllers/api');
 
 router.get('/status', controller.getStatus);
 router.get('/info', controller.getInfo);
+router.get('/version', controller.getVersion);
 
 module.exports = router;

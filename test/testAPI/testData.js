@@ -4,9 +4,16 @@
 const GOOD_STATUS = 200;
 const PAGE_NOT_FOUND = 404;
 
+const config = require('../../app_config/config');
+
 //server definitions
 
-const apiOptions = {server: "http://localhost:3000"};
+//NOTE tests will expect there to be a port set as the environment variable or they will default to the default
+//value in the configuration file.
+
+const port = process.env.PORT || config.defaultPort;
+
+const apiOptions = {server: "http://"+config.ip+":"+port};
 const apiPath = "/api";
 
 //============================================================================================
@@ -94,6 +101,28 @@ module.exports.getInvalidAPI_MethodExpectedPageNotFound = {
     status: PAGE_NOT_FOUND,
     requestOptions: {
         url: apiOptions.server + apiPath + "/invalidMethod",
+        method: "GET",
+        json: {},
+        qs: {}
+    }
+
+};
+
+//============================================================================================
+// GET /api/version
+//============================================================================================
+
+//Expected good results for GET /api/version
+module.exports.getVersion_ExpectedGoodStatus= {
+    testName: "getAPI_VersionExpectedGoodStatus",
+    root:"api",
+    method:"GET version",
+    result: "Good Status and version data",
+    expectedResultMsg: "Good Status",
+    body: null,
+    status: GOOD_STATUS,
+    requestOptions: {
+        url: apiOptions.server + apiPath + "/version",
         method: "GET",
         json: {},
         qs: {}
