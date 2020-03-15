@@ -119,7 +119,7 @@ module.exports.getVersion_ExpectedGoodStatus= {
     method:"GET version",
     result: "Good Status and version data",
     expectedResultMsg: "Good Status",
-    body: null,
+    body: "1.0.0",
     status: GOOD_STATUS,
     requestOptions: {
         url: apiOptions.server + apiPath + "/version",
