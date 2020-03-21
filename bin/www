@@ -4,12 +4,15 @@
  * Module dependencies.
  */
 
+const dotenv = require('dotenv');
 const applogger = require('../app_utilities/logger');
 const appConfig = require('../app_config/config');
 const app = require('../app');
 const debug = require('debug')('express:server');
 const http = require('http');
 const filename = "bin/www.js";
+
+dotenv.config();
 
 /**
  * Get port from environment and store in Express.
