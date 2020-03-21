@@ -3,6 +3,7 @@ logs
 # Node
 
 *.log
+.env
 
 # Runtime data
 pids
