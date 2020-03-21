@@ -2,9 +2,6 @@
 
 const assert = require('assert');
 const request = require('request');
-const logger = require('../testLog.js');
-const path = require('path');
-const scriptName = path.basename(__filename);
 
 module.exports.testStatusAndBody = function(testData){
 
@@ -16,9 +13,9 @@ module.exports.testStatusAndBody = function(testData){
 
                 it(testData.expectedResultMsg, function(done){
 
-                    logger.log(scriptName, 'started '+testData.testName);
+                    testStatusAndBody(testData);
 
-                    testStatusAndBody(testData, done);
+                    done();
 
                 });
 
@@ -58,11 +55,10 @@ module.exports.testStatusAndBody = function(testData){
  *    }
  * }
  *
- * @param done call back
  *
  */
 
-function testStatusAndBody(testData, done){
+function testStatusAndBody(testData){
 
     request(testData.requestOptions, function(err, res, body){
 
@@ -76,8 +72,6 @@ function testStatusAndBody(testData, done){
             testData.testName+': Did not get expected status code'
         );
 
-        logger.log(scriptName, testData.testName+': res.status OK');
-
         //assert if response body is not as expected
         if (testData.body != null) {
 
@@ -87,17 +81,8 @@ function testStatusAndBody(testData, done){
                 testData.testName + ': Did not get expected body'
             );
 
-            logger.log(scriptName, testData.testName + ': body OK');
-
-        }
-        else {
-
-            logger.log(scriptName, testData.testName + ': no body test required');
-
         }
 
     });
-
-    done();
 
 }

@@ -12,7 +12,6 @@ const config = require('../../app_config/config');
 //value in the configuration file.
 
 const port = process.env.PORT || config.defaultPort;
-
 const apiOptions = {server: "http://"+config.ip+":"+port};
 const apiPath = "/api";
 
@@ -29,8 +28,8 @@ module.exports.getInfoExpectedGoodResults = {
 
     testName: "getInfoExpectedGoodResults",
     root:"api",
-    method:"GET getInfo",
-    result: "good status",
+    method:"GET "+apiPath+"/info",
+    result: "should return info object and 200",
     expectedResultMsg: "status 200 and body with application name and version",
     body: {
         "author" : "Peter Whitehead",
@@ -69,8 +68,8 @@ module.exports.getInfoExpectedGoodResults = {
 module.exports.getStatusExpectedGoodResults = {
     testName: "getStatusExpectedGoodResults",
     root:"api",
-    method:"GET getStatus",
-    result: "good status",
+    method:"GET "+apiPath+"/status",
+    result: "should return status object and 200",
     expectedResultMsg: "status 200 and body with status and status message",
     body: {
         status: GOOD_STATUS,
@@ -94,8 +93,8 @@ module.exports.getStatusExpectedGoodResults = {
 module.exports.getInvalidAPI_MethodExpectedPageNotFound = {
     testName: "getInvalidAPI_MethodExpectedPageNotFound",
     root:"api",
-    method:"GET invalidMethod",
-    result: "Page Not Found Status",
+    method:"GET invalid method name",
+    result: "should receive a Page Not Found Status",
     expectedResultMsg: "status 404",
     body: null,
     status: PAGE_NOT_FOUND,
@@ -116,10 +115,12 @@ module.exports.getInvalidAPI_MethodExpectedPageNotFound = {
 module.exports.getVersion_ExpectedGoodStatus= {
     testName: "getAPI_VersionExpectedGoodStatus",
     root:"api",
-    method:"GET version",
-    result: "Good Status and version data",
+    method:"GET "+apiPath+"/version",
+    result: "should receive a version object and 200",
     expectedResultMsg: "Good Status",
-    body: "1.0.0",
+    body: {
+        version: "1.0.0"
+    },
     status: GOOD_STATUS,
     requestOptions: {
         url: apiOptions.server + apiPath + "/version",
