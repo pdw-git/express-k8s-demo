@@ -44,5 +44,8 @@ node_modules
 # Secrets as environment variables
 secrets.sh
 
+# certs and keys
+#*.pem
+
 # Local dev bundle
 local-dev/bundle.js

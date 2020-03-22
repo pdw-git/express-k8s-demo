@@ -53,8 +53,27 @@ that can be altered:
 >>PORT - the required ip port to use on the target server
 >>NODE_ENV - can be either development or production and determines the levels of logging that will be delivered
 >>LOGGING_LEVEL - can be error, warn, info, verbose, debug, silly
+>>HTTPS = can be either true or false. If set to true then a key and certificate needs to be defined in the config.json file. 
 
 Environment variables can be set in a .env file or directly by the user. 
+
+Encryption can is enabled through the configuration JSON file. Set config.encryption.enabled: true. the HTTPS environment
+variable can be use to toggle between http and https.
+
+Once this is done the the cert and key will be read from the defined keyStore which is defined in the config.encryption
+object in the config.json file. 
+
+For testing purposes a self signed cert and Key was created using
+
+>openssl genrsa -out key.pem
+>
+>openssl req -new -key key.pem -out csr.pem
+>
+>openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
+>
+>rm csr.pem
+
+NOTE testing only works when running without encryption
 
 ## Docker
 

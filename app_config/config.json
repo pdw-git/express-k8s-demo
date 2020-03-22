@@ -9,6 +9,13 @@
   "apiVersion": "1.0.0",
   "defaultPort": 3000,
   "ip": "localhost",
+  "encryption": {
+    "enabled": true,
+    "certProvider": "SELF SIGNED",
+    "store": "/keystore/",
+    "key": "key.pem",
+    "cert": "cert.pem"
+  },
   "status": {
     "good": 200,
     "notFound": 404,
