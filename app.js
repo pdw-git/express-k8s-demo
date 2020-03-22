@@ -17,13 +17,18 @@ const messages = require('./app_utilities/messages').messages;
 const applogger = require('./app_utilities/logger');
 const favicon = require('serve-favicon');
 
-//determine if this application is in production
-if(config.inProduction === true){
-    process.env.NODE_ENV = 'production';
+//if the NODE_ENV environment variable has not been set then use the default configuration to set a production level.
+
+if (process.env.NODE_ENV === undefined){
+
+    if (typeof(config) ==='object') {
+
+        process.env.NODE_ENV = config.inProduction === true ? 'production' : 'development';
+
+    }
+
 }
-else {
-    process.env.NODE_ENV = 'development';
-}
+
 
 const createError = require('http-errors');
 const express = require('express');

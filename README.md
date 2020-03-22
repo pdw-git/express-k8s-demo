@@ -35,13 +35,26 @@ The following RESTful APIs are provided for testing
 
 >>GET api/status - returns static status information
 
+>>GET api/version - returns version information for the api
+
 There is some basic logging and error handling but this code is not suitable for production use. 
 
 Tests for the API are included and can be executed by typing; 
 
 npm test
 
-in the installed source directory
+in the installed source directory.
+
+There is a default configuration that is described in the file app_config/config.json.
+
+Elements of this configuration can be over ridden by setting environment variable. The following lists those elements 
+that can be altered:
+
+>>PORT - the required ip port to use on the target server
+>>NODE_ENV - can be either development or production and determines the levels of logging that will be delivered
+>>LOGGING_LEVEL - can be error, warn, info, verbose, debug, silly
+
+Environment variables can be set in a .env file or directly by the user. 
 
 ## Docker
 

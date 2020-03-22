@@ -1,6 +1,7 @@
 'use strict';
 
-let levels = ['error', 'warn', 'info', 'verbose', 'debug', 'silly'];
+const levels = ['error', 'warn', 'info', 'verbose', 'debug', 'silly'];
+let defaultLoggingLevel = levels.indexOf('info');
 
 const msgSeparator = " : ";
 const methodSeparator = "-";
@@ -11,24 +12,32 @@ const {combine, timestamp, json, colorize, simple} = format;
 
 const config = require('../app_config/config.json');
 
-//set a default logging level and then set the logging level as defined in the
-//configuration data file.
+//set a default logging level
 
-let appLoggingLevel = 'info';
+let loggingLevelIndex = defaultLoggingLevel;
+let loggingLevelName = levels[defaultLoggingLevel];
 
-if(typeof(config) === 'object') {
+//if there is no NODE_ENV variable set and there is a configuration object then use the default valued from the config
+//object.
 
-    if (levels.includes(config.minLogLevel)) {
+if(process.env.LOGGING_LEVEL === undefined){
 
-        appLoggingLevel = levels.indexOf(config.minLogLevel);
+    if(typeof(config) === 'object'){
+
+        setLoggingLevels(config.defaultLogLevel, levels.indexOf(config.defaultLogLevel));
 
     }
+
+}
+else{
+
+    setLoggingLevels(process.env.LOGGING_LEVEL,levels.indexOf(process.env.LOGGING_LEVEL));
 
 }
 
 
 const logger = createLogger({
-    level: config.minLogLevel,
+    level: loggingLevelName,
     format: combine(timestamp(), json(), colorize()),
     transports: [
         //
@@ -50,11 +59,11 @@ if (process.env.NODE_ENV !== 'production') {
 
 //log the current logging level
 
-logger.log(levels[2], 'application logging level: '+levels[appLoggingLevel]);
+logger.log(levels[2], 'application logging level: '+levels[loggingLevelIndex]);
 
 function logMessage(level, message) {
 
-    if(levels.indexOf(level) <= appLoggingLevel) {
+    if(levels.indexOf(level) <= loggingLevelIndex){
         logger.log(level, message)
     }
 
@@ -63,6 +72,15 @@ function logMessage(level, message) {
 function formatMessage(msg){
 
     return (msg.filename + methodSeparator + msg.methodname + msgSeparator + msg.message);
+}
+
+function setLoggingLevels(name, index){
+
+    console.log('name: '+name+' level: '+index);
+
+    loggingLevelName = name;
+    loggingLevelIndex = index;
+
 }
 
 module.exports._error = function(message){
