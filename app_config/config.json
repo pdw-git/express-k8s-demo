@@ -1,7 +1,11 @@
 {
   "inProduction": false,
   "defaultLogLevel": "debug",
+  "production": "production",
+  "development":  "development",
+  "indexRoute": "/",
   "apiRoute": "/api",
+  "userRoute": "/users",
   "apiVersion": "1.0.0",
   "defaultPort": 3000,
   "ip": "localhost",

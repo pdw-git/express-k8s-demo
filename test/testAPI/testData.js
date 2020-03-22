@@ -13,7 +13,7 @@ const config = require('../../app_config/config');
 
 const port = process.env.PORT || config.defaultPort;
 const apiOptions = {server: "http://"+config.ip+":"+port};
-const apiPath = "/api";
+const apiPath = config.apiRoute;
 
 //============================================================================================
 // TEST DATA
