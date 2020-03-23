@@ -1,6 +1,6 @@
 FROM node:12
 
-ENV PORT 3000
+ENV PORT 3443
 ENV NODE_ENV developemnt
 ENV LOGGING_LEVEL debug
 

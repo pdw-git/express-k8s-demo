@@ -1,5 +1,15 @@
 'use strict';
-
+/**
+ * testData
+ *
+ * The file that provides the data used to test the API.
+ *
+ * The JSON objects holds descriptive information for each test along with expected results (request body and status)
+ *
+ * Each object is for a specific test and is exported from this module.
+ *
+ * @type {number}
+ */
 //Acceptable status codes
 const GOOD_STATUS = 200;
 const PAGE_NOT_FOUND = 404;
@@ -8,12 +18,15 @@ const config = require('../../app_config/config');
 
 //server definitions
 
-//NOTE tests will expect there to be a port set as the environment variable or they will default to the default
-//value in the configuration file.
+const port = process.env.PORT || config.defaultPort;  //take environment variable over the default configuration.
 
-const port = process.env.PORT || config.defaultPort;
-const apiOptions = {server: "http://"+config.ip+":"+port};
-const apiPath = config.apiRoute;
+const urlType = ((process.env.HTTPS === 'true') || (config.encryption.enabled)) ? 'https://' : 'http://';
+const apiOptions = {
+    server: urlType+config.ip+":"+port,
+    path: config.apiRoute
+};
+
+
 
 //============================================================================================
 // TEST DATA
@@ -28,7 +41,7 @@ module.exports.getInfoExpectedGoodResults = {
 
     testName: "getInfoExpectedGoodResults",
     root:"api",
-    method:"GET "+apiPath+"/info",
+    method:"GET "+apiOptions.path+"/info",
     result: "should return info object and 200",
     expectedResultMsg: "status 200 and body with application name and version",
     body: {
@@ -52,7 +65,7 @@ module.exports.getInfoExpectedGoodResults = {
     },
     status: GOOD_STATUS,
     requestOptions: {
-        url: apiOptions.server + apiPath + "/info",
+        url: apiOptions.server + apiOptions.path + "/info",
         method: "GET",
         json: {},
         qs: {}
@@ -68,7 +81,7 @@ module.exports.getInfoExpectedGoodResults = {
 module.exports.getStatusExpectedGoodResults = {
     testName: "getStatusExpectedGoodResults",
     root:"api",
-    method:"GET "+apiPath+"/status",
+    method:"GET "+apiOptions.path+"/status",
     result: "should return status object and 200",
     expectedResultMsg: "status 200 and body with status and status message",
     body: {
@@ -77,7 +90,7 @@ module.exports.getStatusExpectedGoodResults = {
     },
     status: GOOD_STATUS,
     requestOptions: {
-        url: apiOptions.server + apiPath + "/status",
+        url: apiOptions.server + apiOptions.path + "/status",
         method: "GET",
         json: {},
         qs: {}
@@ -99,7 +112,7 @@ module.exports.getInvalidAPI_MethodExpectedPageNotFound = {
     body: null,
     status: PAGE_NOT_FOUND,
     requestOptions: {
-        url: apiOptions.server + apiPath + "/invalidMethod",
+        url: apiOptions.server + apiOptions.path + "/invalidMethod",
         method: "GET",
         json: {},
         qs: {}
@@ -115,7 +128,7 @@ module.exports.getInvalidAPI_MethodExpectedPageNotFound = {
 module.exports.getVersion_ExpectedGoodStatus= {
     testName: "getAPI_VersionExpectedGoodStatus",
     root:"api",
-    method:"GET "+apiPath+"/version",
+    method:"GET "+apiOptions.path+"/version",
     result: "should receive a version object and 200",
     expectedResultMsg: "Good Status",
     body: {
@@ -123,7 +136,7 @@ module.exports.getVersion_ExpectedGoodStatus= {
     },
     status: GOOD_STATUS,
     requestOptions: {
-        url: apiOptions.server + apiPath + "/version",
+        url: apiOptions.server + apiOptions.path + "/version",
         method: "GET",
         json: {},
         qs: {}

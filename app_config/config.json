@@ -7,7 +7,7 @@
   "apiRoute": "/api",
   "userRoute": "/users",
   "apiVersion": "1.0.0",
-  "defaultPort": 3000,
+  "defaultPort": 3443,
   "ip": "localhost",
   "encryption": {
     "enabled": true,

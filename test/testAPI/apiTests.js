@@ -1,5 +1,9 @@
 'use strict';
 
+//The following is required to suppress errors in testing due to the use of self signed certificates.
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 const testData = require('./testData');
 const testFunctions = require('./testFunctions');
 

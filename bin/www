@@ -23,7 +23,8 @@ let server = null;
 dotenv.config();
 
 //Get port from environment and store in Express.
-const port = normalizePort(process.env.PORT || appConfig.defaultPort);
+const port = normalizePort((process.env.PORT === undefined ? appConfig.defaultPort : process.env.PORT));
+
 applogger._info({filename: filename, methodname: methodName, message: "Application port: "+port});
 
 app.set('port', port);
