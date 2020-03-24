@@ -7,7 +7,7 @@
 const logger = require('../../app_utilities/logger');
 const config = require('../../app_config/config');
 const messages= require('../../app_utilities/messages').messages;
-
+const fs = require('fs');
 const filename = "app_api/controllers/api.js";
 
 /**
@@ -107,43 +107,56 @@ module.exports.getTest = function(req, res){
 
     logger._debug({filename: filename, methodname: methodname, message: 'started'});
 
-    const { spawn } = require( 'child_process' );
+    //todo check that the test files files exist
 
-    const mocha = spawn( 'mocha', [ '--reporter', 'JSON', config.home+config.tests.api ] );
+    if(fs.existsSync(config.home+config.tests.api) ){
 
-    mocha.stdout.on( 'data', data => {
+        const { spawn } = require( 'child_process' );
 
-        res.status(config.status.good);
+        const mocha = spawn( 'mocha', [ '--reporter', 'JSON', config.home+config.tests.api ] );
 
-        const parsedData = JSON.parse(data);
+        mocha.stdout.on( 'data', data => {
 
-        res.json({
-           stats: {
-               suites: parsedData.stats.suites,
-               tests: parsedData.stats.tests,
-               passes: parsedData.stats.passes,
-               pending: parsedData.stats.pending,
-               failures: parsedData.stats.failures,
-               start: parsedData.stats.start,
-               end: parsedData.stats.end,
-               duration:parsedData.stats.duration,
-               errors: getErrors(parsedData)
-           }
-       });
-    });
+            res.status(config.status.good);
 
-    mocha.stderr.on( 'data', data => {
+            const parsedData = JSON.parse(data);
 
-        logger._error({filename: filename, methodname: methodname, message: data});
+            res.json({
+                stats: {
+                    suites: parsedData.stats.suites,
+                    tests: parsedData.stats.tests,
+                    passes: parsedData.stats.passes,
+                    pending: parsedData.stats.pending,
+                    failures: parsedData.stats.failures,
+                    start: parsedData.stats.start,
+                    end: parsedData.stats.end,
+                    duration:parsedData.stats.duration,
+                    errors: getErrors(parsedData)
+                }
+            });
+        });
 
-    });
+        mocha.stderr.on( 'data', data => {
 
-    mocha.on( 'close', code => {
+            logger._error({filename: filename, methodname: methodname, message: data});
 
-        logger._info({filename: filename, methodname: methodname, message: `child process exited with code ${code}` });
+        });
 
-    });
+        mocha.on( 'close', code => {
 
+            logger._info({filename: filename, methodname: methodname, message: `child process exited with code ${code}` });
+
+        });
+
+    }
+    else {
+
+        logger._error({filename: filename, methodname: methodname, message: messages.api.cannot_find_test_files+config.home+config.tests.api});
+
+        res.status(config.status.error);
+        res.json({message: messages.api.cannot_find_test_files+config.home+config.tests.api});
+
+    }
 
     logger._info({filename: filename, methodname: methodname, message: 'sent good status'});
 
