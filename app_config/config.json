@@ -3,12 +3,16 @@
   "defaultLogLevel": "debug",
   "production": "production",
   "development":  "development",
+  "home" : null,
   "indexRoute": "/",
   "apiRoute": "/api",
   "userRoute": "/users",
   "apiVersion": "1.0.0",
   "defaultPort": 3443,
   "ip": "localhost",
+  "tests": {
+    "api": "/test/testAPI/apiTests.js"
+  },
   "encryption": {
     "enabled": true,
     "certProvider": "SELF SIGNED",

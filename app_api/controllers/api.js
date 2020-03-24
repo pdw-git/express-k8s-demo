@@ -109,7 +109,7 @@ module.exports.getTest = function(req, res){
 
     const { spawn } = require( 'child_process' );
 
-    const mocha = spawn( 'mocha', [ '--reporter', 'JSON', '/home/whitep/WebstormProjects/express-api/test/testAPI/apiTests.js' ] );
+    const mocha = spawn( 'mocha', [ '--reporter', 'JSON', config.home+config.tests.api ] );
 
     mocha.stdout.on( 'data', data => {
 

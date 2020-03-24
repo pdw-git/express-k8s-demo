@@ -11,7 +11,7 @@
  * Licensed under Apache-2.0
  */
 
-const config = require('./app_config/config.json');
+let config = require('./app_config/config.json');
 const pageConfig = require('./app_config/pageConfig');
 const messages = require('./app_utilities/messages').messages;
 const applogger = require('./app_utilities/logger');
@@ -29,6 +29,9 @@ if (process.env.NODE_ENV === undefined){
 
 }
 
+config.home = config.home !== undefined ? __dirname : applogger._error({filename: 'app.js', methodname: 'none', message: messages.parameter_check_error});
+
+//config.home = __dirname;
 
 const createError = require('http-errors');
 const express = require('express');
