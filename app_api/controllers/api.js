@@ -59,7 +59,6 @@ module.exports.getInfo = function(req, res){
 
     res.json(info);
 
-
     logger._info({filename: filename, methodname: methodname, message: 'sent good status'});
 
     logger._debug({filename: filename, methodname: methodname, message: 'completed'});
@@ -109,30 +108,16 @@ module.exports.getTest = function(req, res){
     logger._debug({filename: filename, methodname: methodname, message: 'started'});
 
     const { spawn } = require( 'child_process' );
+
     const mocha = spawn( 'mocha', [ '--reporter', 'JSON', '/home/whitep/WebstormProjects/express-api/test/testAPI/apiTests.js' ] );
 
     mocha.stdout.on( 'data', data => {
+
         res.status(config.status.good);
+
         const parsedData = JSON.parse(data);
-        //console.log(parsedData);
 
-        const errors = [];
-
-       if(parsedData.failures !== undefined){
-
-           if(parsedData.failures.length > 0){
-
-               for(let i = 0; i < parsedData.failures.length; i++){
-
-                   errors[i]={message: parsedData.failures[i].err.message};
-
-               }
-
-           }
-
-       }
-
-       res.json({
+        res.json({
            stats: {
                suites: parsedData.stats.suites,
                tests: parsedData.stats.tests,
@@ -142,17 +127,21 @@ module.exports.getTest = function(req, res){
                start: parsedData.stats.start,
                end: parsedData.stats.end,
                duration:parsedData.stats.duration,
-               errors: errors
+               errors: getErrors(parsedData)
            }
        });
     });
 
     mocha.stderr.on( 'data', data => {
+
         logger._error({filename: filename, methodname: methodname, message: data});
+
     });
 
     mocha.on( 'close', code => {
+
         logger._info({filename: filename, methodname: methodname, message: `child process exited with code ${code}` });
+
     });
 
 
@@ -161,4 +150,39 @@ module.exports.getTest = function(req, res){
     logger._debug({filename: filename, methodname: methodname, message: 'completed'});
 
 };
+
+/**
+ * getErrors
+ *
+ * Find the error objects in the Mocha results
+ * @param jsonData
+ * @returns {[{}]}
+ */
+function getErrors(jsonData){
+
+    const methodname = 'getErrors(jsonData)';
+
+    logger._debug({filename: filename, methodname: methodname, message: 'started'});
+
+    const errors = [];
+
+    if(jsonData.failures !== undefined){
+
+        if(jsonData.failures.length > 0){
+
+            for(let i = 0; i < jsonData.failures.length; i++){
+
+                errors[i]={message: jsonData.failures[i].err.message};
+
+            }
+
+        }
+
+    }
+
+    logger._debug({filename: filename, methodname: methodname, message: 'completed'});
+
+    return errors;
+
+}
 

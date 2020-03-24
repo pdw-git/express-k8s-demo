@@ -8,8 +8,8 @@
  *
  * Each object is for a specific test and is exported from this module.
  *
- * @type {number}
  */
+
 //Acceptable status codes
 const GOOD_STATUS = 200;
 const PAGE_NOT_FOUND = 404;
