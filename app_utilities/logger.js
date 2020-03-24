@@ -76,8 +76,6 @@ function formatMessage(msg){
 
 function setLoggingLevels(name, index){
 
-    console.log('name: '+name+' level: '+index);
-
     loggingLevelName = name;
     loggingLevelIndex = index;
 
