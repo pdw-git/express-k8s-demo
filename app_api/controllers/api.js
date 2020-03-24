@@ -92,3 +92,73 @@ module.exports.getVersion = function(req, res){
 
 };
 
+/**
+ * getTest
+ *
+ * Execute the mocha tests for this server and return the results
+ *
+ * GET /api/test
+ *
+ * @param req
+ * @param res
+*/
+module.exports.getTest = function(req, res){
+
+    const methodname = 'getTest(req, res)';
+
+    logger._debug({filename: filename, methodname: methodname, message: 'started'});
+
+    const { spawn } = require( 'child_process' );
+    const mocha = spawn( 'mocha', [ '--reporter', 'JSON', '/home/whitep/WebstormProjects/express-api/test/testAPI/apiTests.js' ] );
+
+    mocha.stdout.on( 'data', data => {
+        res.status(config.status.good);
+        const parsedData = JSON.parse(data);
+        //console.log(parsedData);
+
+        const errors = [];
+
+       if(parsedData.failures !== undefined){
+
+           if(parsedData.failures.length > 0){
+
+               for(let i = 0; i < parsedData.failures.length; i++){
+
+                   errors[i]={message: parsedData.failures[i].err.message};
+
+               }
+
+           }
+
+       }
+
+       res.json({
+           stats: {
+               suites: parsedData.stats.suites,
+               tests: parsedData.stats.tests,
+               passes: parsedData.stats.passes,
+               pending: parsedData.stats.pending,
+               failures: parsedData.stats.failures,
+               start: parsedData.stats.start,
+               end: parsedData.stats.end,
+               duration:parsedData.stats.duration,
+               errors: errors
+           }
+       });
+    });
+
+    mocha.stderr.on( 'data', data => {
+        logger._error({filename: filename, methodname: methodname, message: data});
+    });
+
+    mocha.on( 'close', code => {
+        logger._info({filename: filename, methodname: methodname, message: `child process exited with code ${code}` });
+    });
+
+
+    logger._info({filename: filename, methodname: methodname, message: 'sent good status'});
+
+    logger._debug({filename: filename, methodname: methodname, message: 'completed'});
+
+};
+

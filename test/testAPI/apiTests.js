@@ -11,3 +11,4 @@ testFunctions.testStatusAndBody(testData.getInfoExpectedGoodResults);
 testFunctions.testStatusAndBody(testData.getStatusExpectedGoodResults);
 testFunctions.testStatusAndBody(testData.getInvalidAPI_MethodExpectedPageNotFound);
 testFunctions.testStatusAndBody(testData.getVersion_ExpectedGoodStatus);
+//testFunctions.testStatusAndBody(testData.getTest_ExpectedGoodStatus);
