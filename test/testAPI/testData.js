@@ -10,17 +10,21 @@
  *
  */
 
+const testFunction = require('./testFunctions.js');
+const  messages = require('../../app_utilities/messages').messages;
+const config = require('../../app_config/config');
+
 //Acceptable status codes
 const GOOD_STATUS = 200;
 const PAGE_NOT_FOUND = 404;
-
-const config = require('../../app_config/config');
+const ERROR_STATUS = 500;
 
 //server definitions
 
 const port = process.env.PORT || config.defaultPort;  //take environment variable over the default configuration.
 
 const urlType = ((process.env.HTTPS === 'true') || (config.encryption.enabled)) ? 'https://' : 'http://';
+
 const apiOptions = {
     server: urlType+config.ip+":"+port,
     path: config.apiRoute
@@ -36,14 +40,40 @@ const apiOptions = {
 // GET /api/info
 //============================================================================================
 
-//Expected good results for GET /api/info
-module.exports.getInfoExpectedGoodResults = {
+module.exports.getInfoGoodStatus = {
 
-    testName: "getInfoExpectedGoodResults",
+    testName: "getInfoGoodStatus",
     root:"api",
     method:"GET "+apiOptions.path+"/info",
-    result: "should return info object and 200",
-    expectedResultMsg: "status 200 and body with application name and version",
+    result: "should return good status: "+GOOD_STATUS,
+    expectedResultMsg: "Good status returned",
+    requestTestObjectName: 'statusCode',
+    body: {
+    },
+    statusCode: GOOD_STATUS,
+    requestOptions: {
+        url: apiOptions.server + apiOptions.path + "/info",
+        method: "GET",
+        json: {},
+        qs: {}
+    },
+    environment:{
+        before : ()=>{},
+        after : ()=>{},
+        assertionMsg: 'Assertion failed for test on response object: ',
+        assertion : testFunction.generalAssertion
+    }
+
+};
+
+module.exports.getInfoTestBody = {
+
+    testName: "getInfoTestBody",
+    root:"api",
+    method:"GET "+apiOptions.path+"/info",
+    result: "should return a body that matches expected results",
+    expectedResultMsg: "Expected response body",
+    requestTestObjectName: 'body',
     body: {
         "author" : "Peter Whitehead",
         "email" : "peter.whitehead@atos.net",
@@ -63,12 +93,18 @@ module.exports.getInfoExpectedGoodResults = {
             "status" : "GET application status"
         }
     },
-    status: GOOD_STATUS,
+    statusCode: GOOD_STATUS,
     requestOptions: {
         url: apiOptions.server + apiOptions.path + "/info",
         method: "GET",
         json: {},
         qs: {}
+    },
+    environment:{
+        before : ()=>{},
+        after : ()=>{},
+        assertionMsg: 'Assertion failed for test on response object: ',
+        assertion : testFunction.generalAssertion
     }
 
 };
@@ -77,23 +113,53 @@ module.exports.getInfoExpectedGoodResults = {
 // GET /api/status
 //============================================================================================
 
-//Expected good results for GET /api/status
-module.exports.getStatusExpectedGoodResults = {
+
+module.exports.getStatusGoodstatus = {
     testName: "getStatusExpectedGoodResults",
     root:"api",
     method:"GET "+apiOptions.path+"/status",
-    result: "should return status object and 200",
-    expectedResultMsg: "status 200 and body with status and status message",
+    result: "Should return good status: "+GOOD_STATUS,
+    expectedResultMsg: "Good status returned",
     body: {
-        status: GOOD_STATUS,
-        msg: "Sending good status"
     },
-    status: GOOD_STATUS,
+    statusCode: GOOD_STATUS,
     requestOptions: {
         url: apiOptions.server + apiOptions.path + "/status",
         method: "GET",
         json: {},
         qs: {}
+    },
+    environment:{
+        before : ()=>{},
+        after : ()=>{},
+        assertionMsg: 'Assertion failed for test on response object: ',
+        assertion : testFunction.generalAssertion
+    }
+
+};
+
+module.exports.getStatusTestBody = {
+    testName: "getStatusExpectedGoodResults",
+    root:"api",
+    method:"GET "+apiOptions.path+"/status",
+    result: "Should return good status: "+GOOD_STATUS,
+    expectedResultMsg: "Good status returned",
+    body: {
+        status: GOOD_STATUS,
+        msg: 'Sending good status'
+    },
+    statusCode: GOOD_STATUS,
+    requestOptions: {
+        url: apiOptions.server + apiOptions.path + "/status",
+        method: "GET",
+        json: {},
+        qs: {}
+    },
+    environment:{
+        before : ()=>{},
+        after : ()=>{},
+        assertionMsg: 'Assertion failed for test on response object: ',
+        assertion : testFunction.generalAssertion
     }
 
 };
@@ -103,19 +169,26 @@ module.exports.getStatusExpectedGoodResults = {
 //============================================================================================
 
 //Expected good results for GET /api/invalidMethod
-module.exports.getInvalidAPI_MethodExpectedPageNotFound = {
+module.exports.getApiPageNotFound = {
     testName: "getInvalidAPI_MethodExpectedPageNotFound",
     root:"api",
     method:"GET invalid method name",
     result: "should receive a Page Not Found Status",
-    expectedResultMsg: "status 404",
-    body: null,
-    status: PAGE_NOT_FOUND,
+    expectedResultMsg: "Status 404",
+    body: {},
+    statusCode: PAGE_NOT_FOUND,
+    requestTestObjectName: 'statusCode',
     requestOptions: {
         url: apiOptions.server + apiOptions.path + "/invalidMethod",
         method: "GET",
         json: {},
         qs: {}
+    },
+    environment:{
+        before : ()=>{},
+        after : ()=>{},
+        assertionMsg: 'Assertion failed for test on response object: ',
+        assertion : testFunction.generalAssertion
     }
 
 };
@@ -124,23 +197,85 @@ module.exports.getInvalidAPI_MethodExpectedPageNotFound = {
 // GET /api/version
 //============================================================================================
 
-//Expected good results for GET /api/version
-module.exports.getVersion_ExpectedGoodStatus= {
+module.exports.getVersionGoodStatus= {
     testName: "getAPI_VersionExpectedGoodStatus",
     root:"api",
     method:"GET "+apiOptions.path+"/version",
-    result: "should receive a version object and 200",
-    expectedResultMsg: "Good Status",
-    body: {
-        version: "1.0.0"
-    },
-    status: GOOD_STATUS,
+    result: 'should return good status: '+GOOD_STATUS,
+    expectedResultMsg: "Good status returned",
+    requestTestObjectName: 'statusCode',
+    body: {},
+    statusCode: GOOD_STATUS,
     requestOptions: {
         url: apiOptions.server + apiOptions.path + "/version",
         method: "GET",
         json: {},
         qs: {}
+    },
+    environment:{
+        before : ()=>{},
+        after : ()=>{},
+        assertionMsg: 'Assertion failed for test on response object: ',
+        assertion : testFunction.generalAssertion
     }
 
 };
+
+module.exports.getVersionTestBody= {
+    testName: "getAPI_VersionExpectedGoodStatus",
+    root:"api",
+    method:"GET "+apiOptions.path+"/version",
+    result: "should return a body that matches expected results",
+    expectedResultMsg: "Expected response body",
+    requestTestObjectName: 'body',
+    body: {
+        version: "1.0.0"
+    },
+    statusCode: GOOD_STATUS,
+    requestOptions: {
+        url: apiOptions.server + apiOptions.path + "/version",
+        method: "GET",
+        json: {},
+        qs: {}
+    },
+    environment:{
+        before : ()=>{},
+        after : ()=>{},
+        assertionMsg: 'Assertion failed for test on response object: ',
+        assertion : testFunction.generalAssertion
+    }
+
+};
+
+//============================================================================================
+// GET /api/test
+//============================================================================================
+
+//Expected failure for GET /api/test
+module.exports.getTest_TestsDoNotExist= {
+    testName: "getAPI_TestFileDoesNotExist",
+    root:"api",
+    method:"GET "+apiOptions.path+"/test",
+    result: "should receive error on response: "+ERROR_STATUS,
+    expectedResultMsg: messages.api.cannot_find_test_files,
+    body: {
+        message: messages.api.cannot_find_test_files+config.home+config.tests.api
+    },
+    statusCode: ERROR_STATUS,
+    requestOptions: {
+        url: apiOptions.server + apiOptions.path + "/test",
+        method: "GET",
+        json: {},
+        qs: {}
+    },
+    environment:{
+        before : ()=>{config.tests.api = '/invalidDirectory'},
+        after : ()=>{config.tests.api = config.home+'/test/apiTests.js'},
+        assertionMsg: 'Assertion failed on object: ',
+        assertion : testFunction.generalAssertion
+    }
+
+};
+
+
 

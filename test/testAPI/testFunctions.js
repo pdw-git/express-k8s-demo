@@ -12,10 +12,11 @@ const request = require('request');
  *
  *{
  *   testName: "nameOfTest",
- *   root:"testRootArea",
+ *   root:"testRootArea e.g api",
  *   method:"GET  https://127.0.0.1:3000/api/info",
  *   result: "should return info object and 200",
  *   expectedResultMsg: "status 200 and body with application name and version",
+ *   requestObjectName: "key name in response JSON object to be used as actual value in assert call"
  *   body: {
  *       status: 200
  *       message: "this has worked"
@@ -26,6 +27,12 @@ const request = require('request');
  *       method: "GET",
  *       json: {},
  *       qs: {}
+ *   },
+ *   environment :{
+ *       before: ()=>{},
+ *       after: ()=>{},
+ *       assertionMsg: 'message to post when assertion fires'
+ *       assertion: (expected, actual, message)+>{}
  *   }
  *
  *}
@@ -33,13 +40,14 @@ const request = require('request');
  */
 
 /**
- * testStatus
+ * testWithAssertion
  *
- * Validate a request gets the expected response status
+ * completes a test utilising a single assertion
  *
- * @param testData - JSON object
+ * @param testData object
+ * @param testObjectName string
  */
-module.exports.testStatus = function(testData){
+module.exports.testWithAssertion = function(testData){
 
     describe(testData.root, function(){
 
@@ -49,36 +57,7 @@ module.exports.testStatus = function(testData){
 
                 it(testData.expectedResultMsg, function(done){
 
-                    testStatus(testData, done);
-
-                });
-
-            });
-
-        });
-
-    });
-
-};
-
-/**
- * testData
- *
- * Validate a request gets the expected body
- *
- * @param testData JSON Object
- */
-module.exports.testBody = function(testData){
-
-    describe(testData.root, function(){
-
-        describe(testData.method, function(){
-
-            describe(testData.result, function(){
-
-                it(testData.expectedResultMsg, function(done){
-
-                    testBody(testData, done);
+                    testWithAssertion(testData, testData.requestTestObjectName, done);
 
                 });
 
@@ -91,67 +70,53 @@ module.exports.testBody = function(testData){
 };
 
 
+/**
+ * generalAssertion
+ *
+ * An assertion test
+ *
+ * @param actual
+ * @param expected
+ * @param msg
+ */
+module.exports.generalAssertion = function(actual, expected, msg){
+
+    assert.deepEqual(actual, expected, msg);
+
+};
+
 
 /**
- * testStatus
+ * testWithAssertion
  *
  * @param testData
+ * @param testObjectName
  * @param done
  */
-function testStatus(testData, done){
+
+function testWithAssertion(testData, testObjectName, done){
+
 
     request(testData.requestOptions, function(req, res){
+
+        ((testData.environment.before !== undefined) || true) ? testData.environment.before(): null;
 
         //assert if the status code is not as expected
         try {
-            assert.equal(
-                testData.status,
-                res.statusCode,
-                testData.testName + ': Did not get expected status code'
-            );
+
+            testData.environment.assertion(res[testObjectName], testData[testObjectName], testData.environment.assertionMsg+testObjectName);
+
+            ((testData.environment.after !== undefined) || true ) ? testData.environment.after() : null;
 
             done();
         }
         catch(err){
 
-            done(err);
-
-        }
-
-    });
-
-}
-
-/**
- * testBody
- *
- * @param testData
- * @param done
- */
-function testBody(testData, done){
-
-    request(testData.requestOptions, function(req, res){
-
-        //assert if response body is not as expected
-        try {
-            if (testData.body != null) {
-
-                assert.deepEqual(
-                    testData.body,
-                    res.body,
-                    testData.testName + ': Did not get expected body'
-                );
-
-            }
-
-            done();
-        }
-        catch(err){
+            ((testData.environment.after !== undefined) || true) ? testData.environment.after() : null;
 
             done(err);
 
         }
-
 
     });
 
