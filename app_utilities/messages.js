@@ -19,7 +19,8 @@ const messages = {
     https_cert_provider: "Certificate provider: ",
     http_server_creation_error: "Error creating server [http/https]",
     api:{
-        good_status: "Sending good status"
+        good_status: "Sending good status",
+        cannot_find_test_files: "Cannot find the test files "
     }
 
 };
