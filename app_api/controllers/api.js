@@ -107,14 +107,15 @@ module.exports.getTest = function(req, res){
 
     logger._debug({filename: filename, methodname: methodname, message: 'started'});
 
-    //todo check that the test files files exist
-
+    //If the test files exist run the mocha tests and return a summary of the results
     if(fs.existsSync(config.home+config.tests.api) ){
 
+        //Spawn a process for Mocha
         const { spawn } = require( 'child_process' );
 
         const mocha = spawn( 'mocha', [ '--reporter', 'JSON', config.home+config.tests.api ] );
 
+        //Respond to the completion of the process
         mocha.stdout.on( 'data', data => {
 
             res.status(config.status.good);
@@ -136,12 +137,14 @@ module.exports.getTest = function(req, res){
             });
         });
 
+        //Handle errors from Mocah process
         mocha.stderr.on( 'data', data => {
 
             logger._error({filename: filename, methodname: methodname, message: data});
 
         });
 
+        //Handle the close event of Mocha
         mocha.on( 'close', code => {
 
             logger._info({filename: filename, methodname: methodname, message: `child process exited with code ${code}` });
@@ -150,10 +153,11 @@ module.exports.getTest = function(req, res){
 
     }
     else {
-
+        //Test files were not found, log error and return appropriate status in response.
         logger._error({filename: filename, methodname: methodname, message: messages.api.cannot_find_test_files+config.home+config.tests.api});
 
         res.status(config.status.error);
+
         res.json({message: messages.api.cannot_find_test_files+config.home+config.tests.api});
 
     }
