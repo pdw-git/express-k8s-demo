@@ -1,6 +1,6 @@
 'use strict';
 /**
- * Created by whitep on 26th March 2020
+ * Created by Peter Whitehead on 28th March 2020
  */
 
 const mongoose = require('mongoose');
@@ -11,6 +11,8 @@ const messages = require('../../app_utilities/messages').messages;
 const dotenv = require('dotenv');
 
 dotenv.config();
+
+//Create a schema for the config data
 
 const configSchema = new mongoose.Schema(
 
@@ -58,9 +60,11 @@ const configSchema = new mongoose.Schema(
 
 );
 
-mongoose.model('configuration', configSchema);
 
-//initialise the project
+//Create a model for Mongoose from the defined schema
+mongoose.model(config.mongo.configObjectName, configSchema);
+
+//create the required test object for the configuration document
 
 let tests = [{}];
 
@@ -69,6 +73,8 @@ for (let i=0; i < config.tests.length; i++){
     tests[i] = {area: config.tests[i].area, directory: process.env.APP_DIR+config.tests[i].directory+config.tests[i].area};
 
 }
+
+//Set up the configuration data that needs be stored in the database.
 
 const baselineConfiguration = {
     inProduction: config.inProduction,
@@ -95,9 +101,9 @@ const baselineConfiguration = {
     tests: tests
 };
 
-//let configProject = mongoose.model('configuration');
-
-//let cp = new configProject(baselineConfiguration);
+//There should only be one configuration object for the application.
+//Check if one exists, if it does do not update it.
+//TODO: Change this logic so that if one is found the old one is deleted and a new one is created.
 
 mongo.find({}, config.mongo.configObjectName, (err,doc)=>{
     if(err){
@@ -112,21 +118,5 @@ mongo.find({}, config.mongo.configObjectName, (err,doc)=>{
 
 });
 
-//mongo.create(config.mongo.configObjectName, baselineConfiguration);
-
-//cp.save((err, data)=>{
-//    if(err){
-//
-//        logger._error({filename: __filename, methodname:'main', message: err.message});
-//        logger._debug({filename: __filename, methodname:'main', message: JSON.parse(data)});
-//
-//    }
-//    else {
-//
-//        logger._info({filename:__filename, methodname:'main', message: 'Successful config initialisation'});
-//
-//    }
-//
-//});
 
 

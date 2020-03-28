@@ -2,7 +2,7 @@
 
 const logger = require('../../app_utilities/logger');
 const config = require('../../app_config/config');
-;
+
 /**
  * sendJSONresponse
  * @param err
@@ -28,22 +28,6 @@ module.exports.sendJSONresponse = function(err, res, filename, methodname, statu
 
 };
 
-/**
- * respondWithErrors
- * @param res
- * @param filename
- * @param methodname
- * @param status
- * @param json
- */
-function respond(res, filename, methodname, status, json){
-
-    logger._error({filename: filename, functionName: methodname, message: json});
-
-    res.status(status);
-    res.json(json);
-
-}
 
 /**
  * defaultResponse
@@ -66,3 +50,18 @@ module.exports.defaultResponse = function(req, res, filename, methodname, plugin
     logger._debug({filename: filename, methodname: methodname, message: 'completed'});
 
 };
+
+/**
+* respondWithErrors
+* @param res
+* @param filename
+* @param methodname
+* @param status
+* @param json
+*/
+function respond(res, filename, methodname, status, json){
+
+    res.status(status);
+    res.json(json);
+
+}

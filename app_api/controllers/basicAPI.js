@@ -1,6 +1,6 @@
 /**
 
- created 7th September 2018
+ created 28th March 2020
 
  */
 
@@ -11,7 +11,6 @@ const fs = require('fs');
 const filename = __filename;
 const responseFunctions = require('./responseFunctions');
 const mongo = require('../models/mongoActions');
-
 
 
 /**
@@ -38,7 +37,7 @@ module.exports.getStatus = function(req, res){
 };
 
 /**
- * get info
+ * getInfo
  *
  * GET aip/info
  *
@@ -99,74 +98,76 @@ module.exports.getTest = function(req, res){
 
     mongo.find({},mongo.configProject, (err, doc)=>{
 
-       let testFiles = doc[0].tests[0].directory !== undefined ?
-           doc[0].tests[0].directory :
-           logger._error({filename: filename, methodname: methodname, message: messages.api.object_undefined+'doc[0].tests[0].directory'});
+       if(err){
 
-        if(fs.existsSync(testFiles)){
+           logger._error({filename: filename, methodname: methodname, message: err.message});
 
-            //Spawn a process for Mocha
-            const { spawn } = require( 'child_process' );
+       }
+       else{
 
-            //const mocha = spawn( 'mocha', [ '--reporter', 'JSON', config.homeDir+config.tests.api ] );
-            const mocha = spawn( 'mocha', [ '--reporter', 'JSON', testFiles ] );
+           let testFiles = doc[0].tests[0].directory !== undefined ?
+               doc[0].tests[0].directory :
+               logger._error({filename: filename, methodname: methodname, message: messages.api.object_undefined+'doc[0].tests[0].directory'});
 
-            //Respond to the completion of the process
-            mocha.stdout.on( 'data', data => {
+           if(fs.existsSync(testFiles)){
 
-                res.status(config.status.good);
+               //Spawn a process for Mocha
+               const { spawn } = require( 'child_process' );
 
-                const parsedData = JSON.parse(data);
+               const mocha = spawn( 'mocha', [ '--reporter', 'JSON', testFiles ] );
 
-                res.json({
-                    stats: {
-                        suites: parsedData.stats.suites,
-                        tests: parsedData.stats.tests,
-                        passes: parsedData.stats.passes,
-                        pending: parsedData.stats.pending,
-                        failures: parsedData.stats.failures,
-                        start: parsedData.stats.start,
-                        end: parsedData.stats.end,
-                        duration:parsedData.stats.duration,
-                        errors: getErrors(parsedData)
-                    }
-                });
-            });
+               //Respond to the completion of the process
+               mocha.stdout.on( 'data', data => {
 
-            //Handle errors from Mocah process
-            mocha.stderr.on( 'data', data => {
+                   res.status(config.status.good);
 
-                logger._error({filename: filename, methodname: methodname, message: data});
+                   const parsedData = JSON.parse(data);
 
-            });
+                   res.json({
+                       stats: {
+                           suites: parsedData.stats.suites,
+                           tests: parsedData.stats.tests,
+                           passes: parsedData.stats.passes,
+                           pending: parsedData.stats.pending,
+                           failures: parsedData.stats.failures,
+                           start: parsedData.stats.start,
+                           end: parsedData.stats.end,
+                           duration:parsedData.stats.duration,
+                           errors: getErrors(parsedData)
+                       }
+                   });
+               });
 
-            //Handle the close event of Mocha
-            mocha.on( 'close', code => {
+               //Handle errors from Mocah process
+               mocha.stderr.on( 'data', (data)=> {
 
-                logger._info({filename: filename, methodname: methodname, message: `child process exited with code ${code}` });
+                   const methodname = 'mocha.stderr.on(data)';
+                   logger._error({filename: filename, methodname: methodname, message: data});
 
-            });
+               });
 
-        }
-        else {
-            //Test files were not found, log error and return appropriate status in response.
-            logger._error({filename: filename, methodname: methodname, message: messages.api.cannot_find_test_files+testFiles});
+               //Handle the close event of Mocha
+               mocha.on( 'close', code => {
+                   const methodname = 'mocha.on(close)';
+                   logger._info({filename: filename, methodname: methodname, message: `child process exited with code ${code}` });
 
-            responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.error, {message: messages.api.cannot_find_test_files+testFiles});
+               });
 
-            //res.status(config.status.error);
+           }
 
-            //res.json({message: messages.api.cannot_find_test_files+config.homeDir+config.tests.api});
+           else {
+               //Test files were not found, log error and return appropriate status in response.
+               logger._error({filename: filename, methodname: methodname, message: messages.api.cannot_find_test_files+testFiles});
 
-        }
+               responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.error, {message: messages.api.cannot_find_test_files+testFiles});
 
-        logger._debug({filename: filename, methodname: methodname, message: 'completed'});
+           }
 
+           logger._debug({filename: filename, methodname: methodname, message: 'completed'});
+
+       }
 
     });
-
-    //If the test files exist run the mocha tests and return a summary of the results
-
 
 };
 
@@ -179,7 +180,7 @@ module.exports.getTest = function(req, res){
  */
 function getErrors(jsonData){
 
-    const methodname = 'getErrors(jsonData)';
+    const methodname = 'getErrors';
 
     logger._debug({filename: filename, methodname: methodname, message: 'started'});
 

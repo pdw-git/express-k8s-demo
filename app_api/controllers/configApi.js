@@ -7,7 +7,11 @@ const responseFunctions = require('./responseFunctions');
 const filename = __filename;
 
 
-
+/**
+ * updateConfig
+ * @param req
+ * @param res
+ */
 module.exports.updateConfig = function(req,res){
 
     const methodname = 'updateConfig';
@@ -22,6 +26,11 @@ module.exports.updateConfig = function(req,res){
 
 };
 
+/**
+ * getConfig
+ * @param req
+ * @param res
+ */
 module.exports.getConfig = function(req,res){
 
     const methodname = 'getConfig';
@@ -38,7 +47,11 @@ module.exports.getConfig = function(req,res){
 
 };
 
-
+/**
+ * deleteConfig
+ * @param req
+ * @param res
+ */
 module.exports.deleteConfig = function (req, res) {
 
     const methodname = 'deleteConfig';
@@ -51,7 +64,6 @@ module.exports.deleteConfig = function (req, res) {
         logger._info({filename: __filename, methodname: 'deleteConfig', message: 'id'+id});
 
         responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: 'deleteConfig'});
-
 
     });
 
