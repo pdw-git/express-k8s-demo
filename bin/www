@@ -35,7 +35,8 @@ if (typeof(config) !== 'undefined') {
 
   //if the HTTPS environment variable has been set, check its value and take appropriate action.
   process.env.HTTPS !== undefined ?
-    process.env.HTTPS === 'true' ? config.encryption.enabled = true : config.encryption.enabled = false: null;
+    process.env.HTTPS === 'true' ? config.encryption.enabled = true :
+        config.encryption.enabled = false: null;
 
   const options = {
     key: fs.readFileSync(__dirname+config.encryption.store+config.encryption.key),

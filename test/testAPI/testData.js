@@ -13,6 +13,9 @@
 const testFunction = require('./testFunctions.js');
 //const  messages = require('../../app_utilities/messages').messages;
 const config = require('../../app_config/config');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 //Acceptable status codes
 const GOOD_STATUS = 200;
@@ -29,6 +32,48 @@ const apiOptions = {
     server: urlType+config.ip+":"+port,
     path: config.apiRoute
 };
+
+let tests = [{}];
+
+for (let i=0; i < config.tests.length; i++){
+
+    tests[i] = {area: config.tests[i].area, directory: process.env.APP_DIR+config.tests[i].directory+config.tests[i].area};
+
+}
+
+const configAssertionArray = [
+    {key: 'inProduction', expected: config.inProduction},
+    {key: 'logLevel', expected: config.defaultLogLevel},
+    {key: 'homeDir', expected: process.env.APP_DIR},
+    {key: 'ipAddress', expected: config.ip},
+    {key: 'indexRoute', expected: config.indexRoute},
+    {key: 'apiRoute', expected: config.apiRoute},
+    {key: 'userRoute',expected: config.userRoute},
+    {key: 'port', expected: config.defaultPort}
+];
+
+/*
+const temp = {
+    apiRoute: config.apiRoute,
+    userRoute: config.userRoute,
+    port: config.defaultPort,
+    mongo : {
+        name: 'mongodb',
+        uri: config.mongo.uri,
+        port: config.mongo.port,
+        configObjectName: config.mongo.configObjectName
+    },
+    encryption: {
+        enabled: config.encryption.enabled,
+        certProvider: config.encryption.certProvider,
+        store: config.encryption.store,
+        key: config.encryption.key,
+        cert: config.encryption.cert
+    },
+    tests: tests
+};
+
+ */
 
 
 module.exports.testDefinitions={
@@ -114,6 +159,7 @@ module.exports.testDefinitions={
             method:"GET "+apiOptions.path+"/status",
             result: "Should return good status: "+GOOD_STATUS,
             expectedResultMsg: "Good status returned",
+            requestTestObjectName: 'statusCode',
             body: {
             },
             statusCode: GOOD_STATUS,
@@ -140,6 +186,7 @@ module.exports.testDefinitions={
             method:"GET "+apiOptions.path+"/status",
             result: "Should return good status: "+GOOD_STATUS,
             expectedResultMsg: "Good status returned",
+            requestTestObjectName: 'body',
             body: {
                 status: GOOD_STATUS,
                 msg: 'Sending good status'
@@ -238,7 +285,163 @@ module.exports.testDefinitions={
                 assertion : testFunction.generalAssertion
             }
 
-        }
+        },
+        //============================================================================================
+        // GET /api/getConfig good status
+        //============================================================================================
+        {
+            testName: "getGonfigExpectedGoodStatus",
+            root:"api",
+            method:"GET "+apiOptions.path+"/config",
+            result: 'should return good status: '+GOOD_STATUS,
+            expectedResultMsg: "Good status returned",
+            requestTestObjectName: 'statusCode',
+            body: {},
+            statusCode: GOOD_STATUS,
+            requestOptions: {
+                url: apiOptions.server + apiOptions.path + "/config",
+                method: "GET",
+                json: {},
+                qs: {}
+            },
+            environment:{
+                before : ()=>{},
+                after : ()=>{},
+                assertionMsg: 'getGonfigExpectedGoodStatus: Assertion failed for test on response object: ',
+                assertion : testFunction.generalAssertion
+            }
+
+        },
+        //============================================================================================
+        // GET /api/getConfig Test Body
+        //============================================================================================
+        {
+            testName: "getGonfigTestBody",
+            root:"api",
+            method:"GET "+apiOptions.path+"/config",
+            result: 'should return good status: '+GOOD_STATUS,
+            expectedResultMsg: "Good status returned",
+            requestTestObjectName: 'body',
+            body:configAssertionArray,
+            statusCode: GOOD_STATUS,
+            requestOptions: {
+                url: apiOptions.server + apiOptions.path + "/config",
+                method: "GET",
+                json: {},
+                qs: {}
+            },
+            environment:{
+                before : ()=>{},
+                after : ()=>{},
+                assertionMsg: 'getConfigTestBody: Assertion failed for test on response object: ',
+                assertion : testFunction.assertionList
+            }
+
+        },
+        //============================================================================================
+        // POST /api/config good status
+        //============================================================================================
+        {
+            testName: "createGonfigExpectedGoodStatus",
+            root:"api",
+            method:"POST "+apiOptions.path+"/config",
+            result: 'should return good status: '+GOOD_STATUS,
+            expectedResultMsg: "Good status returned",
+            requestTestObjectName: 'statusCode',
+            body: {},
+            statusCode: GOOD_STATUS,
+            requestOptions: {
+                url: apiOptions.server + apiOptions.path + "/config",
+                method: "POST",
+                json: {},
+                qs: {}
+            },
+            environment:{
+                before : ()=>{},
+                after : ()=>{},
+                assertionMsg: 'createGonfigExpectedGoodStatus: Assertion failed for test on response object: ',
+                assertion : testFunction.generalAssertion
+            }
+
+        },
+        //============================================================================================
+        // POST /api/config test body
+        //============================================================================================
+        {
+            testName: "createGonfigTestBody",
+            root:"api",
+            method:"POST "+apiOptions.path+"/config",
+            result: 'should return good status: '+GOOD_STATUS,
+            expectedResultMsg: "Good status returned",
+            requestTestObjectName: 'body',
+            body: {msg: 'updateConfig'},
+            statusCode: GOOD_STATUS,
+            requestOptions: {
+                url: apiOptions.server + apiOptions.path + "/config",
+                method: "POST",
+                json: {},
+                qs: {}
+            },
+            environment:{
+                before : ()=>{},
+                after : ()=>{},
+                assertionMsg: 'createGonfigTestBody: Assertion failed for test on response object: ',
+                assertion : testFunction.generalAssertion
+            }
+
+        },
+        //============================================================================================
+        // DELETE /api/getConfig good status
+        //============================================================================================
+        {
+            testName: "deleteGonfigExpectedGoodStatus",
+            root:"api",
+            method:"DELETE "+apiOptions.path+"/config",
+            result: 'should return good status: '+GOOD_STATUS,
+            expectedResultMsg: "Good status returned",
+            requestTestObjectName: 'statusCode',
+            body: {},
+            statusCode: GOOD_STATUS,
+            requestOptions: {
+                url: apiOptions.server + apiOptions.path + "/config/1234567",
+                method: "DELETE",
+                json: {},
+                qs: {}
+            },
+            environment:{
+                before : ()=>{},
+                after : ()=>{},
+                assertionMsg: 'deleteGonfigExpectedGoodStatus: Assertion failed for test on response object: ',
+                assertion : testFunction.generalAssertion
+            }
+
+        },
+        //============================================================================================
+        // DELETE /api/getConfig test body
+        //============================================================================================
+        {
+            testName: "deleteGonfigTestBody",
+            root:"api",
+            method:"DELETE "+apiOptions.path+"/config",
+            result: 'should return good status: '+GOOD_STATUS,
+            expectedResultMsg: "Good status returned",
+            requestTestObjectName: 'body',
+            body: {msg: 'deleteConfig'},
+            statusCode: GOOD_STATUS,
+            requestOptions: {
+                url: apiOptions.server + apiOptions.path + "/config/1234567",
+                method: "DELETE",
+                json: {},
+                qs: {}
+            },
+            environment:{
+                before : ()=>{},
+                after : ()=>{},
+                assertionMsg: 'deleteConfigTestBody: Assertion failed for test on response object: ',
+                assertion : testFunction.generalAssertion
+            }
+
+        },
 
     ]
 

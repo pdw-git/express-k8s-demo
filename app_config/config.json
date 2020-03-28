@@ -3,16 +3,26 @@
   "defaultLogLevel": "debug",
   "production": "production",
   "development":  "development",
-  "home" : null,
+  "homeDir" : null,
   "indexRoute": "/",
   "apiRoute": "/api",
   "userRoute": "/users",
   "apiVersion": "1.0.0",
   "defaultPort": 3443,
   "ip": "localhost",
-  "tests": {
-    "api": "/test/testAPI/apiTests.js"
+  "mongo" : {
+    "uri" : "mongodb://localhost:",
+    "port" : 27017,
+    "name": "EXPRESS_API",
+    "configObjectName" : "configuration"
   },
+  "tests": [
+
+    {
+      "area": "testAPI.js",
+      "directory": "/test/"
+    }
+  ],
   "encryption": {
     "enabled": true,
     "certProvider": "SELF SIGNED",

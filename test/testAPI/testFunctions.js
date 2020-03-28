@@ -45,7 +45,6 @@ const request = require('request');
  * completes a test utilising a single assertion
  *
  * @param testData object
- * @param testObjectName string
  */
 module.exports.testWithAssertion = function(testData){
 
@@ -86,6 +85,17 @@ module.exports.generalAssertion = function(actual, expected, msg){
 };
 
 
+module.exports.assertionList = function(actual, expected, msg){
+
+   for(let i = 0; i < expected.length; i++){
+
+       assert.deepEqual(actual[0][expected[i].key], expected[i].expected, msg+' - '+expected[i].key);
+
+   }
+
+};
+
+
 /**
  * testWithAssertion
  *
@@ -99,7 +109,7 @@ function testWithAssertion(testData, testObjectName, done){
 
     request(testData.requestOptions, function(req, res){
 
-        ((testData.environment.before !== undefined) || true) ? testData.environment.before(): null;
+        ((testData.environment.before !== undefined) || true) ? testData.environment.before(testData): null;
 
         //assert if the status code is not as expected
         try {

@@ -13,5 +13,9 @@ router.get('/status', controller.getStatus);
 router.get('/info', controller.getInfo);
 router.get('/version', controller.getVersion);
 router.get('/test', controller.getTest);
+router.delete('/config/:configid',controller.deleteConfig);
+router.post('/config', controller.updateConfig);
+router.get('/config', controller.getConfig);
+
 
 module.exports = router;

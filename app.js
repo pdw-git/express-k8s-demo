@@ -17,6 +17,10 @@ const messages = require('./app_utilities/messages').messages;
 const applogger = require('./app_utilities/logger');
 const favicon = require('serve-favicon');
 
+
+
+require('./app_api/models/db');
+
 //if the NODE_ENV environment variable has not been set then use the default configuration to set a production level.
 
 if (process.env.NODE_ENV === undefined){
@@ -29,9 +33,6 @@ if (process.env.NODE_ENV === undefined){
 
 }
 
-config.home = config.home !== undefined ? __dirname : applogger._error({filename: 'app.js', methodname: 'none', message: messages.parameter_check_error});
-
-//config.home = __dirname;
 
 const createError = require('http-errors');
 const express = require('express');
@@ -65,7 +66,7 @@ app.use(config.apiRoute, apiRouter);
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next ) {
+app.use(function(req, res ) { //removed next to stop warnings
 
     const err = createError(config.status.notFound, req.url);
 
@@ -88,7 +89,7 @@ app.use(function(req, res, next ) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) { //removed next to suppress warnings
 
 
    res.status(err.status || config.status.error);
@@ -110,5 +111,7 @@ app.use(function(err, req, res, next) {
    res.render(pageConfig.error.view, data);
 
 });
+
+
 
 module.exports = app;
