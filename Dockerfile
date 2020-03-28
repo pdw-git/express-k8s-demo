@@ -3,6 +3,7 @@ FROM node:12
 ENV PORT 3443
 ENV NODE_ENV developemnt
 ENV LOGGING_LEVEL debug
+ENV APP_DIR/home/whitep/WebstormProjects/express-api
 
 # Create app directory
 WORKDIR /usr/src/app
