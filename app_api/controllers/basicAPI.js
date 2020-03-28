@@ -103,7 +103,7 @@ module.exports.getTest = function(req, res){
            doc[0].tests[0].directory :
            logger._error({filename: filename, methodname: methodname, message: messages.api.object_undefined+'doc[0].tests[0].directory'});
 
-        if(fs.existsSync(testFiles) ){
+        if(fs.existsSync(testFiles)){
 
             //Spawn a process for Mocha
             const { spawn } = require( 'child_process' );
@@ -150,15 +150,15 @@ module.exports.getTest = function(req, res){
         }
         else {
             //Test files were not found, log error and return appropriate status in response.
-            logger._error({filename: filename, methodname: methodname, message: messages.api.cannot_find_test_files+config.homeDir+config.tests.api});
+            logger._error({filename: filename, methodname: methodname, message: messages.api.cannot_find_test_files+testFiles});
 
-            res.status(config.status.error);
+            responseFunctions.sendJSONresponse(res, filename, methodname, {message: messages.api.cannot_find_test_files+testFiles});
 
-            res.json({message: messages.api.cannot_find_test_files+config.homeDir+config.tests.api});
+            //res.status(config.status.error);
+
+            //res.json({message: messages.api.cannot_find_test_files+config.homeDir+config.tests.api});
 
         }
-
-        logger._info({filename: filename, methodname: methodname, message: 'sent good status'});
 
         logger._debug({filename: filename, methodname: methodname, message: 'completed'});
 

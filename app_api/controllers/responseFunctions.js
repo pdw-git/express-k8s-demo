@@ -15,15 +15,13 @@ module.exports.sendJSONresponse = function(err, res, filename, methodname, statu
 
     if (err) {
 
-        console.log('ERR: '+err);
+        logger._error({filename: filename, methodname: methodname, message: 'msg: '+err.msg});
 
-        respondWithError(res, filename, methodname, {msg: err.msg, err: err });
-
+        respond(res, filename, methodname, config.status.error,  {msg: err.msg, err: err });
     }
     else {
 
-        res.status(status);
-        res.json(jsonContent);
+        respond(res, filename, methodname, status,  jsonContent);
 
     }
 
@@ -34,15 +32,17 @@ module.exports.sendJSONresponse = function(err, res, filename, methodname, statu
  * @param res
  * @param filename
  * @param methodname
+ * @param status
  * @param json
  */
-module.exports.respondWithError = function(res, filename, methodname, json){
+function respond(res, filename, methodname, status, json){
 
-    logger._error({filename: filename, functionName: methodname, msg: JSON.stringify(json)});
+    logger._error({filename: filename, functionName: methodname, message: JSON.stringify(json)});
 
-    sendJSONresponse(res, config.status.error, json);
+    res.status(status);
+    res.json(json);
 
-};
+}
 
 /**
  * defaultResponse
