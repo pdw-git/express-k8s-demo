@@ -152,7 +152,7 @@ module.exports.getTest = function(req, res){
             //Test files were not found, log error and return appropriate status in response.
             logger._error({filename: filename, methodname: methodname, message: messages.api.cannot_find_test_files+testFiles});
 
-            responseFunctions.sendJSONresponse(res, filename, methodname, {message: messages.api.cannot_find_test_files+testFiles});
+            responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.error, {message: messages.api.cannot_find_test_files+testFiles});
 
             //res.status(config.status.error);
 

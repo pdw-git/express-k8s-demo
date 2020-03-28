@@ -1,7 +1,8 @@
 'use strict';
 
 const logger = require('../../app_utilities/logger');
-
+const config = require('../../app_config/config');
+;
 /**
  * sendJSONresponse
  * @param err
@@ -37,7 +38,7 @@ module.exports.sendJSONresponse = function(err, res, filename, methodname, statu
  */
 function respond(res, filename, methodname, status, json){
 
-    logger._error({filename: filename, functionName: methodname, message: JSON.stringify(json)});
+    logger._error({filename: filename, functionName: methodname, message: json});
 
     res.status(status);
     res.json(json);
