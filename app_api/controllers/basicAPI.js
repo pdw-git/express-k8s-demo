@@ -145,7 +145,8 @@ module.exports.getTest = function(req, res){
 
                    const methodname = 'mocha.stderr.on(data)';
                    logger._error({filename: filename, methodname: methodname, message: data});
-                   responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.err, {err: err.msg});
+                   //TODO: if the error message is about SSL checking then ignore it and send a failed response for any other error
+                   //responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.err, {err: err.data});
 
                });
 
