@@ -41,22 +41,8 @@ for (let i=0; i < config.tests.length; i++){
 
 }
 
-const configAssertionArray = [
-    {key: 'inProduction', expected: config.inProduction},
-    {key: 'logLevel', expected: config.defaultLogLevel},
-    {key: 'homeDir', expected: process.env.APP_DIR},
-    {key: 'ipAddress', expected: config.ip},
-    {key: 'indexRoute', expected: config.indexRoute},
-    {key: 'apiRoute', expected: config.apiRoute},
-    {key: 'userRoute',expected: config.userRoute},
-    {key: 'port', expected: config.defaultPort}
-];
 
-/*
-const temp = {
-    apiRoute: config.apiRoute,
-    userRoute: config.userRoute,
-    port: config.defaultPort,
+const configExpectedBody = [{
     mongo : {
         name: 'mongodb',
         uri: config.mongo.uri,
@@ -70,10 +56,18 @@ const temp = {
         key: config.encryption.key,
         cert: config.encryption.cert
     },
-    tests: tests
-};
-
- */
+    inProduction: config.inProduction,
+    logLevel: config.defaultLogLevel,
+    homeDir: process.env.APP_DIR,
+    ipAddress: config.ip,
+    indexRoute: config.indexRoute,
+    apiRoute: config.apiRoute,
+    userRoute: config.userRoute,
+    port: config.defaultPort,
+    tests: tests,
+    testResults:[],
+    __v: 0
+}];
 
 
 module.exports.testDefinitions={
@@ -322,7 +316,7 @@ module.exports.testDefinitions={
             result: 'should return good status: '+GOOD_STATUS,
             expectedResultMsg: "Good status returned",
             requestTestObjectName: 'body',
-            body:configAssertionArray,
+            body:configExpectedBody,
             statusCode: GOOD_STATUS,
             requestOptions: {
                 url: apiOptions.server + apiOptions.path + "/config",
@@ -334,7 +328,7 @@ module.exports.testDefinitions={
                 before : ()=>{},
                 after : ()=>{},
                 assertionMsg: 'getConfigTestBody: Assertion failed for test on response object: ',
-                assertion : testFunction.assertionList
+                assertion : testFunction.assertMongoObject
             }
 
         },

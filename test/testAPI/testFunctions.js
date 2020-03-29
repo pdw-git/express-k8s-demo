@@ -7,6 +7,8 @@
 const assert = require('assert');
 const request = require('request');
 
+const skipMongoObjects = ['_id'];
+
 /**
  * Expected format of the test data JSON object with examples
  *
@@ -84,7 +86,12 @@ module.exports.generalAssertion = function(actual, expected, msg){
 
 };
 
-
+/**
+ * assertList
+ * @param actual
+ * @param expected
+ * @param msg
+ */
 module.exports.assertionList = function(actual, expected, msg){
 
    for(let i = 0; i < expected.length; i++){
@@ -95,6 +102,17 @@ module.exports.assertionList = function(actual, expected, msg){
 
 };
 
+/**
+ * assertMongoObject
+ * @param actual
+ * @param expected
+ * @param msg
+ */
+module.exports.assertMongoObject = function (actual, expected, msg){
+
+    iterateObj(actual, expected, skipMongoObjects, msg, simpleAssert);
+
+};
 
 /**
  * testWithAssertion
@@ -129,5 +147,79 @@ function testWithAssertion(testData, testObjectName, done){
         }
 
     });
+
+}
+
+/**
+ * iterateObject
+ *
+ * iterated over an object and
+ * @param obj1
+ * @param obj2
+ * @param skipOjbs
+ * @param msg
+ * @param test
+ */
+function iterateObj(obj1, obj2, skipOjbs, msg, test){
+
+    let keys1 = Object.keys(obj1);
+
+    if (keys1.length>0) {
+
+        for (let keyIndex = 0; keyIndex < keys1.length; keyIndex++) {
+
+            let key1 = keys1[keyIndex];
+
+            if (typeof (obj1[key1]) !== "object") {
+
+                if(!checkIfObjectShouldBeSkipped(skipOjbs, key1)){
+
+                    let expected = obj1[key1];
+                    let actual = obj2[key1];
+
+                    test(expected, actual, msg);
+                }
+
+            } else {
+
+                iterateObj(obj1[key1], obj2[key1], skipOjbs, msg, simpleAssert);
+
+            }
+
+        }
+
+    }
+
+}
+
+
+/**
+ * simpleAssert
+ * @param actual
+ * @param expected
+ * @param msg
+ */
+function simpleAssert(actual, expected, msg){
+
+    assert.deepEqual(actual,expected, msg);
+}
+
+/**
+ * checkIfObjectsShouldBeSkipped
+ * @param objectNames
+ * @param name
+ * @returns {boolean}
+ */
+function checkIfObjectShouldBeSkipped(objectNames, name){
+
+    let returnVal = false;
+
+    for(let index = 0; index < objectNames.length; index++){
+
+        returnVal = (name === objectNames[index]);
+
+    }
+
+    return returnVal;
 
 }

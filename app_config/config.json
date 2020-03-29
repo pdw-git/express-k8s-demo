@@ -19,8 +19,8 @@
   "tests": [
 
     {
-      "area": "testAPI.js",
-      "directory": null
+      "area": "testAPI",
+      "directory": "/test/"
     }
   ],
   "encryption": {
