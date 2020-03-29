@@ -102,6 +102,8 @@ module.exports.getTest = function(req, res){
 
            logger._error({filename: filename, methodname: methodname, message: err.message});
 
+           responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {err: err.msg});
+
        }
        else{
 
@@ -143,6 +145,7 @@ module.exports.getTest = function(req, res){
 
                    const methodname = 'mocha.stderr.on(data)';
                    logger._error({filename: filename, methodname: methodname, message: data});
+                   responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.err, {err: err.msg});
 
                });
 

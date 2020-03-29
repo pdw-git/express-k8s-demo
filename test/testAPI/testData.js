@@ -383,11 +383,11 @@ module.exports.testDefinitions={
                 assertion : testFunction.generalAssertion
             }
 
-        },
+        }
         //============================================================================================
         // DELETE /api/getConfig good status
         //============================================================================================
-        {
+//        {
 //            testName: "deleteGonfigExpectedGoodStatus",
 //            root:"api",
 //            method:"DELETE "+apiOptions.path+"/config",
@@ -434,8 +434,8 @@ module.exports.testDefinitions={
 //                assertionMsg: 'deleteConfigTestBody: Assertion failed for test on response object: ',
 //                assertion : testFunction.generalAssertion
 //            }
-
-        },
+//
+//        },
 
     ]
 

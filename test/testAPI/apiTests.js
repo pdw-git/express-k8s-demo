@@ -8,6 +8,8 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const testData = require('./testData');
 const testFunctions = require('./testFunctions');
 
+!testData ? logger._error({filename: __filename, methodname: 'main', nessage: 'test data is missing'}): null;
+
 //iterate through the array of test definitions: Assumes a JSON array object of test definitions
 //TODO: put in type checking and error handling for case where json object is not formed correctly.
 
