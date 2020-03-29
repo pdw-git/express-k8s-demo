@@ -1,6 +1,0 @@
-For testing of Mongo use a docker image
-
-   docker pull mongo
-   docker run -d -p 27017:27017 mongo
-
-   Connection: mongodb://localhost:27017/<project>

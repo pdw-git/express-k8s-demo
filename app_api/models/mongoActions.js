@@ -21,6 +21,11 @@ module.exports.find = function(findObject, mongoObjectName, callback){
 
 };
 
+/**
+ * create
+ * @param mongoObjectName
+ * @param dataObject
+ */
 module.exports.create = function(mongoObjectName, dataObject){
 
     logger._info({filename:__filename, methodname:'create', message: 'mongoObjectName: '+mongoObjectName});
@@ -47,12 +52,28 @@ module.exports.create = function(mongoObjectName, dataObject){
         });
     }
     else {
+
         logger._error({filename: __filename, methodname:'create', message: messages.mongo.cannot_get_model});
+
     }
 
+};
 
+/**
+ * delete
+ * @param mongoObjectName
+ * @param id
+ * @param callback
+ */
+module.exports.delete = function(mongoObjectName, id, callback){
 
+    let methodname = 'delete';
 
+    console.log('id: '+id);
+
+    getMongoObject(mongoObjectName)?
+        getMongoObject(mongoObjectName).findOneAndDelete({_id: id}, callback): //.exec(callback):
+        logger._error({filename: __filename, methodname: methodname, message: messages.mongo.cannot_get_model});
 
 };
 

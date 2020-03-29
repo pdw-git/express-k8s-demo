@@ -1,9 +1,9 @@
-version: "2"
+version: "2.3"
 services:
   web:
     build: .
     ports:
-    - "3000:3000"
+    - "3443:3443"
     depends_on:
     - mongo
   mongo:

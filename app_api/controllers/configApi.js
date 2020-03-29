@@ -59,11 +59,27 @@ module.exports.deleteConfig = function (req, res) {
     responseFunctions.defaultResponse(req, res, filename, methodname, (req,res)=>{
 
         // noinspection JSUnresolvedVariable
-        const id = req.params.configid;
+        let id = req.params.configid;
 
-        logger._info({filename: __filename, methodname: 'deleteConfig', message: 'id'+id});
+        // noinspection JSUnresolvedVariable
+        mongo.delete(mongo.configProject, id, (err,doc)=>{
 
-        responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: 'deleteConfig'});
+            console.log(doc);
+
+            if(err){
+
+                responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {err: err.msg});
+            }
+            else {
+                // noinspection JSUnresolvedVariable
+                responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, {msg: mongo.configProject + ': deleted doc: ' +id});
+
+            }
+
+        });
+
+        logger._info({filename: __filename, methodname: 'deleteConfig', message: 'id: '+id});
+
 
     });
 

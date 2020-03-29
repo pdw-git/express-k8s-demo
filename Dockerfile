@@ -3,10 +3,9 @@ FROM node:12
 ENV PORT 3443
 ENV NODE_ENV developemnt
 ENV LOGGING_LEVEL debug
-ENV APP_DIR/home/whitep/WebstormProjects/express-api
-
+ENV APP_DIR /usr/src/app
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR $APP_DIR
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json.old AND package-lock.json are copied

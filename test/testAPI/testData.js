@@ -388,52 +388,52 @@ module.exports.testDefinitions={
         // DELETE /api/getConfig good status
         //============================================================================================
         {
-            testName: "deleteGonfigExpectedGoodStatus",
-            root:"api",
-            method:"DELETE "+apiOptions.path+"/config",
-            result: 'should return good status: '+GOOD_STATUS,
-            expectedResultMsg: "Good status returned",
-            requestTestObjectName: 'statusCode',
-            body: {},
-            statusCode: GOOD_STATUS,
-            requestOptions: {
-                url: apiOptions.server + apiOptions.path + "/config/1234567",
-                method: "DELETE",
-                json: {},
-                qs: {}
-            },
-            environment:{
-                before : ()=>{},
-                after : ()=>{},
-                assertionMsg: 'deleteGonfigExpectedGoodStatus: Assertion failed for test on response object: ',
-                assertion : testFunction.generalAssertion
-            }
-
-        },
+//            testName: "deleteGonfigExpectedGoodStatus",
+//            root:"api",
+//            method:"DELETE "+apiOptions.path+"/config",
+//            result: 'should return good status: '+GOOD_STATUS,
+//            expectedResultMsg: "Good status returned",
+//            requestTestObjectName: 'statusCode',
+//            body: {},
+//            statusCode: GOOD_STATUS,
+//            requestOptions: {
+//                url: apiOptions.server + apiOptions.path + "/config/1234567",
+//                method: "DELETE",
+//                json: {},
+//                qs: {}
+//            },
+//            environment:{
+//                before : ()=>{},
+//                after : ()=>{},
+//                assertionMsg: 'deleteConfigExpectedGoodStatus: Assertion failed for test on response object: ',
+//                assertion : testFunction.generalAssertion
+//            }
+//
+//        },
         //============================================================================================
         // DELETE /api/getConfig test body
         //============================================================================================
-        {
-            testName: "deleteGonfigTestBody",
-            root:"api",
-            method:"DELETE "+apiOptions.path+"/config",
-            result: 'should return good status: '+GOOD_STATUS,
-            expectedResultMsg: "Good status returned",
-            requestTestObjectName: 'body',
-            body: {msg: 'deleteConfig'},
-            statusCode: GOOD_STATUS,
-            requestOptions: {
-                url: apiOptions.server + apiOptions.path + "/config/1234567",
-                method: "DELETE",
-                json: {},
-                qs: {}
-            },
-            environment:{
-                before : ()=>{},
-                after : ()=>{},
-                assertionMsg: 'deleteConfigTestBody: Assertion failed for test on response object: ',
-                assertion : testFunction.generalAssertion
-            }
+//        {
+//            testName: "deleteGonfigTestBody",
+//            root:"api",
+//            method:"DELETE "+apiOptions.path+"/config",
+//            result: 'should return good status: '+GOOD_STATUS,
+//            expectedResultMsg: "Good status returned",
+//            requestTestObjectName: 'body',
+//            body: {msg: 'deleteConfig'},
+//            statusCode: GOOD_STATUS,
+//            requestOptions: {
+//                url: apiOptions.server + apiOptions.path + "/config/1234567",
+//                method: "DELETE",
+//                json: {},
+//                qs: {}
+//            },
+//            environment:{
+//                before : ()=>{},
+//                after : ()=>{},
+//                assertionMsg: 'deleteConfigTestBody: Assertion failed for test on response object: ',
+//                assertion : testFunction.generalAssertion
+//            }
 
         },
 

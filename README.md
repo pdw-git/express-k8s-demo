@@ -22,6 +22,8 @@ that can be altered:
 
 >>HTTPS = can be either true or false. If set to true then a key and certificate needs to be defined in the config.json file. 
 
+>>APP_DIR = the directory that the application will run in
+
 Environment variables can be set in a .env file or directly by the user. What is in the .env file will over ride any
 variables set directly by the user in the shell. Either use the .env file or set environment variables direction in the
 shell. It is not recommended to use both mechanism. 
@@ -48,8 +50,22 @@ is another reason why this code is not production ready.
 
 ## Running the application with npm
 
-From within the target directory run:
- 
+The default is to deploy this application with Docker compose but to run this with nodejs locally do the following. 
+
+This application requires a mongo db, to enable the application to run successfully install Mongo locally:
+
+login to docker-hub
+
+docker pull mongo
+
+docker run -d -p 27017: 27017 mongo 
+
+From within the target directory run clone the git repository
+
+Update the .env file with the appropriate environment variables
+
+Change mongo uri to mongo://<ip address> as required for your system. 
+
 npm install 
 
 to pull all the necessary dependencies and start the application.
@@ -70,6 +86,12 @@ On success you will see the following on the console:
 
 >>info: /home/whitep/WebstormProjects/express-api/bin/www-undefined : Certificate provider: SELF SIGNED {"timestamp":"2020-03-26T11:23:43.730Z"}
 
+>>info: /home/whitep/WebstormProjects/express-api/app_api/models/db.js-mongoose.connection.on(connection) : connected to: mongodb://localhost:27017/EXPRESS_API {"timestamp":"2020-03-29T14:17:53.847Z"}
+  
+>>info: /home/whitep/WebstormProjects/express-api/app_api/models/mongoActions.js-create : mongoObjectName: configuration {"timestamp":"2020-03-29T14:17:53.870Z"}
+  
+>>info: /home/whitep/WebstormProjects/express-api/app_api/models/mongoActions.js-create : Successful config initialisation {"timestamp":"2020-03-29T14:17:53.910Z"}
+
 
 NOTE: by default the application starts in debug mode and has verbose tracing enabled
 
@@ -87,6 +109,12 @@ The following RESTful APIs are provided for testing
 
 >>GET api/test - runs tests on the server and reports a result summary
 
+>>GET /api/config - displays the configuration data that has been stored in the persistence lay
+
+>>DELETE /api/config/:configid - deletes the config data in the persistence layer
+
+>>POST /api/config - placeholder for updating the configuration information
+
 There is some basic logging and error handling but this code is not suitable for production use. 
 
 Tests for the API are included and can be executed by typing; 
@@ -102,4 +130,19 @@ deployment patterns.
 
 docker build -t <user>/<image name> .
 
-docker run -p 3443:3443 -d <user>/<image name> .
+docker run -p 3443:3443 -d <user>/<image name> 
+
+## Docker Compose
+
+To make the dependency of installing and running Mongo easier there is a docker compose file that will build the required
+images so they can be run using docker-compose
+
+The composition is defined in docker-compose.yml
+
+Ensure that docker-compose is installed and then run
+
+docker-compose build
+
+docker-compose up
+
+

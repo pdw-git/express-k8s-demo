@@ -11,7 +11,7 @@
   "defaultPort": 3443,
   "ip": "localhost",
   "mongo" : {
-    "uri" : "mongodb://localhost:",
+    "uri" : "mongodb://mongo:",
     "port" : 27017,
     "name": "EXPRESS_API",
     "configObjectName" : "configuration"

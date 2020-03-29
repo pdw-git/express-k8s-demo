@@ -76,6 +76,8 @@ for (let i=0; i < config.tests.length; i++){
 
 //Set up the configuration data that needs be stored in the database.
 
+logger._info({filename: __filename, methodname: 'main', message: ' process.env.AAP_DIR: '+process.env.APP_DIR});
+
 const baselineConfiguration = {
     inProduction: config.inProduction,
     logLevel: config.defaultLogLevel,
