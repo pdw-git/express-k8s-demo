@@ -64,7 +64,7 @@ From within the target directory run clone the git repository
 
 Update the .env file with the appropriate environment variables
 
-Change mongo uri to mongo://<ip address> as required for your system. 
+Change mongo uri to mongo://ipa-ddress: as required for your system. 
 
 npm install 
 
@@ -128,9 +128,9 @@ in the installed source directory.
 A Dockerfile is provided to enable the creation of a container image for testing of docker and kubernetes 
 deployment patterns.
 
-docker build -t <user>/<image name> .
+docker build -t user/image name .
 
-docker run -p 3443:3443 -d <user>/<image name> 
+docker run -p 3443:3443 -d user/image name 
 
 ## Docker Compose
 
