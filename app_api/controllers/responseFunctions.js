@@ -39,8 +39,6 @@ module.exports.sendJSONresponse = function(err, res, filename, methodname, statu
  */
 module.exports.defaultResponse = function(req, res, filename, methodname, plugin ){
 
-    console.log('1. req: '+JSON.stringify(req.params));
-
     logger._debug({filename: filename, methodname: methodname, message: 'started'});
 
     plugin(req, res);
