@@ -14,22 +14,52 @@ There is a default configuration that is described in the file app_config/config
 Elements of this configuration can be over ridden by setting environment variable. The following lists those elements 
 that can be altered:
 
->>PORT - the required ip port to use on the target server
+MANDATORY VARIABLES TO BE SET IN THE SHELL BEFORE TRYING TO DEPLOY OR IN THE DOCKER FILE BEFORE BUILDING
 
->>NODE_ENV - can be either development or production and determines the levels of logging that will be delivered
+>>APP_DIR = root directory for the application
 
->>LOGGING_LEVEL - can be error, warn, info, verbose, debug, silly
+>>NODE_ENV_DEPLOYMENT = can be either npm, docker or docker-compose and determines the environment variable file that will
+used.
 
->>HTTPS = can be either true or false. If set to true then a key and certificate needs to be defined in the config.json file. 
+ENVIRONMENT VARIABLES TO BE SET IN THE /environment/deployment/.env file where deployment is one of npm or docker-compose
 
->>APP_DIR = the directory that the application will run in
+A list of example environment variables is provided here. 
 
-Environment variables can be set in a .env file or directly by the user. What is in the .env file will over ride any
-variables set directly by the user in the shell. Either use the .env file or set environment variables direction in the
-shell. It is not recommended to use both mechanism. 
+PORT=3443
 
-By default encryption is enabled through the configuration JSON file. The HTTPS environment
-variable can be use to toggle between http and https. By default a private key and certificate will need to be provided. 
+MONGO_URI=mongodb://mongo:
+
+MONGO_PORT=27017
+
+MONGO_DB_NAME=EXPRESS_API
+
+LOGGING_LEVEL=debug
+
+NODE_ENV_PRODUCTION=no (can be yes or no)
+
+HTTPS=yes (can be yes or no)
+
+APP_IP=localhost
+
+INDEX_ROUTE=/
+
+API_ROUTE=/api
+
+USER_ROUTE=/users
+
+API_VERSION=1.0.0
+
+CERT_PROVIDER=SELF_SIGNED
+
+KEY_STORE=/bin/keystore/
+
+APP_CERT=cert.pem
+
+APP_KEY=key.pem
+
+Environment variables should be set in  a .env file.
+
+By default encryption is enabled.
 
 A keystore is defined in the configuration file and the a cert.pem and key.pem file need to be added there for the
 application to work. 
@@ -64,7 +94,11 @@ From within the target directory run clone the git repository
 
 Update the .env file with the appropriate environment variables
 
-Change mongo uri to mongo://ipa-ddress: as required for your system. 
+export APP_DIR=/folder/containing/application/source
+export NODE_ENV_DEPLOYMENT=npm
+
+Change MONGO_URI to mongo://ipa-ddress: as required for your system. 
+Change MONGO_PORT as required for your system
 
 npm install 
 
@@ -123,14 +157,6 @@ npm test
 
 in the installed source directory.
 
-## Docker
-
-A Dockerfile is provided to enable the creation of a container image for testing of docker and kubernetes 
-deployment patterns.
-
-docker build -t user/image name .
-
-docker run -p 3443:3443 -d user/image name 
 
 ## Docker Compose
 

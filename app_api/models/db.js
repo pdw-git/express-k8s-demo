@@ -4,9 +4,10 @@
 
 const mongoose = require( 'mongoose' );
 const logger = require('../../app_utilities/logger');
-const config = require('../../app_config/config');
 
-const dbURI_Config = config.mongo.uri+config.mongo.port+'/'+config.mongo.name;
+const dbURI_Config = process.env.MONGO_URI+process.env.MONGO_PORT+'/'+process.env.MONGO_DB_NAME;
+
+logger._info({filename: __filename, methodname: 'main', message: 'MONGO dbURI: '+dbURI_Config});
 
 mongoose.connect(dbURI_Config,{useUnifiedTopology: true, useNewUrlParser: true});
 

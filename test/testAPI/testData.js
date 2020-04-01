@@ -10,12 +10,10 @@
  *
  */
 
-const testFunction = require('./testFunctions.js');
-//const  messages = require('../../app_utilities/messages').messages;
-const config = require('../../app_config/config');
-const dotenv = require('dotenv');
+require('../../app_config/environment').getEnvironmentVariables();
 
-dotenv.config();
+const testFunction = require('./testFunctions.js');
+const config = require('../../app_config/config');
 
 //Acceptable status codes
 const GOOD_STATUS = 200;
@@ -24,13 +22,13 @@ const PAGE_NOT_FOUND = 404;
 
 //server definitions
 
-const port = process.env.PORT || config.defaultPort;  //take environment variable over the default configuration.
+const port = process.env.PORT;  //take environment variable over the default configuration.
 
-const urlType = ((process.env.HTTPS === 'true') || (config.encryption.enabled)) ? 'https://' : 'http://';
+const urlType = (process.env.HTTPS === 'yes') ? 'https://' : 'http://';
 
 const apiOptions = {
-    server: urlType+config.ip+":"+port,
-    path: config.apiRoute
+    server: urlType+process.env.APP_IP+":"+port,
+    path: process.env.API_ROUTE
 };
 
 let tests = [{}];
@@ -40,35 +38,31 @@ for (let i=0; i < config.tests.length; i++){
     tests[i] = {area: config.tests[i].area, directory: process.env.APP_DIR+config.tests[i].directory+config.tests[i].area};
 
 }
-
-
 const configExpectedBody = [{
+    inProduction: process.env.NODE_ENV_PRODUCTION,
+    logLevel: process.env.LOGGING_LEVEL,
+    homeDir: process.env.APP_DIR,
+    ipAddress: process.env.APP_IP,
+    indexRoute: process.env.INDEX_ROUTE,
+    apiRoute: process.env.API_ROUTE,
+    userRoute: process.env.USER_ROUTE,
+    port: process.env.PORT,
     mongo : {
-        name: 'mongodb',
-        uri: config.mongo.uri,
-        port: config.mongo.port,
+        name: process.env.MONGO_DB_NAME,
+        uri: process.env.MONGO_URI,
+        port: process.env.MONGO_PORT,
         configObjectName: config.mongo.configObjectName
     },
     encryption: {
-        enabled: config.encryption.enabled,
-        certProvider: config.encryption.certProvider,
-        store: config.encryption.store,
-        key: config.encryption.key,
-        cert: config.encryption.cert
+        enabled: process.env.HTTPS,
+        certProvider: process.env.CERT_PROVIDER,
+        store: process.env.KEY_STORE,
+        key: process.env.APP_KEY,
+        cert: process.env.APP_CERT
     },
-    inProduction: config.inProduction,
-    logLevel: config.defaultLogLevel,
-    homeDir: process.env.APP_DIR,
-    ipAddress: config.ip,
-    indexRoute: config.indexRoute,
-    apiRoute: config.apiRoute,
-    userRoute: config.userRoute,
-    port: config.defaultPort,
     tests: tests,
-    testResults:[],
     __v: 0
 }];
-
 
 module.exports.testDefinitions={
     assertionTests: [
@@ -221,7 +215,7 @@ module.exports.testDefinitions={
             environment:{
                 before : ()=>{},
                 after : ()=>{},
-                assertionMsg: 'etInvalidAPI_MethodExpectedPageNotFound: Assertion failed for test on response object: ',
+                assertionMsg: 'getInvalidAPI_MethodExpectedPageNotFound: Assertion failed for test on response object: ',
                 assertion : testFunction.generalAssertion
             }
 
@@ -314,7 +308,7 @@ module.exports.testDefinitions={
             root:"api",
             method:"GET "+apiOptions.path+"/config",
             result: 'should return good status: '+GOOD_STATUS,
-            expectedResultMsg: "Good status returned",
+            expectedResultMsg: "Correct body returned",
             requestTestObjectName: 'body',
             body:configExpectedBody,
             statusCode: GOOD_STATUS,

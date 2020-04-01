@@ -3,7 +3,9 @@ logs
 # Node
 
 *.log
-.env
+
+# Environment variables
+# .env
 
 # Runtime data
 pids

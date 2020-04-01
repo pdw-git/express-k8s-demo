@@ -74,7 +74,7 @@ module.exports.getVersion = function(req, res){
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=> {
 
-        responseFunctions.sendJSONresponse( false, res, filename, methodname, config.status.good, {version: config.apiVersion});
+        responseFunctions.sendJSONresponse( false, res, filename, methodname, config.status.good, {version: process.env.API_VERSION});
 
     });
 

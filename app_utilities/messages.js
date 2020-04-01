@@ -28,6 +28,10 @@ const messages = {
         cannot_find_object: 'Cannot find the mongo project: ',
         object_exists: 'mongo object already exists: ',
         cannot_get_model: 'Cannot get a model'
+    },
+    environment:{
+        invalid_deployment: 'Invalid deployment: ',
+        mandatory_environment_variables_missing: 'mandatory environment variables are missing: '
     }
 
 };

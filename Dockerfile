@@ -1,8 +1,6 @@
 FROM node:12
 
-ENV PORT 3443
-ENV NODE_ENV developemnt
-ENV LOGGING_LEVEL debug
+ENV NODE_ENV_DEPLOYMENT docker-compose
 ENV APP_DIR /usr/src/app
 # Create app directory
 WORKDIR $APP_DIR

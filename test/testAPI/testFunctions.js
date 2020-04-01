@@ -177,7 +177,7 @@ function iterateObj(obj1, obj2, skipOjbs, msg, test){
                     let expected = obj1[key1];
                     let actual = obj2[key1];
 
-                    test(expected, actual, msg);
+                    test(expected, actual, msg+': '+key1);
                 }
 
             } else {

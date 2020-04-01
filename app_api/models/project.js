@@ -8,16 +8,13 @@ const config = require('../../app_config/config');
 const logger = require('../../app_utilities/logger');
 const mongo = require('./mongoActions');
 const messages = require('../../app_utilities/messages').messages;
-const dotenv = require('dotenv');
-
-dotenv.config();
 
 //Create a schema for the config data
 
 const configSchema = new mongoose.Schema(
 
     {
-        inProduction: {type: Boolean, required: true},
+        inProduction: {type: String, required: true},
         logLevel: {type: String},
         homeDir: {type: String, required: true},
         ipAddress: {type: String, required: true},
@@ -32,7 +29,7 @@ const configSchema = new mongoose.Schema(
             configObjectName: {type: String, required: true}
         },
         encryption: {
-            enabled: {type: Boolean, required: true},
+            enabled: {type: String, required: true},
             certProvider: {type: String, required: true},
             store: {type: String, required: true},
             key: {type: String, required: true},
@@ -79,26 +76,26 @@ for (let i=0; i < config.tests.length; i++){
 logger._info({filename: __filename, methodname: 'main', message: ' process.env.AAP_DIR: '+process.env.APP_DIR});
 
 const baselineConfiguration = {
-    inProduction: config.inProduction,
-    logLevel: config.defaultLogLevel,
+    inProduction: process.env.NODE_ENV_PRODUCTION,
+    logLevel: process.env.LOGGING_LEVEL,
     homeDir: process.env.APP_DIR,
-    ipAddress: config.ip,
-    indexRoute: config.indexRoute,
-    apiRoute: config.apiRoute,
-    userRoute: config.userRoute,
-    port: config.defaultPort,
+    ipAddress: process.env.APP_IP,
+    indexRoute: process.env.INDEX_ROUTE,
+    apiRoute: process.env.API_ROUTE,
+    userRoute: process.env.USER_ROUTE,
+    port: process.env.PORT,
     mongo : {
-        name: 'mongodb',
-        uri: config.mongo.uri,
-        port: config.mongo.port,
+        name: process.env.MONGO_DB_NAME,
+        uri: process.env.MONGO_URI,
+        port: process.env.MONGO_PORT,
         configObjectName: config.mongo.configObjectName
     },
     encryption: {
-        enabled: config.encryption.enabled,
-        certProvider: config.encryption.certProvider,
-        store: config.encryption.store,
-        key: config.encryption.key,
-        cert: config.encryption.cert
+        enabled: process.env.HTTPS,
+        certProvider: process.env.CERT_PROVIDER,
+        store: process.env.KEY_STORE,
+        key: process.env.APP_KEY,
+        cert: process.env.APP_CERT
     },
     tests: tests
 };

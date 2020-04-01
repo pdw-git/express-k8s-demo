@@ -17,34 +17,21 @@ const messages = require('./app_utilities/messages').messages;
 const applogger = require('./app_utilities/logger');
 const favicon = require('serve-favicon');
 
-
-
+//Configure the database and models
 require('./app_api/models/db');
 
-//if the NODE_ENV environment variable has not been set then use the default configuration to set a production level.
+//if the NODE_ENV_PRODUCTION environment variable has not been set then set it to false
 
-if (process.env.NODE_ENV === undefined){
-
-    if (typeof(config) ==='object') {
-
-        process.env.NODE_ENV = config.inProduction === true ? config.production : config.development;
-
-    }
-
-}
-
+process.env.NODE_ENV_PRODUCTION === undefined ? process.env.NODE_ENV_PRODUCTION = 'no' : null;
 
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-
 const indexRouter = require('./app_server/routes/index');
 const usersRouter = require('./app_server/routes/users');
-
 const apiRouter = require('./app_api/routes/index');
-
 const app = express();
 
 // view engine setup
@@ -58,9 +45,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(config.indexRoute, indexRouter);
-app.use(config.userRoute, usersRouter);
-app.use(config.apiRoute, apiRouter);
+app.use(process.env.INDEX_ROUTE, indexRouter);
+app.use(process.env.USER_ROUTE, usersRouter);
+app.use(process.env.API_ROUTE, apiRouter);
 
 //serve a favicon if requested
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -72,19 +59,9 @@ app.use(function(req, res ) { //removed next to stop warnings
 
     const data = pageConfig.notfound.data;
 
-    data.url = config.appServerAddress + req.url;
+    data.url = process.env.APP_IP + req.url;
 
-    if (process.env.NODE_ENV === 'development') {
-        data.information = err.stack;
-    }
-    else{
-        data.information = messages.page_not_found;
-    }
-
-    applogger._error({filename: "app.js", methodname: data.url, message: err.stack});
-
-    res.status(config.status.notFound);
-    res.render('error', data);
+    defineErrorContent(err, data, messages.page_not_found, config.status.notFound, res);
 
 });
 
@@ -92,26 +69,31 @@ app.use(function(req, res ) { //removed next to stop warnings
 app.use(function(err, req, res) { //removed next to suppress warnings
 
 
-   res.status(err.status || config.status.error);
+    res.status(err.status || config.status.error);
 
-   const data = pageConfig.error.data;
+    const data = pageConfig.error.data;
 
-   data.url = config.appServerAddress + req.url;
+    data.url = process.env.APP_IP + req.url;
 
-   if (process.env.NODE_ENV === 'development') {
-       data.information = err.stack;
-   }
-   else{
-       data.information = messages.production_error;
-   }
-
-   applogger._error({filename: "app.js", methodname: data.url, message: err.stack});
-
-   res.status(config.status.error);
-   res.render(pageConfig.error.view, data);
+    defineErrorContent(err, data, messages.production_error, config.status.error, res);
 
 });
 
+function defineErrorContent(err, data, msg, status, res){
+
+    if (process.env.NODE_ENV_PRODUCTION === 'no') {
+        data.information = err.stack;
+    }
+    else{
+        data.information = msg;
+    }
+
+    applogger._error({filename: "app.js", methodname: data.url, message: err.stack});
+
+    res.status(status);
+    res.render('error', data);
+
+}
 
 
 module.exports = app;

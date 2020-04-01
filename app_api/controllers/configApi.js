@@ -62,9 +62,7 @@ module.exports.deleteConfig = function (req, res) {
         let id = req.params.configid;
 
         // noinspection JSUnresolvedVariable
-        mongo.delete(mongo.configProject, id, (err,doc)=>{
-
-            console.log(doc);
+        mongo.delete(mongo.configProject, id, (err)=>{ //removed doc to supress warning
 
             if(err){
 

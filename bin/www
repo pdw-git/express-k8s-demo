@@ -4,10 +4,14 @@
  * Module dependencies.
  */
 
-const dotenv = require('dotenv');
+/*
+Get the environment variables.
+ */
+require('../app_config/environment').getEnvironmentVariables();
+
 const applogger = require('../app_utilities/logger');
 const messages = require('../app_utilities/messages').messages;
-const appConfig = require('../app_config/config');
+//const appConfig = require('../app_config/config');
 const app = require('../app');
 const debug = require('debug')('express:server');
 const http = require('http');
@@ -15,15 +19,11 @@ const https = require('https');
 const fs = require('fs');
 const filename = __filename;
 const methodName = 'main';
-const config = require('../app_config/config');
 
 let server = null;
 
-//get the environment variables from a .env file in the current directory
-dotenv.config();
-
 //Get port from environment and store in Express.
-const port = normalizePort((process.env.PORT === undefined ? appConfig.defaultPort : process.env.PORT));
+const port = normalizePort((process.env.PORT === undefined ? 3443 : process.env.PORT));
 
 applogger._info({filename: filename, methodname: methodName, message: "Application port: "+port});
 
@@ -31,46 +31,31 @@ app.set('port', port);
 
 //set up the http/https server dependent on values stored in the application configuration file
 
-if (typeof(config) !== 'undefined') {
+!process.env.HTTPS ? process.env.HTTPS = 'no' : process.env.HTTPS = 'yes';
 
-  //if the HTTPS environment variable has been set, check its value and take appropriate action.
-  process.env.HTTPS !== undefined ?
-    process.env.HTTPS === 'true' ? config.encryption.enabled = true :
-        config.encryption.enabled = false: null;
+const options = {
+  key: fs.readFileSync(process.env.APP_DIR+process.env.KEY_STORE+process.env.APP_KEY),
+  cert: fs.readFileSync(process.env.APP_DIR+process.env.KEY_STORE+process.env.APP_CERT)
+};
 
-  const options = {
-    key: fs.readFileSync(__dirname+config.encryption.store+config.encryption.key),
-    cert: fs.readFileSync(__dirname+config.encryption.store+config.encryption.cert)
-  };
+server = process.env.HTTPS === 'yes' ? https.createServer(options, app) : http.createServer(app);
 
-  server = config.encryption.enabled ? https.createServer(options, app) : http.createServer(app);
+process.env.HTTPS === 'yes' ?
+    applogger._info({filename: filename, methodName: methodName, message: messages.https_cert_provider+process.env.CERT_PROVIDER}):null;
 
-  config.encryption.enabled === true ?
-      applogger._info({filename: filename, methodName: methodName, message: messages.https_cert_provider+config.encryption.certProvider}):null;
+if (server !== null) {
 
-  if (server !== null) {
+  //listen on the defined port
+  server.listen(port);
 
-    //listen on the defined port
-    server.listen(port);
-
-    //define the error and listening behaviours
-    server.on('error', onError);
-    server.on('listening', onListening);
-
-  }
-  else {
-    applogger._error({filename: filename, methodName: methodName, message: messages.http_server_creation_error});
-
-  }
+  //define the error and listening behaviours
+  server.on('error', onError);
+  server.on('listening', onListening);
 
 }
 else {
-
-  applogger._error({filename: filename, methodName: methodName, message: messages.config_file_undefined});
-  applogger._info({filename: filename, methodname: methodName, mesasge: messages.http_configuration_error});
-
+  applogger._error({filename: filename, methodName: methodName, message: messages.http_server_creation_error});
 }
-
 
 /**
  * Normalize a port into a number, string, or false.

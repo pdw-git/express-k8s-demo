@@ -10,7 +10,7 @@ const {createLogger, format, transports} = require('winston');
 
 const {combine, timestamp, json, colorize, simple} = format;
 
-const config = require('../app_config/config.json');
+//const config = require('../app_config/config.json');
 
 //set a default logging level
 
@@ -20,20 +20,9 @@ let loggingLevelName = levels[defaultLoggingLevel];
 //if there is no NODE_ENV variable set and there is a configuration object then use the default valued from the config
 //object.
 
-if(process.env.LOGGING_LEVEL === undefined){
-
-    if(typeof(config) === 'object'){
-
-        setLoggingLevels(config.defaultLogLevel, levels.indexOf(config.defaultLogLevel));
-
-    }
-
-}
-else{
-
+process.env.LOGGING_LEVEL === undefined ?
+    setLoggingLevels(loggingLevelName, loggingLevelIndex) :
     setLoggingLevels(process.env.LOGGING_LEVEL,levels.indexOf(process.env.LOGGING_LEVEL));
-
-}
 
 
 const logger = createLogger({
