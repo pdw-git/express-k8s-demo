@@ -15,6 +15,7 @@ const configSchema = new mongoose.Schema(
 
     {
         inProduction: {type: String, required: true},
+        deploymentMethod: {type: String},
         logLevel: {type: String},
         homeDir: {type: String, required: true},
         ipAddress: {type: String, required: true},
@@ -77,6 +78,7 @@ logger._info({filename: __filename, methodname: 'main', message: ' process.env.A
 
 const baselineConfiguration = {
     inProduction: process.env.NODE_ENV_PRODUCTION,
+    deploymentMethod: process.env.NODE_ENV_DEPLOYMENT,
     logLevel: process.env.LOGGING_LEVEL,
     homeDir: process.env.APP_DIR,
     ipAddress: process.env.APP_IP,

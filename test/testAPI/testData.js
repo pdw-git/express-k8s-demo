@@ -40,6 +40,7 @@ for (let i=0; i < config.tests.length; i++){
 }
 const configExpectedBody = [{
     inProduction: process.env.NODE_ENV_PRODUCTION,
+    deploymentMethod: process.env.NODE_ENV_DEPLOYMENT,
     logLevel: process.env.LOGGING_LEVEL,
     homeDir: process.env.APP_DIR,
     ipAddress: process.env.APP_IP,
