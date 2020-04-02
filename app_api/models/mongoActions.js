@@ -69,8 +69,6 @@ module.exports.delete = function(mongoObjectName, id, callback){
 
     let methodname = 'delete';
 
-    console.log('id: '+id);
-
     getMongoObject(mongoObjectName)?
         getMongoObject(mongoObjectName).findOneAndDelete({_id: id}, callback): //.exec(callback):
         logger._error({filename: __filename, methodname: methodname, message: messages.mongo.cannot_get_model});
