@@ -104,7 +104,6 @@ const baselineConfiguration = {
 
 //There should only be one configuration object for the application.
 //Check if one exists, if it does do not update it.
-//TODO: Change this logic so that if one is found the old one is deleted and a new one is created.
 
 mongo.find({}, config.mongo.configObjectName, (err,doc)=>{
     if(err){
@@ -112,9 +111,31 @@ mongo.find({}, config.mongo.configObjectName, (err,doc)=>{
     }
     else {
 
-        doc.length > 0 ?
-            logger._info({filename: __filename, methodname: 'mongo.find', message: messages.mongo.object_exists+config.mongo.configObjectName}) :
-            mongo.create(config.mongo.configObjectName, baselineConfiguration);
+        switch(doc.length){
+
+            //Nothing found: create the config data object
+            case 0 :
+                logger._debug({filename: __filename, methodname: 'mongo.find.create', message: 'create new config object'});
+                mongo.create(config.mongo.configObjectName, baselineConfiguration);
+                logger._info({filename: __filename, methodname: 'mongo.find.create', message: messages.mongo.object_exists+config.mongo.configObjectName});
+                break;
+
+            //There is a config object: delete it and create a new one
+            case 1 :
+                logger._debug({filename: __filename, methodname: 'mongo.find.create', message: 'delete '+doc[0]._id+' create new config object'});
+                mongo.delete(config.mongo.configObjectName, doc[0]._id, (err)=>{
+                    err ?
+                        logger._error({filename: __filename, methodname:'mongo.find.delete.create', message: err.message}) :
+                        mongo.create(config.mongo.configObjectName,baselineConfiguration);
+                });
+                break;
+
+            //if the length is greater than 1 then there is a problem with the database, log an error.
+            default:
+                logger._error({filename: __filename, methodname:'mongo.find', message: message.mongo.invalid_doc_length+doc.length});
+
+        }
+
     }
 
 });

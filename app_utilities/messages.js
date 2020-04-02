@@ -27,7 +27,8 @@ const messages = {
         dummy_error: 'dummy error',
         cannot_find_object: 'Cannot find the mongo project: ',
         object_exists: 'mongo object already exists: ',
-        cannot_get_model: 'Cannot get a model'
+        cannot_get_model: 'Cannot get a model',
+        invalid_doc_length: 'Document does not contain the expected number of elements: doc.length = '
     },
     environment:{
         invalid_deployment: 'Invalid deployment: ',
