@@ -25,37 +25,37 @@ ENVIRONMENT VARIABLES TO BE SET IN THE /environment/deployment/.env file where d
 
 A list of example environment variables is provided here. 
 
-PORT=3443
+PORT=3443 : port to be exposed for the application 
 
-MONGO_URI=mongodb://mongo:
+MONGO_URI=mongodb://mongo: : location of the Mongo db - used for persistance
 
-MONGO_PORT=27017
+MONGO_PORT=27017 : port of the Mongo db
 
-MONGO_DB_NAME=EXPRESS_API
+MONGO_DB_NAME=EXPRESS_API : Name of the collections for this application
 
-LOGGING_LEVEL=debug
+LOGGING_LEVEL=debug : the required logging level for this application [err, warn, info, verbose, debug, silly ]
 
-NODE_ENV_PRODUCTION=no (can be yes or no)
+NODE_ENV_PRODUCTION=no : can be yes or no
 
-HTTPS=yes (can be yes or no)
+HTTPS=yes : can be yes or no
 
-APP_IP=localhost
+APP_IP=localhost : IP address of the applicaiton
 
-INDEX_ROUTE=/
+INDEX_ROUTE=/ : route of served HTML pages
 
-API_ROUTE=/api
+API_ROUTE=/api : route of the api
 
-USER_ROUTE=/users
+USER_ROUTE=/users : route for users
 
-API_VERSION=1.0.0
+API_VERSION=1.0.0 : api version string
 
-CERT_PROVIDER=SELF_SIGNED
+CERT_PROVIDER=SELF_SIGNED : encryption certificate provider
 
-KEY_STORE=/bin/keystore/
+KEY_STORE=/bin/keystore/ : certificate key store
 
-APP_CERT=cert.pem
+APP_CERT=cert.pem : certificate
 
-APP_KEY=key.pem
+APP_KEY=key.pem : encryption key
 
 Environment variables should be set in  a .env file.
 
