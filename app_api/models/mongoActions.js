@@ -75,10 +75,26 @@ module.exports.delete = function(mongoObjectName, id, callback){
 
 };
 
+
+/**
+ * update
+ * @param mongoObjectName
+ * @param id
+ * @param callback
+ */
+module.exports.update = function(mongoObjectName, id, callback){
+
+    let methodname = 'update';
+
+    getMongoObject(mongoObjectName) ?
+        getMongoObject(mongoObjectName).findOne(id, callback) :
+        logger._error({filename: __filename, methodname: methodname, message: messages.mongo.cannot_get_model});
+};
+
 /**
  * getMongoProject
  * @param mongoObjectName
- * @returns {function(Object, *=, *=): void}
+ * @returns {Model}
  */
 function getMongoObject(mongoObjectName){
     return mongoose.model(mongoObjectName);

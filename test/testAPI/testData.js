@@ -18,7 +18,7 @@ const config = require('../../app_config/config');
 //Acceptable status codes
 const GOOD_STATUS = 200;
 const PAGE_NOT_FOUND = 404;
-//const ERROR_STATUS = 500;
+const ERROR_STATUS = 500;
 
 //server definitions
 
@@ -276,7 +276,7 @@ module.exports.testDefinitions={
 
         },
         //============================================================================================
-        // GET /api/getConfig good status
+        // GET /api/config good status
         //============================================================================================
         {
             testName: "getGonfigExpectedGoodStatus",
@@ -302,7 +302,7 @@ module.exports.testDefinitions={
 
         },
         //============================================================================================
-        // GET /api/getConfig Test Body
+        // GET /api/config Test Body
         //============================================================================================
         {
             testName: "getGonfigTestBody",
@@ -328,19 +328,19 @@ module.exports.testDefinitions={
 
         },
         //============================================================================================
-        // POST /api/config good status
+        // POST /api/config/:configid good status
         //============================================================================================
         {
-            testName: "createGonfigExpectedGoodStatus",
+            testName: "updateConfigExpectedErrortatus",
             root:"api",
             method:"POST "+apiOptions.path+"/config",
             result: 'should return good status: '+GOOD_STATUS,
-            expectedResultMsg: "Good status returned",
+            expectedResultMsg: "Error status returned, for bad id",
             requestTestObjectName: 'statusCode',
             body: {},
-            statusCode: GOOD_STATUS,
+            statusCode: ERROR_STATUS,
             requestOptions: {
-                url: apiOptions.server + apiOptions.path + "/config",
+                url: apiOptions.server + apiOptions.path + "/config/1234567",
                 method: "POST",
                 json: {},
                 qs: {}
@@ -348,25 +348,34 @@ module.exports.testDefinitions={
             environment:{
                 before : ()=>{},
                 after : ()=>{},
-                assertionMsg: 'createGonfigExpectedGoodStatus: Assertion failed for test on response object: ',
+                assertionMsg: 'updateConfigExpectedGoodStatus: Assertion failed for test on response object: ',
                 assertion : testFunction.generalAssertion
             }
 
         },
         //============================================================================================
-        // POST /api/config test body
+        // POST /api/config/:configid test body
         //============================================================================================
         {
-            testName: "createGonfigTestBody",
+            testName: "updateConfigTestBodyExpectErrorStatus",
             root:"api",
             method:"POST "+apiOptions.path+"/config",
             result: 'should return good status: '+GOOD_STATUS,
-            expectedResultMsg: "Good status returned",
+            expectedResultMsg: "Error status returned for bad id ",
             requestTestObjectName: 'body',
-            body: {msg: 'updateConfig'},
-            statusCode: GOOD_STATUS,
+            body: {
+                "err": {
+                    "message": "Cast to ObjectId failed for value \"1234567\" at path \"_id\" for model \"configuration\"",
+                    "name": "CastError",
+                    "stringValue": "\"1234567\"",
+                    "value": "1234567",
+                    "path": "_id",
+                    "reason": {}
+                }
+            },
+            statusCode: ERROR_STATUS,
             requestOptions: {
-                url: apiOptions.server + apiOptions.path + "/config",
+                url: apiOptions.server + apiOptions.path + "/config/1234567",
                 method: "POST",
                 json: {},
                 qs: {}
@@ -374,13 +383,13 @@ module.exports.testDefinitions={
             environment:{
                 before : ()=>{},
                 after : ()=>{},
-                assertionMsg: 'createGonfigTestBody: Assertion failed for test on response object: ',
+                assertionMsg: 'updateConfigTestBodyExpectErrorStatus: Assertion failed for test on response object: ',
                 assertion : testFunction.generalAssertion
             }
 
         }
         //============================================================================================
-        // DELETE /api/getConfig good status
+        // DELETE /api/config good status
         //============================================================================================
 //        {
 //            testName: "deleteGonfigExpectedGoodStatus",
@@ -406,7 +415,7 @@ module.exports.testDefinitions={
 //
 //        },
         //============================================================================================
-        // DELETE /api/getConfig test body
+        // DELETE /api/config test body
         //============================================================================================
 //        {
 //            testName: "deleteGonfigTestBody",

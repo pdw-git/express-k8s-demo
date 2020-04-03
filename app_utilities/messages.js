@@ -18,6 +18,7 @@ const messages = {
     http_configuration_error: 'Error configuring the http/https server',
     https_cert_provider: 'Certificate provider: ',
     http_server_creation_error: 'Error creating server [http/https]',
+    req_params_not_found: 'request paramaters not found: ',
     api:{
         good_status: 'Sending good status',
         cannot_find_test_files: 'Cannot find the test files ',
@@ -33,6 +34,9 @@ const messages = {
     environment:{
         invalid_deployment: 'Invalid deployment: ',
         mandatory_environment_variables_missing: 'mandatory environment variables are missing: '
+    },
+    config:{
+        config_updated: "Config was updated"
     }
 
 };

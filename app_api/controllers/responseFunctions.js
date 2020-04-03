@@ -16,9 +16,11 @@ module.exports.sendJSONresponse = function(err, res, filename, methodname, statu
 
     if (err) {
 
-        logger._error({filename: filename, methodname: methodname, message: 'msg: '+err.msg});
+        let error = err.msg ? err.msg+ ': '+err : err;
 
-        respond(res, filename, methodname, config.status.error,  {msg: err.msg, err: err });
+        logger._error({filename: filename, methodname: methodname, message: 'msg: '+error});
+
+        respond(res, filename, methodname, config.status.error,  {err: error });
     }
     else {
 

@@ -3,6 +3,7 @@
 const logger = require('../../app_utilities/logger');
 const config = require('../../app_config/config');
 const mongo = require('../models/mongoActions');
+const messages = require('../../app_utilities/messages').messages;
 const responseFunctions = require('./responseFunctions');
 const filename = __filename;
 
@@ -18,13 +19,64 @@ module.exports.updateConfig = function(req,res){
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=> {
 
-        logger._info({filename: filename, methodname: methodname, message: 'do stuff'});
+        // noinspection JSUnresolvedVariable
+        if(!req.params.configid){
 
-        responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: 'updateConfig'});
+            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.req_params_not_found+'req.params.config'});
+
+        }
+        else {
+             // noinspection JSUnresolvedVariable
+            mongo.update(config.mongo.configObjectName,{_id: req.params.configid}, (err, doc) => {
+
+                if (err) {
+
+                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: err.msg});
+
+                } else {
+
+                    if (typeof (req.body) === "object"){
+
+                        updateConfig(doc, req.body);
+
+                        doc.save().then((product)=>{
+
+                            logger._debug({filename: __filename, methodname: methodname, message: product});
+
+                            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, {msg: messages.config.config_updated});
+
+                        }).catch((reason)=>{
+
+                            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: 'error saving document: '+reason });
+
+                        });
+
+                    }
+                    else{
+
+                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: 'req.body.doc is not an Array' });
+                    }
+
+                }
+
+            });
+
+        }
 
     });
 
 };
+
+/**
+ * updateConfig
+ * @param doc
+ * @param body
+ */
+function updateConfig(doc, body){
+
+    doc.logLevel = body.logLevel ? body.logLevel : 'undefined';
+
+}
 
 /**
  * getConfig
