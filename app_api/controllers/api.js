@@ -9,7 +9,7 @@ const configAPI = require('./configApi');
 const basicAPI = require('./basicAPI');
 
 module.exports.deleteConfig = configAPI.deleteConfig;
-module.exports.updateConfig = configAPI.updateConfig;
+module.exports.postConfig = configAPI.postConfig;
 module.exports.getConfig = configAPI.getConfig;
 module.exports.getInfo = basicAPI.getInfo;
 module.exports.getVersion = basicAPI.getVersion;

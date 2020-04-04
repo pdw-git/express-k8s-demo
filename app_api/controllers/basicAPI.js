@@ -121,9 +121,7 @@ module.exports.getTest = function(req, res){
                //Respond to the completion of the process
                mocha.stdout.on( 'data', data => {
 
-                   res.status(config.status.good);
-
-                   const parsedData = JSON.parse(data);
+                   let parsedData = JSON.parse(data);
 
                    res.json({
                        stats: {
@@ -134,10 +132,14 @@ module.exports.getTest = function(req, res){
                            failures: parsedData.stats.failures,
                            start: parsedData.stats.start,
                            end: parsedData.stats.end,
-                           duration:parsedData.stats.duration,
+                           duration: parsedData.stats.duration,
                            errors: getErrors(parsedData)
                        }
+
                    });
+
+                   res.status(config.status.good);
+
                });
 
                //Handle errors from Mocah process

@@ -4,12 +4,19 @@
 
 const mongoose = require( 'mongoose' );
 const logger = require('../../app_utilities/logger');
+const messages = require('../../app_utilities/messages').messages;
 
 const dbURI_Config = process.env.MONGO_URI+process.env.MONGO_PORT+'/'+process.env.MONGO_DB_NAME;
 
 logger._info({filename: __filename, methodname: 'main', message: 'MONGO dbURI: '+dbURI_Config});
 
-mongoose.connect(dbURI_Config,{useUnifiedTopology: true, useNewUrlParser: true});
+try {
+    mongoose.connect(dbURI_Config, {useUnifiedTopology: true, useNewUrlParser: true});
+}
+catch(err){
+    logger._error({filename: __filename, methodname: 'main', message: messages.mongo.connection_error+dbURI_Config });
+    process.exit(1);
+}
 
 mongoose.connection.on('connected', function (){
     logger._info({filename: __filename, methodname: 'mongoose.connection.on(connection)', message: 'connected to: '+dbURI_Config });

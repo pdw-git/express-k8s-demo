@@ -1,0 +1,19 @@
+'use strict';
+
+module.exports.GET = 'GET';
+module.exports.POST = 'POST';
+module.exports.GOOD_STATUS = 200;
+module.exports.PAGE_NOT_FOUND = 404;
+module.exports.ERROR_STATUS = 500;
+
+//server definitions
+
+module.exports.port = process.env.PORT;  //take environment variable over the default configuration.
+
+const urlType = (process.env.HTTPS === 'yes') ? 'https://' : 'http://';
+
+module.exports.apiOptions = {
+    server: urlType+process.env.APP_IP+":"+this.port,
+    path: process.env.API_ROUTE,
+    root: process.env.API_ROUTE
+};

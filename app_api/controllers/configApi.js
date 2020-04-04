@@ -9,13 +9,13 @@ const filename = __filename;
 
 
 /**
- * updateConfig
+ * postConfig
  * @param req
  * @param res
  */
-module.exports.updateConfig = function(req,res){
+module.exports.postConfig = function(req,res){
 
-    const methodname = 'updateConfig';
+    const methodname = 'postConfig';
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=> {
 
@@ -68,13 +68,22 @@ module.exports.updateConfig = function(req,res){
 };
 
 /**
- * updateConfig
+ * postConfig
  * @param doc
  * @param body
  */
 function updateConfig(doc, body){
 
-    doc.logLevel = body.logLevel ? body.logLevel : 'undefined';
+    let methodname = 'postConfig';
+
+    if (doc.logLevel) {
+
+        doc.logLevel = body.logLevel ? body.logLevel : 'undefined';
+
+    }
+    else {
+        logger._error({filename: __filename, methodname: methodname, message: 'doc.loglevel not defined'});
+    }
 
 }
 

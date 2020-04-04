@@ -13,7 +13,11 @@
     "visibility" : "private"
   },
   "api":  {
-    "info" : "GET application information",
-    "status" : "GET application status"
+    "getInfo" : "GET application information",
+    "getStatus" : "GET application status",
+    "getVersion" :  "GET API version",
+    "getConfig" : "GET config Data",
+    "postConfig" : "POST config data update",
+    "deleteConfig": "DELETE config data"
   }
 }

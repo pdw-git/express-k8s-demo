@@ -14,7 +14,7 @@ router.get('/info', controller.getInfo);
 router.get('/version', controller.getVersion);
 router.get('/test', controller.getTest);
 router.delete('/config/:configid',controller.deleteConfig);
-router.post('/config/:configid', controller.updateConfig);
+router.post('/config/:configid', controller.postConfig);
 router.get('/config', controller.getConfig);
 
 
