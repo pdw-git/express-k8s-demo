@@ -55,7 +55,9 @@ module.exports.getInfo = function(req, res){
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=> {
 
-        responseFunctions.sendJSONresponse( false, res, filename, methodname, config.status.good, info);
+        const err = null;
+
+        responseFunctions.sendJSONresponse( err, res, filename, methodname, config.status.good, info);
 
     });
 
@@ -75,7 +77,9 @@ module.exports.getVersion = function(req, res){
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=> {
 
-        responseFunctions.sendJSONresponse( false, res, filename, methodname, config.status.good, {version: process.env.API_VERSION});
+        const err = null;
+
+        responseFunctions.sendJSONresponse( err, res, filename, methodname, config.status.good, {version: process.env.API_VERSION});
 
     });
 
@@ -101,9 +105,9 @@ module.exports.getTest = function(req, res){
 
        if(err){
 
-           logger._error({filename: filename, methodname: methodname, message: err.message});
+           logger._error({filename: filename, methodname: methodname, message: err});
 
-           responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {err: err.msg});
+           responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg:message.mongo.cannot_find_object+mongo.configProject });
 
        }
        else{
@@ -114,6 +118,7 @@ module.exports.getTest = function(req, res){
 
            if(fs.existsSync(testFiles)){
 
+               // noinspection JSUnresolvedVariable
                const testScript = doc[0].homeDir+config.tests[0].testScript;
                const executionDIR = doc[0].homeDir;
                const deployment = doc[0].deploymentMethod;
@@ -131,37 +136,33 @@ module.exports.getTest = function(req, res){
                    mocha.on('close', (code) => {
                        const methodname = 'mocha.on(close)';
 
-                       const rawData = fs.readFileSync(doc[0].homeDir + '/' + config.tests[0].results);
-                       const parsedData = JSON.parse(rawData);
 
+                           fs.readFile(doc[0].homeDir + '/' + config.tests[0].results, (err, data)=>{
 
-                       res.json({
-                           stats: {
-                               suites: parsedData.stats.suites,
-                               tests: parsedData.stats.tests,
-                               passes: parsedData.stats.passes,
-                               pending: parsedData.stats.pending,
-                               failures: parsedData.stats.failures,
-                               start: parsedData.stats.start,
-                               end: parsedData.stats.end,
-                               duration: parsedData.stats.duration,
-                               errors: getErrors(parsedData)
+                           if(err){
+
+                               responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.cannot_parse_JSON_file});
+
+                           }
+                           else{
+
+                               const parsedData = JSON.parse(data);
+
+                               responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, getTestResults(parsedData));
+
+                               logger._info({filename: filename, methodname: methodname, message: messages.basic.child_process_completed+code});
+
                            }
 
                        });
 
-                       res.status(config.status.good);
-
-                       logger._info({
-                           filename: filename,
-                           methodname: methodname,
-                           message: `child process exited with code ${code}`
-                       });
-
                    });
+
                }
                catch(err){
-                  responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error,{msg: err});
+
+                  responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error,{msg: messages.basic.child_process_error+ err});
+
                }
 
           }
@@ -181,6 +182,45 @@ module.exports.getTest = function(req, res){
     });
 
 };
+
+/**
+ * getTestResults
+ * @param results
+ * @returns {{}}
+ */
+function getTestResults(results){
+
+    const methodname = 'getTestResults';
+
+    logger._debug({filename: filename, methodname: methodname, message: 'started'});
+
+    let returnVal = {msg: messages.api.object_undefined+': results'};
+
+    if(typeof(results) !== 'object'){
+        logger._error({filename: __filename, methodName: methodname, message: returnVal.msg});
+    }
+    else{
+
+        returnVal = {
+            stats: {
+                suites: results.stats.suites,
+                tests: results.stats.tests,
+                passes: results.stats.passes,
+                pending: results.stats.pending,
+                failures: results.stats.failures,
+                start: results.stats.start,
+                end: results.stats.end,
+                duration: results.stats.duration,
+                errors: getErrors(results)
+            }
+
+        };
+
+    }
+
+    return returnVal
+
+}
 
 /**
  * getErrors
@@ -203,7 +243,11 @@ function getErrors(jsonData){
 
             for(let i = 0; i < jsonData.failures.length; i++){
 
-                errors[i]={message: jsonData.failures[i].err.message};
+                errors[i]={
+                    message: jsonData.failures[i].err.message,
+                    actual: jsonData.failures[i].err.actual,
+                    expected: jsonData.failures[i].err.expected
+                };
 
             }
 

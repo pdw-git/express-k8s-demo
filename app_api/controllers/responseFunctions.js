@@ -16,15 +16,21 @@ module.exports.sendJSONresponse = function(err, res, filename, methodname, statu
 
     if (err) {
 
-        let error = err.msg ? err.msg+ ': '+err : err;
+        let error = {
+            msg: jsonContent.msg ? jsonContent.msg : 'no additional info',
+            err: err.msg ? err.msg+ ': '+err : err
+        };
 
         logger._error({filename: filename, methodname: methodname, message: 'msg: '+error});
 
-        respond(res, filename, methodname, config.status.error,  {err: error });
+        respond(res, filename, methodname, config.status.error,  error);
+
     }
     else {
 
-        respond(res, filename, methodname, status,  jsonContent);
+        (jsonContent) ?
+            respond(res, filename, methodname, status, jsonContent) :
+            respond(res,filename,methodname,status, {msg: messages.no_res_json});
 
     }
 

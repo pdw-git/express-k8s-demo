@@ -22,7 +22,7 @@ module.exports.postConfig = function(req,res){
         // noinspection JSUnresolvedVariable
         if(!req.params.configid){
 
-            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.req_params_not_found+'req.params.config'});
+            responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.error, {msg: messages.req_params_not_found+'req.params.config'});
 
         }
         else {
@@ -39,22 +39,22 @@ module.exports.postConfig = function(req,res){
 
                         updateConfig(doc, req.body);
 
-                        doc.save().then((product)=>{
+                        doc.save().then(()=>{ //removed product to remove warning
 
-                            logger._debug({filename: __filename, methodname: methodname, message: product});
+                            responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.config_updated});
 
-                            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, {msg: messages.config.config_updated});
+                            logger._info({filename: __filename, methodname: methodname, message: messages.config.config_updated});
 
                         }).catch((reason)=>{
 
-                            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: 'error saving document: '+reason });
+                            responseFunctions.sendJSONresponse(reason, res, filename, methodname, config.status.error, {msg: messages.config.config_was_not_updated+reason });
 
                         });
 
                     }
                     else{
 
-                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: 'req.body.doc is not an Array' });
+                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.api.object_undefined });
                     }
 
                 }
@@ -132,6 +132,8 @@ module.exports.deleteConfig = function (req, res) {
             else {
                 // noinspection JSUnresolvedVariable
                 responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, {msg: mongo.configProject + ': deleted doc: ' +id});
+
+                logger._info({filename: __filename, methodname: methodname, message: mongo.configProject + ': deleted doc: ' +id});
 
             }
 
