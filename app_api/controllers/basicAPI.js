@@ -11,6 +11,7 @@ const fs = require('fs');
 const filename = __filename;
 const responseFunctions = require('./responseFunctions');
 const mongo = require('../models/mongoActions');
+const { exec } = require('child_process');
 
 
 /**
@@ -113,53 +114,57 @@ module.exports.getTest = function(req, res){
 
            if(fs.existsSync(testFiles)){
 
-               //Spawn a process for Mocha
-               const { spawn } = require( 'child_process' );
+               const testScript = doc[0].homeDir+config.tests[0].testScript;
+               const executionDIR = doc[0].homeDir;
+               const deployment = doc[0].deploymentMethod;
+               const results = doc[0].homeDir+config.tests[0].results;
+               const command = testScript + ' ' + executionDIR + ' ' + deployment + ' ' + testFiles + ' ' + results;
 
-               const mocha = spawn( 'mocha', [ '--reporter', 'JSON', testFiles ] );
+               try {
 
-               //Respond to the completion of the process
-               mocha.stdout.on( 'data', data => {
-
-                   let parsedData = JSON.parse(data);
-
-                   res.json({
-                       stats: {
-                           suites: parsedData.stats.suites,
-                           tests: parsedData.stats.tests,
-                           passes: parsedData.stats.passes,
-                           pending: parsedData.stats.pending,
-                           failures: parsedData.stats.failures,
-                           start: parsedData.stats.start,
-                           end: parsedData.stats.end,
-                           duration: parsedData.stats.duration,
-                           errors: getErrors(parsedData)
-                       }
-
+                   //execute the shell script that will run the mocha tests
+                   const mocha = exec(command, ()=>{
+                       logger._info({filename: __filename, methodname: methodname, messages: command});
                    });
 
-                   res.status(config.status.good);
+                   //Handle the close event of Mocha
+                   mocha.on('close', (code) => {
+                       const methodname = 'mocha.on(close)';
 
-               });
+                       const rawData = fs.readFileSync(doc[0].homeDir + '/' + config.tests[0].results);
+                       const parsedData = JSON.parse(rawData);
 
-               //Handle errors from Mocah process
-               mocha.stderr.on( 'data', (data)=> {
 
-                   const methodname = 'mocha.stderr.on(data)';
-                   logger._error({filename: filename, methodname: methodname, message: data});
-                   //TODO: if the error message is about SSL checking then ignore it and send a failed response for any other error
-                   //responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.err, {err: err.data});
+                       res.json({
+                           stats: {
+                               suites: parsedData.stats.suites,
+                               tests: parsedData.stats.tests,
+                               passes: parsedData.stats.passes,
+                               pending: parsedData.stats.pending,
+                               failures: parsedData.stats.failures,
+                               start: parsedData.stats.start,
+                               end: parsedData.stats.end,
+                               duration: parsedData.stats.duration,
+                               errors: getErrors(parsedData)
+                           }
 
-               });
+                       });
 
-               //Handle the close event of Mocha
-               mocha.on( 'close', code => {
-                   const methodname = 'mocha.on(close)';
-                   logger._info({filename: filename, methodname: methodname, message: `child process exited with code ${code}` });
+                       res.status(config.status.good);
 
-               });
+                       logger._info({
+                           filename: filename,
+                           methodname: methodname,
+                           message: `child process exited with code ${code}`
+                       });
 
-           }
+                   });
+               }
+               catch(err){
+                  responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error,{msg: err});
+               }
+
+          }
 
            else {
                //Test files were not found, log error and return appropriate status in response.

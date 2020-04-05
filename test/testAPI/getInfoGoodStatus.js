@@ -77,6 +77,7 @@ module.exports.getInfoGoodStatus={
 
         },
         after : (err, testData, done)=>{err ? done(err) : done();},
+
         assertionMsg: ': Assertion failed for test on : ',
         statusAssertion : testFunction.generalAssertion,
         bodyAssertion: testFunction.generalAssertion,

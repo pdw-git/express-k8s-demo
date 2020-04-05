@@ -3,9 +3,12 @@
     "configObjectName" : "configuration"
   },
   "tests": [
+
     {
-      "area": "testAPI",
-      "directory": "/test/"
+      "testScript": "/bin/scripts/mochaTest.sh",
+      "area": "/testAPI",
+      "directory": "/test",
+      "results": "/test/testAPI/results/mochaTestResults.json"
     }
   ],
   "status": {

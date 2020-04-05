@@ -100,9 +100,15 @@ module.exports.postConfigConfigidValidUpdateSuccess={
                                 expected: testData.requestOptions.postConfig.json.logLevel, test: 'database updated'
                             });
 
-                            testFunction.doAssertions(testData);
+                            try{
+                                testFunction.doAssertions(testData);
+                                testData.tests.after(err, testData, done);
+                            }
+                            catch(err){
+                                testData.tests.after(err, testData, done);
+                            }
 
-                            testData.tests.after(testData, done);
+
 
                         }
 
@@ -113,7 +119,7 @@ module.exports.postConfigConfigidValidUpdateSuccess={
             });
 
         },
-        after : (testData, done)=>{
+        after : (error, testData, done)=>{
 
             testData.requestOptions.postConfig.json = {logLevel: testData.setupData.data.logLevel};
 
@@ -121,7 +127,7 @@ module.exports.postConfigConfigidValidUpdateSuccess={
 
                 (err) ? testFunction.handleError(err):{};
 
-                done();
+                error ? done(error): done();
 
             });
 
