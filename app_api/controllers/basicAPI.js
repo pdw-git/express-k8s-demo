@@ -124,8 +124,12 @@ module.exports.getTest = function(req, res){
                try {
 
                    //execute the shell script that will run the mocha tests
-                   const mocha = exec(command, ()=>{
-                       logger._info({filename: __filename, methodname: methodname, messages: command});
+                   const mocha = exec(command, (err, stdout, stderr)=>{
+                       let methodname = 'exec';
+                       console.log("ERROR: "+err);
+                       console.log("STODOUT: "+stdout);
+                       console.log("STDERR: "+stderr);
+                       logger._info({filename: __filename, methodname: methodname, messages: stdout});
                    });
 
                    //Handle the close event of Mocha
@@ -236,6 +240,7 @@ function getErrors(jsonData){
 
             for(let i = 0; i < jsonData.failures.length; i++){
 
+                // noinspection JSUnresolvedVariable
                 errors[i]={
                     message: jsonData.failures[i].err.message,
                     actual: jsonData.failures[i].err.actual,
