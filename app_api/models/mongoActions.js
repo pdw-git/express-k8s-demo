@@ -39,6 +39,7 @@ module.exports.create = function(mongoObjectName, dataObject){
 
         let mo = new mongoObject(dataObject);
 
+        // noinspection JSIgnoredPromiseFromCall
         mo.save((err)=>{
             err ?
                 logger._error({filename: __filename, methodname:methodname, message: err.message}):
