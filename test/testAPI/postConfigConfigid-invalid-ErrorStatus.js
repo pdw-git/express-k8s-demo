@@ -7,6 +7,7 @@ const testFunction = require('../utilities/testFunctions.js');
 const serverOpts = require('./apiServerDefinitions');
 
 const apiCall = '/config/';
+const testName = 'postConfig-invalidConfigId';
 
 const expectedBody = {
     msg: "no additional info",
@@ -26,7 +27,7 @@ const expectedBody = {
 
 module.exports.postConfigConfigidInvalidErrorStatus={
 
-    testName: "postConfig-invalidConfigId",
+    testName: testName,
     root:serverOpts.apiOptions.root,
     method:serverOpts.POST+' '+serverOpts.apiOptions.path+'/config/:configid',
     result: 'should return error status: '+serverOpts.ERROR_STATUS+' and an error message ',
@@ -64,7 +65,7 @@ module.exports.postConfigConfigidInvalidErrorStatus={
 
         },
         after : (err, testData, done)=>{err ? done(err) : done();},
-        assertionMsg: this.testName+': Assertion failed for test on : ',
+        assertionMsg: testName+': Assertion failed for test on : ',
         statusAssertion : testFunction.generalAssertion,
         bodyAssertion: testFunction.generalAssertion
     }

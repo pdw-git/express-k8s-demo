@@ -7,6 +7,8 @@ const testFunction = require('../utilities/testFunctions.js');
 const serverOpts = require('./apiServerDefinitions');
 
 const apiCall = '/status';
+const testName = 'getStatusGoodStatus';
+
 const expectedBody = {
     "status": 200,
     "msg": "Sending good status"
@@ -18,7 +20,7 @@ const expectedBody = {
 
 module.exports.getStatusGoodStatus={
 
-    testName: "getStatusGoodStatus",
+    testName: testName,
     root:serverOpts.apiOptions.root,
     method:serverOpts.GET+' '+serverOpts.apiOptions.path+apiCall,
     result: 'should return good status: '+serverOpts.GOOD_STATUS+' and an valid response body ',
@@ -56,7 +58,7 @@ module.exports.getStatusGoodStatus={
 
         },
         after : (err, testData, done)=>{err ? done(err) : done();},
-        assertionMsg: this.testName+': Assertion failed for test on : ',
+        assertionMsg: testName+': Assertion failed for test on : ',
         statusAssertion : testFunction.generalAssertion,
         bodyAssertion: testFunction.generalAssertion,
 

@@ -9,6 +9,7 @@ const request = require('request');
 
 
 const apiCall = '/invalidRoute';
+const testName = 'getInvalidAPI_PageNotFound';
 
 const expectedBody = {
 };
@@ -69,7 +70,7 @@ module.exports.getInvalidAPI_PageNotFound={
         },
         after : (err, testData, done)=>{err ? done(err) : done();},
 
-        assertionMsg: ': Assertion failed for test on : ',
+        assertionMsg: testName+': Assertion failed for test on : ',
         statusAssertion : testFunction.generalAssertion,
         bodyAssertion: testFunction.generalAssertion,
 

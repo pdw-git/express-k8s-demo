@@ -9,6 +9,7 @@ const serverOpts = require('./apiServerDefinitions');
 const messages = require('../../app_utilities/messages').messages;
 
 const apiCall = '/config/';
+const testName = 'postConfigConfigValidUpdateSuccess';
 
 //============================================================================================
 // POST /api/config/:configid good status
@@ -16,7 +17,7 @@ const apiCall = '/config/';
 
 module.exports.postConfigConfigidValidUpdateSuccess={
 
-    testName: 'postConfigConfigValidUpdateSuccess',
+    testName: testName,
     root:serverOpts.apiOptions.root,
     method:serverOpts.POST+' '+serverOpts.apiOptions.path+apiCall+':configid',
     result: 'should return good status: '+serverOpts.GOOD_STATUS+' and configuration should be updated',
@@ -132,7 +133,7 @@ module.exports.postConfigConfigidValidUpdateSuccess={
             });
 
         },
-        assertionMsg: this.testName+': Assertion failed for test on response object: ',
+        assertionMsg: testName+': Assertion failed for test on response object: ',
         statusAssertion : testFunction.generalAssertion,
         bodyAssertion: testFunction.generalAssertion,
     }

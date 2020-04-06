@@ -8,6 +8,7 @@ const serverOpts = require('./apiServerDefinitions');
 
 
 const apiCall = '/info';
+const testName = 'getInfoGoodStatus';
 
 const expectedBody = {
     author : "Peter Whitehead",
@@ -39,7 +40,7 @@ const expectedBody = {
 
 module.exports.getInfoGoodStatus={
 
-    testName: "getInfoGoodStatus",
+    testName: testName,
     root:serverOpts.apiOptions.root,
     method:serverOpts.GET+' '+serverOpts.apiOptions.path+apiCall,
     result: 'should return good status: '+serverOpts.GOOD_STATUS+' and an valid response body ',
@@ -78,7 +79,7 @@ module.exports.getInfoGoodStatus={
         },
         after : (err, testData, done)=>{err ? done(err) : done();},
 
-        assertionMsg: ': Assertion failed for test on : ',
+        assertionMsg: testName+': Assertion failed for test on : ',
         statusAssertion : testFunction.generalAssertion,
         bodyAssertion: testFunction.generalAssertion,
 

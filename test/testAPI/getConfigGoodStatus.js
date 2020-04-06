@@ -18,6 +18,7 @@ for (let i=0; i < config.tests.length; i++){
 }
 
 const apiCall = '/config';
+const testName = 'getCongfigGoodStatus';
 
 //set up the expected body object
 
@@ -54,7 +55,7 @@ const expectedBody = [{
 
 module.exports.getConfigGoodStatus={
 
-    testName: "getCongfigGoodStatus",
+    testName: testName,
     root:serverOpts.apiOptions.root,
     method:serverOpts.GET+' '+serverOpts.apiOptions.path+apiCall,
     result: 'should return good status: '+serverOpts.GOOD_STATUS+' and an valid response body ',
@@ -92,7 +93,7 @@ module.exports.getConfigGoodStatus={
 
         },
         after : (err, testData, done)=>{err ? done(err) : done();},
-        assertionMsg: this.testName+': Assertion failed for test on : ',
+        assertionMsg: testName+': Assertion failed for test on : ',
         statusAssertion : testFunction.generalAssertion,
         bodyAssertion: testFunction.assertMongoObject
 
