@@ -125,11 +125,13 @@ module.exports.getTest = function(req, res){
 
                    //execute the shell script that will run the mocha tests
                    const mocha = exec(command, (err, stdout, stderr)=>{
+
                        let methodname = 'exec';
-                       console.log("ERROR: "+err);
-                       console.log("STODOUT: "+stdout);
-                       console.log("STDERR: "+stderr);
-                       logger._info({filename: __filename, methodname: methodname, messages: stdout});
+
+                       let message = 'ERROR: '+err+': STDERR: '+stderr+': STDOUT : '+stdout;
+
+                       logger._info({filename: __filename, methodname: methodname, messages: message});
+
                    });
 
                    //Handle the close event of Mocha
@@ -146,6 +148,7 @@ module.exports.getTest = function(req, res){
                            }
                            else{
 
+                               // noinspection JSCheckFunctionSignatures
                                const parsedData = JSON.parse(data);
 
                                responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, getTestResults(parsedData));
