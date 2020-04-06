@@ -10,8 +10,6 @@ const {createLogger, format, transports} = require('winston');
 
 const {combine, timestamp, json, colorize, simple} = format;
 
-//const config = require('../app_config/config.json');
-
 //set a default logging level
 
 let loggingLevelIndex = defaultLoggingLevel;

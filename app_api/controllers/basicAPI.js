@@ -133,7 +133,7 @@ module.exports.getTest = function(req, res){
                        const methodname = 'mocha.on(close)';
 
                            //do an async read of the results file and then respond
-                           fs.readFile(doc[0].homeDir + '/' + config.tests[0].results, (err, data)=>{
+                           fs.readFile(doc[0].homeDir + config.tests[0].results, (err, data)=>{
 
                            if(err){
 

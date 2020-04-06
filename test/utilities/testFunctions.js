@@ -121,7 +121,7 @@ function iterateObj(obj1, obj2, skipOjbs, msg, test){
 
             let key1 = keys1[keyIndex];
 
-            if (typeof (obj1[key1]) !== "object") {
+            if (typeof (obj1[key1]) !== 'object') {
 
                 if(!checkIfObjectShouldBeSkipped(skipOjbs, key1)){
 
