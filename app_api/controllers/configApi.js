@@ -27,7 +27,9 @@ module.exports.postConfig = function(req,res){
         }
         else {
              // noinspection JSUnresolvedVariable
-            mongo.update(config.mongo.configObjectName,{_id: req.params.configid}, (err, doc) => {
+            mongo.update(config.mongo.configObjectName,{_id: req.params.configid}, updateConfig, (err, doc) => {
+
+                let plugin = updateConfig;
 
                 if (err) {
 
@@ -35,19 +37,29 @@ module.exports.postConfig = function(req,res){
 
                 } else {
 
-                    if (typeof (req.body) === "object"){
+                    if(typeof (req.body) === "object"){
 
-                        updateConfig(doc, req.body);
+                        if(typeof (plugin) !== 'function'){
 
-                        doc.save().then(()=>{ //removed product to remove warning
+                            responseFunctions.sendJSONresponse(new Error(messages.mongo.typeof_plugin_error), res, filename, methodname, config.status.error);
 
-                            responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.config_updated});
+                        }
+                        else {
 
-                        }).catch((reason)=>{
+                            //do the update activity, this is a plugin passed into the mongo.update method.
+                            plugin(doc, req.body);
 
-                            responseFunctions.sendJSONresponse(reason, res, filename, methodname, config.status.error, {msg: messages.config.config_was_not_updated+reason });
+                            doc.save().then(() => { //removed product to remove warning
 
-                        });
+                                responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.config_updated});
+
+                            }).catch((reason) => {
+
+                                responseFunctions.sendJSONresponse(reason, res, filename, methodname, config.status.error, {msg: messages.config.config_was_not_updated + reason});
+
+                            });
+
+                        }
 
                     }
                     else{

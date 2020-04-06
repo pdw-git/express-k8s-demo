@@ -17,9 +17,17 @@ module.exports.sendJSONresponse = function(err, res, filename, methodname, statu
 
     if (err) {
 
+        let no_additional_info = 'no additional info';
+
         let error = {
-            msg: jsonContent.msg ? jsonContent.msg : 'no additional info',
-            err: err.msg ? err.msg+ ': '+err : err
+            msg: jsonContent ?
+                jsonContent.msg ?
+                    jsonContent.msg
+                    : no_additional_info
+                : no_additional_info,
+            err: err.msg ?
+                err.msg+ ': '+err
+                : err
         };
 
         logger._error({filename: filename, methodname: methodname, message: 'msg: '+JSON.stringify(error)});
@@ -50,7 +58,7 @@ module.exports.sendJSONresponse = function(err, res, filename, methodname, statu
  */
 module.exports.defaultResponse = function(req, res, filename, methodname, plugin ){
 
-    logger._debug({filename: filename, methodname: methodname, message: 'started'});
+    logger._debug({filename: filename, methodname: methodname, message: messages.started});
 
     plugin(req, res);
 

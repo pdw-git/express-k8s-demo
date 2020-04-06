@@ -28,7 +28,9 @@ module.exports.find = function(findObject, mongoObjectName, callback){
  */
 module.exports.create = function(mongoObjectName, dataObject){
 
-    logger._info({filename:__filename, methodname:'create', message: 'mongoObjectName: '+mongoObjectName});
+    let methodname = 'create';
+
+    logger._debug({filename:__filename, methodname:methodname, message: messages.started});
 
 
     if(getMongoObject(mongoObjectName)){
@@ -38,22 +40,15 @@ module.exports.create = function(mongoObjectName, dataObject){
         let mo = new mongoObject(dataObject);
 
         mo.save((err)=>{
-            if(err){
-
-                logger._error({filename: __filename, methodname:'create', message: err.message});
-
-            }
-            else {
-
-                logger._info({filename:__filename, methodname:'create', message: 'Successful config initialisation'});
-
-            }
+            err ?
+                logger._error({filename: __filename, methodname:methodname, message: err.message}):
+                logger._info({filename:__filename, methodname:methodname, message: messages.mongo.object_created});
 
         });
     }
     else {
 
-        logger._error({filename: __filename, methodname:'create', message: messages.mongo.cannot_get_model});
+        logger._error({filename: __filename, methodname: methodname, message: messages.mongo.cannot_get_model});
 
     }
 
@@ -80,9 +75,10 @@ module.exports.delete = function(mongoObjectName, id, callback){
  * update
  * @param mongoObjectName
  * @param id
+ * @param plugin
  * @param callback
  */
-module.exports.update = function(mongoObjectName, id, callback){
+module.exports.update = function(mongoObjectName, id, plugin, callback){
 
     let methodname = 'update';
 

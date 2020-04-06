@@ -2,7 +2,7 @@
 
 
 const messages = {
-
+    started: 'Started',
     parameter_check_error: 'Error with parameter(s)',
     send_status: 'Sending response',
     send_status_record_deleted: 'Document deleted',
@@ -33,7 +33,10 @@ const messages = {
         object_exists: 'Mongo object already exists: ',
         cannot_get_model: 'Cannot get a model',
         invalid_doc_length: 'Document does not contain the expected number of elements: doc.length = ',
-        connection_error: 'Cannot connect to : '
+        connection_error: 'Cannot connect to : ',
+        typeof_plugin_error: 'The update plugin is not a function',
+        object_created: 'Successful config creation'
+
     },
     environment:{
         invalid_deployment: 'Invalid deployment: ',
