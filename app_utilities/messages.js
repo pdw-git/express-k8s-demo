@@ -21,6 +21,7 @@ const messages = {
     req_params_not_found: 'Request paramaters not found: ',
     cannot_parse_JSON_file: 'Cannot parse file to JSON',
     no_res_json: 'No response JSON defined',
+    http_response_sent: 'HTTP response sent with status: ',
     api:{
         good_status: 'Sending good status',
         cannot_find_test_files: 'Cannot find the test files ',
@@ -44,7 +45,7 @@ const messages = {
     },
     basic: {
        child_process_error: 'The child process exited with error: ',
-       child_process_completed: 'The chile process has completed, exit code: '
+       child_process_completed: 'The child process has completed, exit code: '
     }
 
 };

@@ -7,6 +7,7 @@ module.exports.testDefinitions={
       require('./getConfigGoodStatus').getConfigGoodStatus,
       require('./getInfoGoodStatus').getInfoGoodStatus,
       require('./getVersionGoodStatus').getVersionGoodStatus,
-      require('./getStatusGoodStatus').getStatusGoodStatus
+      require('./getStatusGoodStatus').getStatusGoodStatus,
+      require('./getInvalidAPI_PageNotFound').getInvalidAPI_PageNotFound
   ],
 };

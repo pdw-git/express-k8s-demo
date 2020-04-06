@@ -43,8 +43,6 @@ module.exports.postConfig = function(req,res){
 
                             responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.config_updated});
 
-                            logger._info({filename: __filename, methodname: methodname, message: messages.config.config_updated});
-
                         }).catch((reason)=>{
 
                             responseFunctions.sendJSONresponse(reason, res, filename, methodname, config.status.error, {msg: messages.config.config_was_not_updated+reason });

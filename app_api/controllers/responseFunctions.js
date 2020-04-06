@@ -2,6 +2,7 @@
 
 const logger = require('../../app_utilities/logger');
 const config = require('../../app_config/config');
+const messages = require('../../app_utilities/messages').messages;
 
 /**
  * sendJSONresponse
@@ -21,7 +22,7 @@ module.exports.sendJSONresponse = function(err, res, filename, methodname, statu
             err: err.msg ? err.msg+ ': '+err : err
         };
 
-        logger._error({filename: filename, methodname: methodname, message: 'msg: '+error});
+        logger._error({filename: filename, methodname: methodname, message: 'msg: '+JSON.stringify(error)});
 
         respond(res, filename, methodname, config.status.error,  error);
 
@@ -31,6 +32,8 @@ module.exports.sendJSONresponse = function(err, res, filename, methodname, statu
         (jsonContent) ?
             respond(res, filename, methodname, status, jsonContent) :
             respond(res,filename,methodname,status, {msg: messages.no_res_json});
+
+        logger._info({filename: filename, methodname: methodname, message: messages.http_response_sent+status});
 
     }
 
@@ -51,9 +54,6 @@ module.exports.defaultResponse = function(req, res, filename, methodname, plugin
 
     plugin(req, res);
 
-    logger._info({filename: filename, methodname: methodname, message: 'sent good status'});
-
-    logger._debug({filename: filename, methodname: methodname, message: 'completed'});
 
 };
 

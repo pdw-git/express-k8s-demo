@@ -28,7 +28,7 @@ module.exports.getStatus = function(req, res){
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=> {
 
-        responseFunctions.sendJSONresponse( false, res, filename, methodname, config.status.good, {
+        responseFunctions.sendJSONresponse( null, res, filename, methodname, config.status.good, {
             status: config.status.good,
             msg: messages.api.good_status
         });
@@ -55,9 +55,7 @@ module.exports.getInfo = function(req, res){
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=> {
 
-        const err = null;
-
-        responseFunctions.sendJSONresponse( err, res, filename, methodname, config.status.good, info);
+        responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, info);
 
     });
 
@@ -77,9 +75,7 @@ module.exports.getVersion = function(req, res){
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=> {
 
-        const err = null;
-
-        responseFunctions.sendJSONresponse( err, res, filename, methodname, config.status.good, {version: process.env.API_VERSION});
+        responseFunctions.sendJSONresponse( null, res, filename, methodname, config.status.good, {version: process.env.API_VERSION});
 
     });
 
@@ -136,7 +132,7 @@ module.exports.getTest = function(req, res){
                    mocha.on('close', (code) => {
                        const methodname = 'mocha.on(close)';
 
-
+                           //do an async read of the results file and then respond
                            fs.readFile(doc[0].homeDir + '/' + config.tests[0].results, (err, data)=>{
 
                            if(err){
@@ -169,13 +165,10 @@ module.exports.getTest = function(req, res){
 
            else {
                //Test files were not found, log error and return appropriate status in response.
-               logger._error({filename: filename, methodname: methodname, message: messages.api.cannot_find_test_files+testFiles});
 
                responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.error, {message: messages.api.cannot_find_test_files+testFiles});
 
            }
-
-           logger._debug({filename: filename, methodname: methodname, message: 'completed'});
 
        }
 
@@ -254,8 +247,6 @@ function getErrors(jsonData){
         }
 
     }
-
-    logger._debug({filename: filename, methodname: methodname, message: 'completed'});
 
     return errors;
 
