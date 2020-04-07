@@ -11,7 +11,7 @@ require('../app_config/environment').getEnvironmentVariables();
 
 const applogger = require('../app_utilities/logger');
 const messages = require('../app_utilities/messages').messages;
-//const appConfig = require('../app_config/config');
+const config = require('../app_config/config');
 const app = require('../app');
 const debug = require('debug')('express:server');
 const http = require('http');
@@ -23,9 +23,7 @@ const methodName = 'main';
 let server = null;
 
 //Get port from environment and store in Express.
-const port = normalizePort((process.env.PORT === undefined ? 3443 : process.env.PORT));
-
-applogger._info({filename: filename, methodname: methodName, message: "Application port: "+port+' Encrytion: '+process.env.HTTPS});
+const port = normalizePort((process.env.PORT === undefined ? config.defaultPort : process.env.PORT));
 
 app.set('port', port);
 
