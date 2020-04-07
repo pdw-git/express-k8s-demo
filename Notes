@@ -12,3 +12,6 @@ For testing of Mongo use a docker image
    .evn APP_DIR /usr/src/app
 
    Dockerfile APP_DIR /usr/src/app
+
+   chaning the default mode to http so that I can start to play with NGINX load balancer.
+   Doing work with certificates in NGINX drives a lot of complexity that this test app is just not ready for

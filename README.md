@@ -2,6 +2,8 @@
 
 ## Express based API server
 
+NOT PRODUCTION READY CODE
+
 This is a simple API server built on Node.js and the Express framework. It has been created as an educational 
 tool for use to explore development and deployment patterns. This is not production ready code. 
 
@@ -59,7 +61,7 @@ APP_KEY=key.pem : encryption key
 
 Environment variables should be set in  a .env file.
 
-By default encryption is enabled.
+By default encryption is NOT enabled. 
 
 A keystore is defined in the configuration file and the a cert.pem and key.pem file need to be added there for the
 application to work. 
@@ -74,9 +76,9 @@ For testing purposes a self signed cert and Key can be created using the followi
 
 >rm csr.pem
 
-The default configuration is to use https with self signed certificates. This means that any browser or API testing tools 
-need to disable certificate verification. Most tools will block access because the signing request was self created. This
-is another reason why this code is not production ready. 
+The default configuration is to no use https with self signed certificates. If slef signed certificates are used
+this will mean that any browser or API testing tools need to disable certificate verification. Most tools will block 
+access because the signing request was self created. 
 
 ## Running the application with npm
 
