@@ -25,13 +25,15 @@ let server = null;
 //Get port from environment and store in Express.
 const port = normalizePort((process.env.PORT === undefined ? 3443 : process.env.PORT));
 
-applogger._info({filename: filename, methodname: methodName, message: "Application port: "+port});
+applogger._info({filename: filename, methodname: methodName, message: "Application port: "+port+' Encrytion: '+process.env.HTTPS});
 
 app.set('port', port);
 
 //set up the http/https server dependent on values stored in the application configuration file
 
-!process.env.HTTPS ? process.env.HTTPS = 'no' : process.env.HTTPS = 'yes';
+process.env.HTTPS === undefined ? process.env.HTTPS = 'no' : {};
+
+applogger._info({filename: filename, methodname: methodName, message: "Application port: "+port+' Encrytion: '+process.env.HTTPS});
 
 const options = {
   key: fs.readFileSync(process.env.APP_DIR+process.env.KEY_STORE+process.env.APP_KEY),
