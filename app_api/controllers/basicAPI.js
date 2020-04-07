@@ -128,9 +128,9 @@ module.exports.getTest = function(req, res){
 
                        let methodname = 'exec';
 
-                       let message = 'ERROR: '+err+': STDERR: '+stderr+': STDOUT : '+stdout;
+                       let message = 'ERROR: '+err+': STDERR: '+stderr;
 
-                       logger._info({filename: __filename, methodname: methodname, messages: message});
+                       logger._info({filename: __filename, methodname: methodname, message: message});
 
                    });
 
