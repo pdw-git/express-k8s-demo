@@ -21,7 +21,6 @@ const favicon = require('serve-favicon');
 require('./app_api/models/db');
 
 //if the NODE_ENV_PRODUCTION environment variable has not been set then set it to false
-
 process.env.NODE_ENV_PRODUCTION === undefined ? process.env.NODE_ENV_PRODUCTION = 'no' : null;
 
 const createError = require('http-errors');
@@ -88,7 +87,7 @@ function defineErrorContent(err, data, msg, status, res){
         data.information = msg;
     }
 
-    applogger._error({filename: "app.js", methodname: data.url, message: err.stack});
+    applogger._error({filename: __filename, methodname: data.url, message:'status: '+status+':'+ err.message});
 
     res.status(status);
     res.render('error', data);
