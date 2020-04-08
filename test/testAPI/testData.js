@@ -8,6 +8,7 @@ module.exports.testDefinitions={
       require('./getInfoGoodStatus').getInfoGoodStatus,
       require('./getVersionGoodStatus').getVersionGoodStatus,
       require('./getStatusGoodStatus').getStatusGoodStatus,
-      require('./getInvalidAPI_PageNotFound').getInvalidAPI_PageNotFound
+      require('./getInvalidAPI_PageNotFound').getInvalidAPI_PageNotFound,
+      require('./onlyOneConfigObject').onlyOneConfigObject
   ],
 };
