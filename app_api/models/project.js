@@ -125,14 +125,14 @@ mongo.find({}, config.mongo.configObjectName, (err,doc)=>{
                 logger._debug({filename: __filename, methodname: 'mongo.find.create', message: 'delete '+doc[0]._id+' create new config object'});
                 mongo.delete(config.mongo.configObjectName, doc[0]._id, (err)=>{
                     err ?
-                        logger._error({filename: __filename, methodname:'mongo.find.delete.create', message: err.message}) :
+                        logger._error({filename: __filename, methodname:'mongo.find.delete.create', message: err}) :
                         mongo.create(config.mongo.configObjectName,baselineConfiguration);
                 });
                 break;
 
             //if the length is greater than 1 then there is a problem with the database, log an error.
             default:
-                logger._error({filename: __filename, methodname:'mongo.find', message: message.mongo.invalid_doc_length+doc.length});
+                logger._error({filename: __filename, methodname:'mongo.find', message: messages.mongo.invalid_doc_length+doc.length});
 
         }
 
