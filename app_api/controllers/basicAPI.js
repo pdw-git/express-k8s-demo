@@ -148,12 +148,48 @@ module.exports.getTest = function(req, res){
                            }
                            else{
 
-                               // noinspection JSCheckFunctionSignatures
-                               const parsedData = JSON.parse(data);
+                               if(code !== 0){
 
-                               responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, getTestResults(parsedData));
+                                   //if mocha does not complete with an exit code of 0 then respond with an error
+                                   responseFunctions((new Error('Mocha exited with code: '+code)), res, filename, methodname, config.status.error, {mochaOutput: data});
 
-                               logger._info({filename: filename, methodname: methodname, message: messages.basic.child_process_completed+code});
+                               } else {
+
+                                   //there should be a valid JSON file that can be parsed
+
+                                   let parsedData = null;
+
+                                   try {
+                                       // noinspection JSCheckFunctionSignatures
+                                       parsedData = JSON.parse(data);
+                                   }
+                                   catch(err){
+
+                                       logger._error({filename: __filename, methodname: methodname, message: messages.cannot_parse_JSON_file });
+                                       parsedData = null;
+
+                                   }
+                                   finally {
+
+                                       parsedData === null ?
+                                           responseFunctions.sendJSONresponse((
+                                               new Error(messages.cannot_parse_JSON_file)),
+                                               res, __filename, methodname,
+                                               config.status.error,
+                                               {msg: messages.cannot_parse_JSON_file}):
+                                           responseFunctions.sendJSONresponse(null, res, __filename, methodname, config.status.good, getTestResults(parsedData));
+
+                                       //responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, getTestResults(parsedData));
+
+                                       logger._info({
+                                           filename: filename,
+                                           methodname: methodname,
+                                           message: messages.basic.child_process_completed + code
+                                       });
+
+                                   }
+
+                               }
 
                            }
 
