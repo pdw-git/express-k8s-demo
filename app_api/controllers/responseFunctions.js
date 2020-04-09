@@ -20,10 +20,10 @@ module.exports.sendJSONresponse = function(err, res, filename, methodname, statu
         let no_additional_info = 'no additional info';
 
         let error = {
+
             msg: jsonContent ?
                 jsonContent.msg ?
-                    jsonContent.msg
-                    : no_additional_info
+                    jsonContent.msg : no_additional_info
                 : no_additional_info,
             err: err.msg ?
                 err.msg+ ': '+err

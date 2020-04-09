@@ -103,7 +103,7 @@ module.exports.getTest = function(req, res){
 
            logger._error({filename: filename, methodname: methodname, message: err});
 
-           responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg:message.mongo.cannot_find_object+mongo.configProject });
+           responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: message.mongo.cannot_find_object+mongo.configProject });
 
        }
        else{
@@ -154,7 +154,13 @@ module.exports.getTest = function(req, res){
                                if(code !== 0){
 
                                    //if mocha does not complete with an exit code of 0 then respond with an error
-                                   responseFunctions.sendJSONresponse((new Error('Mocha exited with code: '+code)), res, filename, methodname, config.status.error, {mochaOutput: data});
+                                   responseFunctions.sendJSONresponse(
+                                       (new Error('Mocha exited with code: '+code)),
+                                       res,
+                                       filename,
+                                       methodname,
+                                       config.status.error,
+                                       {msg: 'exit code: '+code+ ' data: '+data});
 
                                } else {
 
@@ -212,7 +218,7 @@ module.exports.getTest = function(req, res){
            else {
                //Test files were not found, log error and return appropriate status in response.
 
-               responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.error, {message: messages.api.cannot_find_test_files+testFiles});
+               responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.error, {msg: messages.api.cannot_find_test_files+testFiles});
 
            }
 

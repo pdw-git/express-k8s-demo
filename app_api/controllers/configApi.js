@@ -33,7 +33,7 @@ module.exports.postConfig = function(req,res){
 
                 if (err) {
 
-                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: err.msg});
+                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.mongo.invalid_id});
 
                 } else {
 
@@ -41,7 +41,7 @@ module.exports.postConfig = function(req,res){
 
                         if(typeof (plugin) !== 'function'){
 
-                            responseFunctions.sendJSONresponse(new Error(messages.mongo.typeof_plugin_error), res, filename, methodname, config.status.error);
+                            responseFunctions.sendJSONresponse(new Error(messages.mongo.typeof_plugin_error), res, filename, methodname, config.status.error, {msg: messages.mongo.typeof_plugin_error});
 
                         }
                         else {
