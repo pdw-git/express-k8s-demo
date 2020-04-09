@@ -10,7 +10,7 @@ const apiCall = '/config/';
 const testName = 'postConfig-invalidConfigId';
 
 const expectedBody = {
-    msg: "no additional info",
+    msg: "configid is not valid",
     err: {
         message: "Cast to ObjectId failed for value \"1234567\" at path \"_id\" for model \"configuration\"",
         name: "CastError",

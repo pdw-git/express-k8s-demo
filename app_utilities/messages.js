@@ -35,7 +35,8 @@ const messages = {
         invalid_doc_length: 'Document does not contain the expected number of elements: doc.length = ',
         connection_error: 'Cannot connect to : ',
         typeof_plugin_error: 'The update plugin is not a function',
-        object_created: 'Successful config creation'
+        object_created: 'Successful config creation',
+        invalid_id: 'configid is not valid'
 
     },
     environment:{
