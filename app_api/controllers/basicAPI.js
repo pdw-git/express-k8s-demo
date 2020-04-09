@@ -128,9 +128,12 @@ module.exports.getTest = function(req, res){
 
                        let methodname = 'exec';
 
-                       let message = 'ERROR: '+err+': STDERR: '+stderr;
+                       //let message = null;
 
-                       logger._info({filename: __filename, methodname: methodname, message: message});
+                       let message = err ? 'ERROR: '+err+': STDERR: '+stderr : 'Started tests';
+
+                       err ? logger._error({filename: __filename, methodname: methodname, message:message}):
+                           logger._info({filename: __filename, methodname: methodname, message: message});
 
                    });
 
