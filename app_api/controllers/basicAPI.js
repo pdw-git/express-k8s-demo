@@ -151,9 +151,12 @@ module.exports.getTest = function(req, res){
                            }
                            else{
 
-                               if(code !== 0){
+                               //if mocha does not complete with an exit code of 0 or 1 then respond with an error
+                               //Mocha will exit with a 1 when an error is found but this is reported in the JSON
+                               //output where it will be captured in the response output.
+                               if((code !== 0) && (code !== 1)){
 
-                                   //if mocha does not complete with an exit code of 0 then respond with an error
+
                                    responseFunctions.sendJSONresponse(
                                        (new Error('Mocha exited with code: '+code)),
                                        res,
