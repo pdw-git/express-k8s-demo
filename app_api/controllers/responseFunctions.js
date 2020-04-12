@@ -25,9 +25,7 @@ module.exports.sendJSONresponse = function(err, res, filename, methodname, statu
                 jsonContent.msg ?
                     jsonContent.msg : no_additional_info
                 : no_additional_info,
-            err: err.msg ?
-                err.msg+ ': '+err
-                : err
+            err: err.message ? err.message : err
         };
 
         logger._error({filename: filename, methodname: methodname, message: 'msg: '+JSON.stringify(error)});

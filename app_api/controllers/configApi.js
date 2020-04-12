@@ -21,7 +21,6 @@ module.exports.postConfig = function(req,res){
 
         // noinspection JSUnresolvedVariable
         if(!req.params.configid){
-
             responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.error, {msg: messages.req_params_not_found+'req.params.config'});
 
         }
@@ -32,7 +31,6 @@ module.exports.postConfig = function(req,res){
                 let plugin = updateConfig;
 
                 if (err) {
-
                     responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.mongo.invalid_id});
 
                 } else {
@@ -46,16 +44,26 @@ module.exports.postConfig = function(req,res){
                         }
                         else {
 
-                            //do the update activity, this is a plugin passed into the mongo.update method.
-                            plugin(doc, req.body);
+                            plugin(doc, req.body, (err, doc)=>{
 
-                            doc.save().then(() => { //removed product to remove warning
+                                if(err){
 
-                                responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.config_updated});
+                                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.config.config_invalid_data});
+                                }
+                                else{
 
-                            }).catch((reason) => {
+                                    doc.save().then(() => { //removed product to remove warning
 
-                                responseFunctions.sendJSONresponse(reason, res, filename, methodname, config.status.error, {msg: messages.config.config_was_not_updated + reason});
+                                        logger.emitter.emit('level');
+                                        responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.config_updated});
+
+                                    }).catch((reason) => {
+
+                                        responseFunctions.sendJSONresponse(reason, res, filename, methodname, config.status.error, {msg: messages.config.config_was_not_updated + reason});
+
+                                    });
+
+                                }
 
                             });
 
@@ -81,19 +89,29 @@ module.exports.postConfig = function(req,res){
  * postConfig
  * @param doc
  * @param body
+ * @param callback
  */
-function updateConfig(doc, body){
+function updateConfig(doc, body, callback){
 
-    let methodname = 'postConfig';
+    let err = null;
 
     if (doc.logLevel) {
 
-        doc.logLevel = body.logLevel ? body.logLevel : 'undefined';
+        if(logger.validate(body.logLevel)) {
+            doc.logLevel = body.logLevel ? body.logLevel : 'undefined';
+
+        }
+        else{
+            err = new Error(messages.config.config_invalid_logLevel+body.logLevel);
+        }
 
     }
     else {
-        logger._error({filename: __filename, methodname: methodname, message: 'doc.loglevel not defined'});
+        err = new Error(messages.config.config_doc_logLevel_undefined)
+
     }
+
+    callback(err, doc);
 
 }
 

@@ -36,7 +36,7 @@ module.exports.postConfigConfigidValidUpdateSuccess={
         },
         postConfig : {url: serverOpts.apiOptions.server + serverOpts.apiOptions.path + apiCall,
             method: serverOpts.POST,
-            json: {logLevel: "testValue" },
+            json: {logLevel: "debug" },
             qs: {}
         }
     },

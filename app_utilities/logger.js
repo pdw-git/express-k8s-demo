@@ -1,5 +1,14 @@
 'use strict';
 
+const EventEmitter = require('events');
+const mongo = require('../app_api/models/mongoActions');
+const config = require('../app_config/config');
+
+class MyEmitter extends EventEmitter {}
+const myEmitter = new MyEmitter();
+
+module.exports.emitter = myEmitter;
+
 const levels = ['error', 'warn', 'info', 'verbose', 'debug', 'silly'];
 let defaultLoggingLevel = levels.indexOf('info');
 
@@ -15,6 +24,87 @@ const {combine, timestamp, json, colorize, simple} = format;
 let loggingLevelIndex = defaultLoggingLevel;
 let loggingLevelName = levels[defaultLoggingLevel];
 
+//===================================================================================================================
+//Create an event listener that will update the logging level for the applicationon recieving a 'level' event
+//===================================================================================================================
+
+myEmitter.on('level', ()=>{
+
+    let methodname = 'logger: emitter.on';
+
+    mongo.find({},config.mongo.configObjectName,(err, doc)=>{
+
+        err ? logMessage(levels.indexOf('error'),formatMessage({filename:__filename, methodName: methodname, message: 'Cannot find doc'})) : updateLoggingLevel(doc);
+
+    });
+
+});
+
+/**
+ * update Logging Level
+ *
+ * @param doc
+ */
+function updateLoggingLevel(doc){
+
+    const methodname = 'updateLoggingLevel';
+
+    //if there is a valid document and the logLevel data is within bounds and a logger has been created
+    //updated the logging level
+    //reconfigure the looger
+    //determine if messages should go to stdout
+
+    if(doc[0] !== "undefined"){
+
+        if(doc[0].logLevel !== "undefined"){
+
+            if(levels.indexOf(doc[0].logLevel) !== -1){
+
+                if (logger !== undefined){
+
+                    setLoggingLevels(doc[0].logLevel, levels.indexOf(doc[0].logLevel));
+
+                    logger.configure({
+                        level: doc[0].logLevel,
+                        format: combine(timestamp(), json(), colorize()),
+                        transports: [
+                            new transports.File({ filename: 'error.log', level: 'error', format: simple()}),
+                            new transports.File({ filename: 'combined.log', format: simple()})
+                        ]
+                    });
+
+                    process.env.NODE_ENV !== 'production' ?
+                        logger.add(new transports.Console({format: simple()})) :
+                        logMessage('info',formatMessage({filename:__filename, methodName: methodname, message: 'In production mode'}));
+
+                }
+                else {
+
+                    logMessage('error',formatMessage({filename:__filename, methodName: methodname, message: 'Logger has not been defined'}))
+
+                }
+
+            }
+            else {
+                logMessage('error',formatMessage({filename:__filename, methodName: methodname, message: 'Invalid logging level'+doc[0].logLevel}));
+
+            }
+
+        }
+        else{
+            logMessage('error',formatMessage({filename:__filename, methodName: methodname, message: 'doc[0].logLevel is not defined'}));
+
+        }
+
+    }
+    else {
+        logMessage('error',formatMessage({filename:__filename, methodName: methodname, message: 'doc[0] is not defined'}));
+
+    }
+
+}
+
+
 //if there is no NODE_ENV variable set and there is a configuration object then use the default valued from the config
 //object.
 
@@ -22,31 +112,28 @@ process.env.LOGGING_LEVEL === undefined ?
     setLoggingLevels(loggingLevelName, loggingLevelIndex) :
     setLoggingLevels(process.env.LOGGING_LEVEL,levels.indexOf(process.env.LOGGING_LEVEL));
 
-
-const logger = createLogger({
+//default config settings for the logger
+const loggerConfig = {
     level: loggingLevelName,
     format: combine(timestamp(), json(), colorize()),
     transports: [
-        //
-        // - Write to all logs with level `info` and below to `combined.log`
-        // - Write all logs error (and below) to `error.log`.
-        //
         new transports.File({ filename: 'error.log', level: 'error', format: simple()}),
         new transports.File({ filename: 'combined.log', format: simple()})
     ]
-});
+};
 
-//
+const logger = createLogger(loggerConfig);
+
 // If we're not in production then log to the `console` with the format:
 // `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
-//
+
 if (process.env.NODE_ENV !== 'production') {
     logger.add(new transports.Console({format: simple()}));
 }
 
 //log the current logging level
 
-logger.log(levels[2], 'application logging level: '+levels[loggingLevelIndex]);
+logger.log('info', 'application logging level: '+levels[loggingLevelIndex]);
 
 function logMessage(level, message) {
 
@@ -90,5 +177,11 @@ module.exports._debug = function(message){
 
 module.exports._silly = function (message){
     logMessage(levels[5], formatMessage(message));
+};
+
+module.exports.validate = (name)=>{
+
+    return (levels.indexOf(name) !== -1);
+
 };
 

@@ -45,7 +45,10 @@ const messages = {
     },
     config:{
         config_updated: 'Config was updated',
-        config_was_not_updated: 'Config was not updated: '
+        config_was_not_updated: 'Config was not updated: ',
+        config_invalid_logLevel: 'The value of logLevel is not valid: ',
+        config_doc_logLevel_undefined: 'The field doc.logLevel in req.body is not defined',
+        config_invalid_data: 'The data requested for update is not valid'
     },
     basic: {
        child_process_error: 'The child process exited with error: ',
