@@ -177,7 +177,7 @@ module.exports.getTest = function(req, res){
                                    }
                                    catch(err){
 
-                                       logger._error({filename: __filename, methodname: methodname, message: messages.cannot_parse_JSON_file });
+                                       logger._error({filename: __filename, methodname: methodname, message: messages.cannot_parse_JSON_file+data });
                                        parsedData = null;
 
                                    }
@@ -188,7 +188,7 @@ module.exports.getTest = function(req, res){
                                                new Error(messages.cannot_parse_JSON_file)),
                                                res, __filename, methodname,
                                                config.status.error,
-                                               {msg: messages.cannot_parse_JSON_file}):
+                                               {msg: messages.cannot_parse_JSON_file+data}):
                                            responseFunctions.sendJSONresponse(null, res, __filename, methodname, config.status.good, getTestResults(parsedData));
 
                                        //responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, getTestResults(parsedData));
