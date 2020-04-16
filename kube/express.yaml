@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: express-api
+spec:
+  selector:
+    app: express-api
+  ports:
+    - port: 80
+      targetPort: 3000
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: express-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: express-api
+  template:
+    metadata:
+      labels:
+        app: express-api
+    spec:
+      containers:
+        - name: express-api
+          image: boselane6633/express-api-app:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV_DEPLOYMENT
+              value: "docker-compose"
+            - name: APP_DIR
+              value: "/usr/src/app"
+          imagePullPolicy: Always
