@@ -10,8 +10,8 @@ logger._info({filename: __filename, methodname: 'main', message: 'process.env.MO
 logger._info({filename: __filename, methodname: 'main', message: 'process.env.MONGO_PORT: '+process.env.MONGO_PORT});
 logger._info({filename: __filename, methodname: 'main', message: 'process.env.MONGO_DB_NAME: '+process.env.MONGO_DB_NAME});
 
-const dbURI_Config = process.env.MONGO_URI+process.env.MONGO_PORT+'/'+process.env.MONGO_DB_NAME;
-
+//const dbURI_Config = process.env.MONGO_URI+process.env.MONGO_PORT+'/'+process.env.MONGO_DB_NAME;
+const dbURI_Config = process.env.MONGO_URI+process.env.MONGO_DB_NAME;
 logger._info({filename: __filename, methodname: 'main', message: 'MONGO dbURI: '+dbURI_Config});
 
 connectToMongo(dbURI_Config);
