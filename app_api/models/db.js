@@ -10,6 +10,10 @@ logger._info({filename: __filename, methodname: 'main', message: 'process.env.MO
 logger._info({filename: __filename, methodname: 'main', message: 'process.env.MONGO_PORT: '+process.env.MONGO_PORT});
 logger._info({filename: __filename, methodname: 'main', message: 'process.env.MONGO_DB_NAME: '+process.env.MONGO_DB_NAME});
 
+let retryCount = 0;
+let maxRetries = 10;
+let connected = false;
+
 //const dbURI_Config = process.env.MONGO_URI+process.env.MONGO_PORT+'/'+process.env.MONGO_DB_NAME;
 const dbURI_Config = process.env.MONGO_URI+process.env.MONGO_DB_NAME;
 logger._info({filename: __filename, methodname: 'main', message: 'MONGO dbURI: '+dbURI_Config});
@@ -19,6 +23,39 @@ connectToMongo(dbURI_Config);
 mongoose.connection.on('disconnected', function (){
     logger._info({filename: __filename, methodname: 'mongoose.connection.on(disconnected)', message: 'disconnected from: '+dbURI_Config })
 });
+
+function connectToMongo(uri){
+
+    let methodname = 'connectToMongo';
+
+    if ((retryCount < maxRetries) && (!connected))
+    {
+
+        try {
+            mongoose.connect(uri, {useUnifiedTopology: true, useNewUrlParser: true}).then(() => {
+                logger._info({filename: __filename, methodname: methodname, message: 'connected to: ' + uri});
+                connected = true;
+                retryCount++;
+            }).catch((error) => {
+                handleConnectionError(error)
+            });
+        } catch (err) {
+            handleConnectionError(err);
+        }
+
+    }
+    else {
+
+    }
+}
+
+function handleConnectionError(err){
+
+    let methodname = 'handleConnectionError';
+    let message = messages.mongo.connection_error + dbURI_Config + ": error: " + err.message;
+    logger._error({filename: __filename, methodname: methodname, message: message});
+
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 //Functions to enable a good shutdown of mongoose and the app server
@@ -50,26 +87,6 @@ process.on('SIGINT', function () {
     gracefulShutdown('app termination - SIGINT', stop);
 });
 
-function connectToMongo(uri){
 
-    let methodname = 'connectToMongo';
-
-    try {
-        mongoose.connect(uri, {useUnifiedTopology: true, useNewUrlParser: true}).
-        then(()=>{logger._info({filename: __filename, methodname: methodname, message: 'connected to: '+uri })}).
-        catch((error)=>{handleConnectionError(error)});
-    }
-    catch(err){
-        handleConnectionError(err);
-    }
-}
-
-function handleConnectionError(err){
-
-    let methodname = 'handleConnectionError';
-    let message = messages.mongo.connection_error + dbURI_Config + ": error: " + err.message;
-    logger._error({filename: __filename, methodname: methodname, message: message});
-
-}
 
 require('./project.js');

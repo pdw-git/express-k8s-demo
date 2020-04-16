@@ -26,7 +26,7 @@ const configSchema = new mongoose.Schema(
         mongo : {
             name: {type: String, required: true},
             uri: {type: String, required: true},
-            port: {type: Number, required: true},
+            //port: {type: Number, required: true},
             configObjectName: {type: String, required: true}
         },
         encryption: {
@@ -89,7 +89,7 @@ const baselineConfiguration = {
     mongo : {
         name: process.env.MONGO_DB_NAME,
         uri: process.env.MONGO_URI,
-        port: process.env.MONGO_PORT,
+        //port: process.env.MONGO_PORT,
         configObjectName: config.mongo.configObjectName
     },
     encryption: {
