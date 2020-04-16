@@ -10,25 +10,7 @@ const dbURI_Config = process.env.MONGO_URI+process.env.MONGO_PORT+'/'+process.en
 
 logger._info({filename: __filename, methodname: 'main', message: 'MONGO dbURI: '+dbURI_Config});
 
-try {
-    mongoose.connect(dbURI_Config, {useUnifiedTopology: true, useNewUrlParser: true});
-}
-catch(err){
-    logger._error({filename: __filename, methodname: 'main', message: messages.mongo.connection_error+dbURI_Config });
-    process.exit(1);
-}
-
-mongoose.connection.on('connected', function (){
-    logger._info({filename: __filename, methodname: 'mongoose.connection.on(connection)', message: 'connected to: '+dbURI_Config });
-});
-
-mongoose.connection.on('error', function (err){
-
-    logger._error({filename: __filename, methodname: 'mongoose.connection.on(error)', message: 'Not connected to: '+dbURI_Config+
-    err.message
-    });
-
-});
+connectToMongo(dbURI_Config);
 
 mongoose.connection.on('disconnected', function (){
     logger._info({filename: __filename, methodname: 'mongoose.connection.on(disconnected)', message: 'disconnected from: '+dbURI_Config })
@@ -64,5 +46,26 @@ process.on('SIGINT', function () {
     gracefulShutdown('app termination - SIGINT', stop);
 });
 
+function connectToMongo(uri){
+
+    let methodname = 'connectToMongo';
+
+    try {
+        mongoose.connect(uri, {useUnifiedTopology: true, useNewUrlParser: true}).
+        then(()=>{logger._info({filename: __filename, methodname: methodname, message: 'connected to: '+uri })}).
+        catch((error)=>{handleConnectionError(error)});
+    }
+    catch(err){
+        handleConnectionError(err);
+    }
+}
+
+function handleConnectionError(err){
+
+    let methodname = 'handleConnectionError';
+    let message = messages.mongo.connection_error + dbURI_Config + ": error: " + err.message;
+    logger._error({filename: __filename, methodname: methodname, message: message});
+
+}
 
 require('./project.js');
