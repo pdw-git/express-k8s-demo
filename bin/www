@@ -31,7 +31,7 @@ app.set('port', port);
 
 process.env.HTTPS === undefined ? process.env.HTTPS = 'no' : {};
 
-applogger._info({filename: filename, methodname: methodName, message: "Application port: "+port+' Encrytion: '+process.env.HTTPS});
+applogger._info({filename: filename, methodname: methodName, message: "Application port: "+port+' Encrpytion: '+process.env.HTTPS});
 
 const options = {
   key: fs.readFileSync(process.env.APP_DIR+process.env.KEY_STORE+process.env.APP_KEY),
