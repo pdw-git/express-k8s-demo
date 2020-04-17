@@ -5,37 +5,124 @@
 const mongoose = require( 'mongoose' );
 const logger = require('../../app_utilities/logger');
 const messages = require('../../app_utilities/messages').messages;
-
-let retryCount = 0;
-let maxRetries = 10;
-let connected = false;
+const configSchema = require('./schemas/appConfiguration');
+const appConfig = require('./config');
+const mongo = require('./mongoActions');
 
 const dbURI_Config = process.env.MONGO_URI+process.env.MONGO_DB_NAME;
-logger._info({filename: __filename, methodname: 'main', message: 'MONGO dbURI: '+dbURI_Config});
 
-connectToMongo(dbURI_Config);
+let retryCount = 0;
+let maxRetries = 100;
+let connected = false;
+
+module.exports.dbConnected = isDB_connected;
+
+//if there is no db connection then try to connect to defined database
+
+!connected ? connectToMongo(dbURI_Config): logger._info({filename: __filename, methodname: 'main', message: 'Connected to a database'});
+
+//----------------------------------------------------------------------------------------------------------------------
+//Handle mongoose events on DB connection and DB disconnection
+//----------------------------------------------------------------------------------------------------------------------
 
 mongoose.connection.on('disconnected', function (){
-    logger._info({filename: __filename, methodname: 'mongoose.connection.on(disconnected)', message: 'disconnected from: '+dbURI_Config })
+
+    let methodname = 'mongoose.connection.on.disconnected';
+
+    logger._error({filename: __filename, methodname: methodname, message: 'disconnected from: '+dbURI_Config });
+
+    connected = false;
+
 });
 
+mongoose.connection.on('reconnected', function (){
+
+    let methodname = 'mongoose.connection.on.reconnected';
+
+    logger._error({filename: __filename, methodname: methodname, message: 'reconnected to: '+dbURI_Config });
+
+    connected = true;
+
+});
+
+mongoose.connection.on('connecting', function (){
+
+    let methodname = 'mongoose.connection.on.connecting';
+
+    logger._error({filename: __filename, methodname: methodname, message: 'connecting to: '+dbURI_Config });
+
+
+});
+
+mongoose.connection.on('connected', function(){
+
+    let methodname = 'mongoose.connection.on.connected';
+
+    logger._info({filename: __filename, methodname: methodname, message: 'create initial applicaiton configuratiuon in DB' });
+
+    try {
+        mongo.createModel(configSchema.getSchema());
+
+        mongo.createConfig(appConfig.getConfig());
+
+    }
+    catch(err){
+
+        logger._error({filename: __filename, methodname: methodname, message: 'Error creating configuration data: '+err.message });
+
+    }
+
+});
+
+//----------------------------------------------------------------------------------------------------------------------
+//DB connection functions
+//----------------------------------------------------------------------------------------------------------------------
+
+/**
+ * connectToMongo
+ *
+ * @param uri
+ */
 function connectToMongo(uri){
 
     let methodname = 'connectToMongo';
+
+    logger._info({filename: __filename, methodname: methodname, message: 'Attempting connection to ' + uri});
 
     if ((retryCount < maxRetries) && (!connected))
     {
 
         try {
-            mongoose.connect(uri, {useUnifiedTopology: true, useNewUrlParser: true}).then(() => {
+            mongoose.connect(uri, {useUnifiedTopology: true, useNewUrlParser: true}).
+            then(() => {
+
                 logger._info({filename: __filename, methodname: methodname, message: 'connected to: ' + uri});
                 connected = true;
+                retryCount = 0;
+
+            }).
+            catch((error) => {
+
                 retryCount++;
-            }).catch((error) => {
-                handleConnectionError(error)
+
+                if( retryCount < maxRetries){
+
+                    logger._info({filename: __filename, methodname: methodname, message: error.message+': connected: '+connected+': retry count : ' + retryCount});
+                    connectToMongo(dbURI_Config);
+
+                }
+                else {
+
+                    handleConnectionError(error);
+
+                }
+
             });
+
         } catch (err) {
+
             handleConnectionError(err);
+
         }
 
     }
@@ -44,8 +131,23 @@ function connectToMongo(uri){
         handleConnectionError(new Error('cannot connect: Retry attempts: '+retryCount));
 
     }
+
 }
 
+/**
+ * isDB_connected
+ *
+ * @returns {boolean}
+ */
+function isDB_connected(){
+    return connected;
+}
+
+/**
+ * handleConnectionError
+ *
+ * @param err
+ */
 function handleConnectionError(err){
 
     let methodname = 'handleConnectionError';
@@ -70,6 +172,10 @@ let gracefulShutdown = function(msg, exit){
 
 };
 
+/**
+ * stop
+ * @param msg
+ */
 let stop = function(msg){
     logger._info({filename: __filename, methodname: 'process.once', message: 'exit by : '+msg});
     process.exit(0);
@@ -83,7 +189,3 @@ process.once('SIGUSR2', function () {
 process.on('SIGINT', function () {
     gracefulShutdown('app termination - SIGINT', stop);
 });
-
-
-
-require('./project.js');
