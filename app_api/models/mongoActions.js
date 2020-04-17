@@ -22,6 +22,8 @@ function findObj(findObject, mongoObjectName, callback){
 
     let methodname = 'findObj';
 
+    logger._debug({filename: __filename, methodname: methodname, message: messages.started});
+
     getMongoObject(mongoObjectName) ?
         getMongoObject(mongoObjectName).find(findObject, callback).sort(mongoObjectName) :
         logger._error({filename:__filename, methodname: methodname, message: messages.mongo.cannot_find_object+mongoObjectName});
@@ -72,6 +74,8 @@ function deleteObj(mongoObjectName, id, callback){
 
     let methodname = 'deleteObj';
 
+    logger._debug({filename: __filename, methodname: methodname, message: messages.started});
+
     getMongoObject(mongoObjectName)?
         getMongoObject(mongoObjectName).findOneAndDelete({_id: id}, callback): //.exec(callback):
         logger._error({filename: __filename, methodname: methodname, message: messages.mongo.cannot_get_model});
@@ -90,6 +94,8 @@ function updateObj(mongoObjectName, id, plugin, callback){
 
     let methodname = 'update';
 
+    logger._debug({filename: __filename, methodname: methodname, message: messages.started});
+
     getMongoObject(mongoObjectName) ?
         getMongoObject(mongoObjectName).findOne(id, callback) :
         logger._error({filename: __filename, methodname: methodname, message: messages.mongo.cannot_get_model});
@@ -101,6 +107,8 @@ function updateObj(mongoObjectName, id, plugin, callback){
 module.exports.createModel = function(configSchema){
 
     let methodname = 'createModel';
+
+    logger._debug({filename: __filename, methodname: methodname, message: messages.started});
 
     mongoose.model(config.mongo.configObjectName, configSchema);
 
@@ -115,6 +123,8 @@ module.exports.createModel = function(configSchema){
 function createConfig(dataObject){
 
     let methodname = 'createConfig';
+
+    logger._debug({filename: __filename, methodname: methodname, message: messages.started});
 
     findObj({}, config.mongo.configObjectName, (err,doc)=>{
         if(err){
