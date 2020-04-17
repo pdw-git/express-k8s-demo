@@ -19,7 +19,7 @@ module.exports.dbConnected = isDB_connected;
 
 //if there is no db connection then try to connect to defined database
 
-!connected ? connectToMongo(dbURI_Config): logger._info({filename: __filename, methodname: 'main', message: 'Connected to a database'});
+!connected ? connectToMongo(dbURI_Config): logger._info({filename: __filename, methodname: 'main', message: messages.db.connected_to+dbURI_Config});
 
 //----------------------------------------------------------------------------------------------------------------------
 //Handle mongoose events on DB connection and DB disconnection
@@ -29,7 +29,7 @@ mongoose.connection.on('disconnected', function (){
 
     let methodname = 'mongoose.connection.on.disconnected';
 
-    logger._error({filename: __filename, methodname: methodname, message: 'disconnected from: '+dbURI_Config });
+    logger._error({filename: __filename, methodname: methodname, message: messages.db.disconnected_from+dbURI_Config });
 
     connected = false;
 
@@ -39,7 +39,7 @@ mongoose.connection.on('reconnected', function (){
 
     let methodname = 'mongoose.connection.on.reconnected';
 
-    logger._error({filename: __filename, methodname: methodname, message: 'reconnected to: '+dbURI_Config });
+    logger._info({filename: __filename, methodname: methodname, message: messages.db.reconnecting_to+dbURI_Config });
 
     connected = true;
 
@@ -49,7 +49,7 @@ mongoose.connection.on('connecting', function (){
 
     let methodname = 'mongoose.connection.on.connecting';
 
-    logger._error({filename: __filename, methodname: methodname, message: 'connecting to: '+dbURI_Config });
+    logger._info({filename: __filename, methodname: methodname, message: messages.db.connecting_to+dbURI_Config });
 
 
 });
@@ -58,7 +58,7 @@ mongoose.connection.on('connected', function(){
 
     let methodname = 'mongoose.connection.on.connected';
 
-    logger._info({filename: __filename, methodname: methodname, message: 'create initial applicaiton configuratiuon in DB' });
+    logger._info({filename: __filename, methodname: methodname, message: messages.db.create_config });
 
     try {
         mongo.createModel(configSchema.getSchema());
@@ -68,7 +68,7 @@ mongoose.connection.on('connected', function(){
     }
     catch(err){
 
-        logger._error({filename: __filename, methodname: methodname, message: 'Error creating configuration data: '+err.message });
+        logger._error({filename: __filename, methodname: methodname, message: messages.db.create_config_error+err.message });
 
     }
 
@@ -87,7 +87,7 @@ function connectToMongo(uri){
 
     let methodname = 'connectToMongo';
 
-    logger._info({filename: __filename, methodname: methodname, message: 'Attempting connection to ' + uri});
+    logger._info({filename: __filename, methodname: methodname, message: messages.db.connecting_to + uri});
 
     if ((retryCount < maxRetries) && (!connected))
     {
@@ -96,18 +96,21 @@ function connectToMongo(uri){
             mongoose.connect(uri, {useUnifiedTopology: true, useNewUrlParser: true}).
             then(() => {
 
-                logger._info({filename: __filename, methodname: methodname, message: 'connected to: ' + uri});
+                logger._info({filename: __filename, methodname: methodname, message: messages.db.connected_to + uri});
                 connected = true;
                 retryCount = 0;
 
             }).
             catch((error) => {
 
+                //clean up the previous connection attempt.
+                mongoose.connection.close(()=>{});
+
                 retryCount++;
 
                 if( retryCount < maxRetries){
 
-                    logger._info({filename: __filename, methodname: methodname, message: error.message+': connected: '+connected+': retry count : ' + retryCount});
+                    logger._info({filename: __filename, methodname: methodname, message: error.message+': Connected: '+connected+': retry count : ' + retryCount});
                     connectToMongo(dbURI_Config);
 
                 }
@@ -128,7 +131,7 @@ function connectToMongo(uri){
     }
     else {
 
-        handleConnectionError(new Error('cannot connect: Retry attempts: '+retryCount));
+        handleConnectionError(new Error(messages.db.connection_error+retryCount));
 
     }
 
@@ -163,7 +166,7 @@ function handleConnectionError(err){
 let gracefulShutdown = function(msg, exit){
     mongoose.connection.close(function(){
 
-        logger._info({filename: __filename, methodname: 'gracefulShutdown', message: 'closed connection with: '+dbURI_Config });
+        logger._info({filename: __filename, methodname: 'gracefulShutdown', message: messages.db.closed_connection+dbURI_Config });
 
         exit(msg);
 

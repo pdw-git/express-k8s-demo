@@ -22,6 +22,7 @@ const messages = {
     cannot_parse_JSON_file: 'Cannot parse file to JSON',
     no_res_json: 'No response JSON defined',
     http_response_sent: 'HTTP response sent with status: ',
+    error: 'Error: ',
     api:{
         good_status: 'Sending good status',
         cannot_find_test_files: 'Cannot find the test files ',
@@ -54,6 +55,17 @@ const messages = {
     basic: {
        child_process_error: 'The child process exited with error: ',
        child_process_completed: 'The child process has completed, exit code: '
+    },
+    db: {
+        connected_to: 'Connected to: ',
+        disconnected_from: 'Disconnected from: ',
+        connecting_to: 'Connecting to: ',
+        reconnecting_to: 'Reconnecting to: ',
+        create_config: 'Create initial config in db',
+        create_config_error: 'Error creating applicaiton configuration: ',
+        connection_error: 'Cannot connect: Retry attempts: ',
+        closed_connection: 'Closed connection with: '
+
     }
 
 };
