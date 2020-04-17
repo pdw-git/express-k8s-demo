@@ -7,7 +7,6 @@ const mongoose = require('mongoose');
 const config = require('../../app_config/config');
 const logger = require('../../app_utilities/logger');
 const mongo = require('./mongoActions');
-const messages = require('../../app_utilities/messages').messages;
 
 //Create a schema for the config data
 
@@ -58,8 +57,7 @@ const configSchema = new mongoose.Schema(
 );
 
 
-//Create a model for Mongoose from the defined schema
-mongoose.model(config.mongo.configObjectName, configSchema);
+mongo.createModel(configSchema);
 
 //create the required test object for the configuration document
 
@@ -100,43 +98,7 @@ const baselineConfiguration = {
     tests: tests
 };
 
-//There should only be one configuration object for the application.
-//Check if one exists, if it does do not update it.
-
-mongo.find({}, config.mongo.configObjectName, (err,doc)=>{
-    if(err){
-        logger._error({filename: __filename, methodname:'mongo.find', message: err.message});
-    }
-    else {
-
-        switch(doc.length){
-
-            //Nothing found: create the config data object
-            case 0 :
-                logger._debug({filename: __filename, methodname: 'mongo.find.create', message: 'create new config object'});
-                mongo.create(config.mongo.configObjectName, baselineConfiguration);
-                logger._info({filename: __filename, methodname: 'mongo.find.create', message: messages.mongo.object_exists+config.mongo.configObjectName});
-                break;
-
-            //There is a config object: delete it and create a new one
-            case 1 :
-                logger._debug({filename: __filename, methodname: 'mongo.find.create', message: 'delete '+doc[0]._id+' create new config object'});
-                mongo.delete(config.mongo.configObjectName, doc[0]._id, (err)=>{
-                    err ?
-                        logger._error({filename: __filename, methodname:'mongo.find.delete.create', message: err}) :
-                        mongo.create(config.mongo.configObjectName,baselineConfiguration);
-                });
-                break;
-
-            //if the length is greater than 1 then there is a problem with the database, log an error.
-            default:
-                logger._error({filename: __filename, methodname:'mongo.find', message: messages.mongo.invalid_doc_length+doc.length});
-
-        }
-
-    }
-
-});
+mongo.createConfig(baselineConfiguration);
 
 
 

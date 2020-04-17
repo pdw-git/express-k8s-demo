@@ -10,7 +10,6 @@ let retryCount = 0;
 let maxRetries = 10;
 let connected = false;
 
-//const dbURI_Config = process.env.MONGO_URI+process.env.MONGO_PORT+'/'+process.env.MONGO_DB_NAME;
 const dbURI_Config = process.env.MONGO_URI+process.env.MONGO_DB_NAME;
 logger._info({filename: __filename, methodname: 'main', message: 'MONGO dbURI: '+dbURI_Config});
 
@@ -41,6 +40,8 @@ function connectToMongo(uri){
 
     }
     else {
+
+        handleConnectionError(new Error('cannot connect: Retry attempts: '+retryCount));
 
     }
 }
