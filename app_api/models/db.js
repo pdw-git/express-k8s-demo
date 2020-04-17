@@ -131,7 +131,7 @@ function connectToMongo(uri){
     }
     else {
 
-        handleConnectionError(new Error(messages.db.connection_error+retryCount));
+        handleConnectionError(new Error(messages.db.connection_error_retry+retryCount));
 
     }
 
@@ -154,7 +154,7 @@ function isDB_connected(){
 function handleConnectionError(err){
 
     let methodname = 'handleConnectionError';
-    let message = messages.mongo.connection_error + dbURI_Config + ": error: " + err.message;
+    let message = messages.mongo.connection_error_retry + dbURI_Config + ": error: " + err.message;
     logger._error({filename: __filename, methodname: methodname, message: message});
 
 }

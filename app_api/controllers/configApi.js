@@ -5,6 +5,7 @@ const config = require('../../app_config/config');
 const mongo = require('../models/mongoActions');
 const messages = require('../../app_utilities/messages').messages;
 const responseFunctions = require('./responseFunctions');
+const db = require('../models/db');
 const filename = __filename;
 
 
@@ -19,65 +20,69 @@ module.exports.postConfig = function(req,res){
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=> {
 
-        // noinspection JSUnresolvedVariable
-        if(!req.params.configid){
-            responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.error, {msg: messages.req_params_not_found+'req.params.config'});
+        if(db.dbConnected()) {
+            // noinspection JSUnresolvedVariable
+            if (!req.params.configid) {
+                responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.error, {msg: messages.req_params_not_found + 'req.params.config'});
+
+            } else {
+                // noinspection JSUnresolvedVariable
+                mongo.update(config.mongo.configObjectName, {_id: req.params.configid}, updateConfig, (err, doc) => {
+
+                    let plugin = updateConfig;
+
+                    if (err) {
+                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.mongo.invalid_id});
+
+                    } else {
+
+                        if (typeof (req.body) === "object") {
+
+                            if (typeof (plugin) !== 'function') {
+
+                                responseFunctions.sendJSONresponse(new Error(messages.mongo.typeof_plugin_error), res, filename, methodname, config.status.error, {msg: messages.mongo.typeof_plugin_error});
+
+                            } else {
+
+                                plugin(doc, req.body, (err, doc) => {
+
+                                    if (err) {
+
+                                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.config.config_invalid_data});
+                                    } else {
+
+                                        doc.save().then(() => { //removed product to remove warning
+
+                                            logger.emitter.emit('level');
+                                            responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.config_updated});
+
+                                        }).catch((reason) => {
+
+                                            responseFunctions.sendJSONresponse(reason, res, filename, methodname, config.status.error, {msg: messages.config.config_was_not_updated + reason});
+
+                                        });
+
+                                    }
+
+                                });
+
+                            }
+
+                        } else {
+
+                            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.api.object_undefined});
+                        }
+
+                    }
+
+                });
+
+            }
 
         }
-        else {
-             // noinspection JSUnresolvedVariable
-            mongo.update(config.mongo.configObjectName,{_id: req.params.configid}, updateConfig, (err, doc) => {
+        else{
 
-                let plugin = updateConfig;
-
-                if (err) {
-                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.mongo.invalid_id});
-
-                } else {
-
-                    if(typeof (req.body) === "object"){
-
-                        if(typeof (plugin) !== 'function'){
-
-                            responseFunctions.sendJSONresponse(new Error(messages.mongo.typeof_plugin_error), res, filename, methodname, config.status.error, {msg: messages.mongo.typeof_plugin_error});
-
-                        }
-                        else {
-
-                            plugin(doc, req.body, (err, doc)=>{
-
-                                if(err){
-
-                                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.config.config_invalid_data});
-                                }
-                                else{
-
-                                    doc.save().then(() => { //removed product to remove warning
-
-                                        logger.emitter.emit('level');
-                                        responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.config_updated});
-
-                                    }).catch((reason) => {
-
-                                        responseFunctions.sendJSONresponse(reason, res, filename, methodname, config.status.error, {msg: messages.config.config_was_not_updated + reason});
-
-                                    });
-
-                                }
-
-                            });
-
-                        }
-
-                    }
-                    else{
-
-                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.api.object_undefined });
-                    }
-
-                }
-
-            });
+            responseFunctions.sendJSONresponse(new Error(messages.db.not_available), res, filename, methodname, config.status.error, {msg: messages.db.not_available});
 
         }
 
@@ -126,11 +131,19 @@ module.exports.getConfig = function(req,res){
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=>{
 
-        mongo.find({},mongo.configProject, (err, doc)=>{
+        if (db.dbConnected()) {
 
-            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, doc);
+            mongo.find({}, mongo.configProject, (err, doc) => {
 
-        });
+                responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, doc);
+
+            });
+        }
+        else {
+
+            responseFunctions.sendJSONresponse(new Error(messages.db.not_available), res, filename, methodname, config.status.error, {msg: messages.db.not_available});
+
+        }
 
     });
 
@@ -150,25 +163,34 @@ module.exports.deleteConfig = function (req, res) {
         // noinspection JSUnresolvedVariable
         let id = req.params.configid;
 
-        // noinspection JSUnresolvedVariable
-        mongo.delete(mongo.configProject, id, (err)=>{ //removed doc to supress warning
+        if(db.dbConnected()) {
+            // noinspection JSUnresolvedVariable
+            mongo.delete(mongo.configProject, id, (err) => { //removed doc to supress warning
 
-            if(err){
+                if (err) {
 
-                responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {err: err.msg});
-            }
-            else {
-                // noinspection JSUnresolvedVariable
-                responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, {msg: mongo.configProject + ': deleted doc: ' +id});
+                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {err: err.msg});
 
-                logger._info({filename: __filename, methodname: methodname, message: mongo.configProject + ': deleted doc: ' +id});
+                } else {
+                    // noinspection JSUnresolvedVariable
+                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, {msg: mongo.configProject + ': deleted doc: ' + id});
 
-            }
+                    logger._info({
+                        filename: __filename,
+                        methodname: methodname,
+                        message: mongo.configProject + ': deleted doc: ' + id
+                    });
 
-        });
+                }
 
-        logger._info({filename: __filename, methodname: 'deleteConfig', message: 'id: '+id});
+            });
 
+        }
+        else {
+
+            responseFunctions.sendJSONresponse(new Error(messages.db.not_available), res, filename, methodname, config.status.error, {msg: messages.db.not_available});
+
+        }
 
     });
 

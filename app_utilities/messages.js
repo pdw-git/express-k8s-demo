@@ -34,7 +34,7 @@ const messages = {
         object_exists: 'Mongo object already exists: ',
         cannot_get_model: 'Cannot get a model',
         invalid_doc_length: 'Document does not contain the expected number of elements: doc.length = ',
-        connection_error: 'Cannot connect to : ',
+        connection_error_retry: 'Cannot connect to : ',
         typeof_plugin_error: 'The update plugin is not a function',
         object_created: 'Successful config creation',
         invalid_id: 'Configid is not valid',
@@ -63,8 +63,9 @@ const messages = {
         reconnecting_to: 'Reconnecting to: ',
         create_config: 'Create initial config in db',
         create_config_error: 'Error creating applicaiton configuration: ',
-        connection_error: 'Cannot connect: Retry attempts: ',
-        closed_connection: 'Closed connection with: '
+        connection_error_retry: 'Cannot connect: Retry attempts: ',
+        closed_connection: 'Closed connection with: ',
+        not_available: 'DB is not available'
 
     }
 
