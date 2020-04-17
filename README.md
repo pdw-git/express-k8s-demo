@@ -112,21 +112,23 @@ npm start
 
 On success you will see the following on the console:
 
->>express-api@1.0.0 start _home directory_/WebstormProjects/express-api
+>>/usr/local/bin/node /usr/local/lib/node_modules/npm/bin/npm-cli.js start
 
->>node ./bin/www --debug
+>> express-api@1.0.0 start /Users/whitep/Node/WebstormProjects/express-api
+>> node ./bin/www --debug
 
->>info: application logging level: debug {"timestamp":"2020-03-26T11:23:43.567Z"}
+>>info: application logging level: info {"timestamp":"2020-04-17T19:35:06.879Z"}
 
->>info: /home/whitep/WebstormProjects/express-api/bin/www-main : Application port: 3443 {"timestamp":"2020-03-26T11:23:43.718Z"}
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-connectToMongo : Connecting to: mongodb://localhost:27017/EXPRESS_API {"timestamp":"2020-04-17T19:35:06.904Z"}
 
->>info: /home/whitep/WebstormProjects/express-api/bin/www-undefined : Certificate provider: SELF SIGNED {"timestamp":"2020-03-26T11:23:43.730Z"}
+>>info: /Users/whitep/Node/WebstormProjects/express-api/bin/www-main : Application port: 3000 Encrpytion: no {"timestamp":"2020-04-17T19:35:07.076Z"}
 
->>info: /home/whitep/WebstormProjects/express-api/app_api/models/db.js-mongoose.connection.on(connection) : connected to: mongodb://localhost:27017/EXPRESS_API {"timestamp":"2020-03-29T14:17:53.847Z"}
-  
->>info: /home/whitep/WebstormProjects/express-api/app_api/models/mongoActions.js-create : mongoObjectName: configuration {"timestamp":"2020-03-29T14:17:53.870Z"}
-  
->>info: /home/whitep/WebstormProjects/express-api/app_api/models/mongoActions.js-create : Successful config initialisation {"timestamp":"2020-03-29T14:17:53.910Z"}
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-mongoose.connection.on.connected : Create initial config in db {"timestamp":"2020-04-17T19:35:13.156Z"}
+
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/mongoActions.js-createModel : Created Mongoose model: configuration {"timestamp":"2020-04-17T19:35:13.166Z"}
+
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-connectToMongo : Connected to: mongodb://localhost:27017/EXPRESS_API {"timestamp":"2020-04-17T19:35:13.179Z"}
+
 
 
 NOTE: by default the application starts in debug mode and has verbose tracing enabled
@@ -139,7 +141,7 @@ The following RESTful APIs are provided for testing
 
 >>GET api/info - returns information about the application
 
->>GET api/status - returns static status information
+>>GET api/status - returns the status of the data base connection
 
 >>GET api/version - returns version information for the api
 
@@ -173,4 +175,14 @@ docker-compose build
 
 docker-compose up
 
+
+## Kubernetes
+
+There are yaml files to enable the deployment of the app and the supporting database in Kubernetes.
+
+Assuming there is a kubernetes environment these two applications can be deployed into the default namespace using
+
+>>kubectl apply -f kube
+
+From the directory that contains kube. 
 
