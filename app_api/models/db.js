@@ -6,10 +6,6 @@ const mongoose = require( 'mongoose' );
 const logger = require('../../app_utilities/logger');
 const messages = require('../../app_utilities/messages').messages;
 
-logger._info({filename: __filename, methodname: 'main', message: 'process.env.MONGO_URI: '+process.env.MONGO_URI});
-logger._info({filename: __filename, methodname: 'main', message: 'process.env.MONGO_PORT: '+process.env.MONGO_PORT});
-logger._info({filename: __filename, methodname: 'main', message: 'process.env.MONGO_DB_NAME: '+process.env.MONGO_DB_NAME});
-
 let retryCount = 0;
 let maxRetries = 10;
 let connected = false;
