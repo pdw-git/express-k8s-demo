@@ -100,141 +100,124 @@ module.exports.getTest = function(req, res){
 
     if(db.dbConnected()) {
 
-        mongo.find({}, mongo.configProject, (err, doc) => {
+        try {
 
-            if (err) {
+            mongo.find({}, mongo.configProject, (err, doc) => {
 
-                logger._error({filename: filename, methodname: methodname, message: err});
+                if ((err) || (doc.length === 0)) {
 
-                responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: message.mongo.cannot_find_object + mongo.configProject});
+                    logger._error({filename: filename, methodname: methodname, message: err});
 
-            } else {
+                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.mongo.cannot_find_object + mongo.configProject});
 
-                let testFiles = doc[0].tests[0].directory !== undefined ?
-                    doc[0].tests[0].directory :
-                    logger._error({
-                        filename: filename,
-                        methodname: methodname,
-                        message: messages.api.object_undefined + 'doc[0].tests[0].directory'
-                    });
+                } else {
 
-                if (fs.existsSync(testFiles)) {
+                    let testFiles = doc[0].tests[0].directory !== undefined ?
+                        doc[0].tests[0].directory :
+                        logger._error({filename: filename, methodname: methodname, message: messages.api.object_undefined + 'doc[0].tests[0].directory'});
 
-                    // noinspection JSUnresolvedVariable
-                    const testScript = doc[0].homeDir + config.tests[0].testScript;
-                    const executionDIR = doc[0].homeDir;
-                    const deployment = doc[0].deploymentMethod;
-                    const results = doc[0].homeDir + config.tests[0].results;
-                    const command = testScript + ' ' + executionDIR + ' ' + deployment + ' ' + testFiles + ' ' + results;
+                    if (fs.existsSync(testFiles)) {
 
-                    try {
+                        // noinspection JSUnresolvedVariable
+                        const testScript = doc[0].homeDir + config.tests[0].testScript;
+                        const executionDIR = doc[0].homeDir;
+                        const deployment = doc[0].deploymentMethod;
+                        const results = doc[0].homeDir + config.tests[0].results;
+                        const command = testScript + ' ' + executionDIR + ' ' + deployment + ' ' + testFiles + ' ' + results;
 
-                        //execute the shell script that will run the mocha tests
-                        const mocha = exec(command, (err, stdout, stderr) => {
+                        try {
 
-                            let methodname = 'exec';
+                            //execute the shell script that will run the mocha tests
+                            const mocha = exec(command, (err, stdout, stderr) => {
 
-                            let message = err ? 'ERROR: ' + err + ': STDERR: ' + stderr : 'Started tests';
+                                let methodname = 'exec';
 
-                            err ? logger._error({filename: __filename, methodname: methodname, message: message}) :
-                                logger._info({filename: __filename, methodname: methodname, message: message});
+                                let message = err ? 'ERROR: ' + err + ': STDERR: ' + stderr : 'Started tests';
 
-                        });
+                                err ? logger._error({filename: __filename, methodname: methodname, message: message}) :
+                                    logger._info({filename: __filename, methodname: methodname, message: message});
 
-                        //Handle the close event of Mocha
-                        mocha.on('close', (code) => {
-                            const methodname = 'mocha.on(close)';
+                            });
 
-                            //do an async read of the results file and then respond
-                            fs.readFile(doc[0].homeDir + config.tests[0].results, (err, data) => {
+                            //Handle the close event of Mocha
+                            mocha.on('close', (code) => {
+                                const methodname = 'mocha.on(close)';
 
-                                if (err) {
+                                //do an async read of the results file and then respond
+                                fs.readFile(doc[0].homeDir + config.tests[0].results, (err, data) => {
 
-                                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.cannot_parse_JSON_file});
+                                    if (err) {
 
-                                } else {
-
-                                    //if mocha does not complete with an exit code of 0 or 1 then respond with an error
-                                    //Mocha will exit with a 1 when an error is found but this is reported in the JSON
-                                    //output where it will be captured in the response output.
-                                    if ((code !== 0) && (code !== 1)) {
-
-
-                                        responseFunctions.sendJSONresponse(
-                                            (new Error('Mocha exited with code: ' + code)),
-                                            res,
-                                            filename,
-                                            methodname,
-                                            config.status.error,
-                                            {msg: 'exit code: ' + code + ' data: ' + data});
+                                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.cannot_parse_JSON_file});
 
                                     } else {
 
-                                        //there should be a valid JSON file that can be parsed
+                                        //if mocha does not complete with an exit code of 0 or 1 then respond with an error
+                                        //Mocha will exit with a 1 when an error is found but this is reported in the JSON
+                                        //output where it will be captured in the response output.
+                                        if ((code !== 0) && (code !== 1)) {
 
-                                        let parsedData = null;
+                                            responseFunctions.sendJSONresponse((new Error('Mocha exited with code: ' + code)), res, filename, methodname, config.status.error, {msg: filename+'-'+methodname+': exit code: ' + code + ' data: ' + data});
 
-                                        try {
-                                            // noinspection JSCheckFunctionSignatures
-                                            parsedData = JSON.parse(data);
-                                        } catch (err) {
+                                        } else {
 
-                                            logger._error({
-                                                filename: __filename,
-                                                methodname: methodname,
-                                                message: messages.cannot_parse_JSON_file
-                                            });
-                                            parsedData = null;
+                                            //there should be a valid JSON file that can be parsed
 
-                                        } finally {
+                                            let parsedData = null;
 
-                                            parsedData === null ?
-                                                responseFunctions.sendJSONresponse((
-                                                        new Error(messages.cannot_parse_JSON_file)),
-                                                    res, __filename, methodname,
-                                                    config.status.error,
-                                                    {msg: messages.cannot_parse_JSON_file}) :
-                                                responseFunctions.sendJSONresponse(null, res, __filename, methodname, config.status.good, getTestResults(parsedData));
+                                            try {
+                                                // noinspection JSCheckFunctionSignatures
+                                                parsedData = JSON.parse(data);
+                                            } catch (err) {
 
-                                            //responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, getTestResults(parsedData));
+                                                logger._error({filename: __filename, methodname: methodname, message: messages.cannot_parse_JSON_file});
+                                                parsedData = null;
 
-                                            logger._info({
-                                                filename: filename,
-                                                methodname: methodname,
-                                                message: messages.basic.child_process_completed + code
-                                            });
+                                            } finally {
+
+                                                parsedData === null ?
+                                                    responseFunctions.sendJSONresponse((new Error(messages.cannot_parse_JSON_file)), res, __filename, methodname, config.status.error) :
+                                                    responseFunctions.sendJSONresponse(null, res, __filename, methodname, config.status.good, getTestResults(parsedData));
+
+                                                logger._info({filename: filename, methodname: methodname, message: messages.basic.child_process_completed + code});
+
+                                            }
 
                                         }
 
                                     }
 
-                                }
+                                });
 
                             });
 
-                        });
+                        } catch (err) {
 
-                    } catch (err) {
+                            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
 
-                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.basic.child_process_error + err});
+                        }
+
+                    } else {
+                        //Test files were not found, log error and return appropriate status in response.
+
+                        responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.error);
 
                     }
 
-                } else {
-                    //Test files were not found, log error and return appropriate status in response.
-
-                    responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.error, {msg: messages.api.cannot_find_test_files + testFiles});
-
                 }
 
-            }
+            });
+        }
+        catch(err){
 
-        });
+            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+
+        }
 
     }
     else{
 
-        responseFunctions.sendJSONresponse(new Error(messages.db.not_available), res, filename, methodname, config.status.error, {msg: messages.db.not_available});
+        responseFunctions.sendJSONresponse(new Error(messages.db.not_available), res, filename, methodname, config.status.error);
 
     }
 

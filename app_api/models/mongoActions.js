@@ -159,5 +159,7 @@ function createConfig(dataObject){
  * @returns {Model}
  */
 function getMongoObject(mongoObjectName){
+
     return mongoose.model(mongoObjectName);
+
 }

@@ -17,7 +17,7 @@ module.exports.sendJSONresponse = function(err, res, filename, methodname, statu
 
     if (err) {
 
-        let no_additional_info = 'no additional info';
+        let no_additional_info = filename+' - '+methodname;
 
         let error = {
 

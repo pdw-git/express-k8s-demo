@@ -40,7 +40,7 @@ module.exports.postConfig = function(req,res){
 
                             if (typeof (plugin) !== 'function') {
 
-                                responseFunctions.sendJSONresponse(new Error(messages.mongo.typeof_plugin_error), res, filename, methodname, config.status.error, {msg: messages.mongo.typeof_plugin_error});
+                                responseFunctions.sendJSONresponse(new Error(messages.mongo.typeof_plugin_error), res, filename, methodname, config.status.error);
 
                             } else {
 
@@ -48,7 +48,7 @@ module.exports.postConfig = function(req,res){
 
                                     if (err) {
 
-                                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.config.config_invalid_data});
+                                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
                                     } else {
 
                                         doc.save().then(() => { //removed product to remove warning
@@ -58,7 +58,7 @@ module.exports.postConfig = function(req,res){
 
                                         }).catch((reason) => {
 
-                                            responseFunctions.sendJSONresponse(reason, res, filename, methodname, config.status.error, {msg: messages.config.config_was_not_updated + reason});
+                                            responseFunctions.sendJSONresponse(reason, res, filename, methodname, config.status.error);
 
                                         });
 
@@ -70,7 +70,7 @@ module.exports.postConfig = function(req,res){
 
                         } else {
 
-                            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.api.object_undefined});
+                            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
                         }
 
                     }
@@ -82,7 +82,7 @@ module.exports.postConfig = function(req,res){
         }
         else{
 
-            responseFunctions.sendJSONresponse(new Error(messages.db.not_available), res, filename, methodname, config.status.error, {msg: messages.db.not_available});
+            responseFunctions.sendJSONresponse(new Error(messages.db.not_available), res, filename, methodname, config.status.error);
 
         }
 
@@ -141,7 +141,7 @@ module.exports.getConfig = function(req,res){
         }
         else {
 
-            responseFunctions.sendJSONresponse(new Error(messages.db.not_available), res, filename, methodname, config.status.error, {msg: messages.db.not_available});
+            responseFunctions.sendJSONresponse(new Error(messages.db.not_available), res, filename, methodname, config.status.error);
 
         }
 
@@ -163,32 +163,39 @@ module.exports.deleteConfig = function (req, res) {
         // noinspection JSUnresolvedVariable
         let id = req.params.configid;
 
-        if(db.dbConnected()) {
-            // noinspection JSUnresolvedVariable
-            mongo.delete(mongo.configProject, id, (err) => { //removed doc to supress warning
+        try {
 
-                if (err) {
+            if (db.dbConnected()) {
+                // noinspection JSUnresolvedVariable
+                mongo.delete(mongo.configProject, id, (err) => { //removed doc to supress warning
 
-                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {err: err.msg});
+                    if (err) {
 
-                } else {
-                    // noinspection JSUnresolvedVariable
-                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, {msg: mongo.configProject + ': deleted doc: ' + id});
+                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
 
-                    logger._info({
-                        filename: __filename,
-                        methodname: methodname,
-                        message: mongo.configProject + ': deleted doc: ' + id
-                    });
+                    } else {
+                        // noinspection JSUnresolvedVariable
+                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, {msg: mongo.configProject + ': deleted doc: ' + id});
 
-                }
+                        logger._info({
+                            filename: __filename,
+                            methodname: methodname,
+                            message: mongo.configProject + ': deleted doc: ' + id
+                        });
 
-            });
+                    }
 
+                });
+
+            } else {
+
+                responseFunctions.sendJSONresponse(new Error(messages.db.not_available), res, filename, methodname, config.status.error);
+
+            }
         }
-        else {
+        catch(err){
 
-            responseFunctions.sendJSONresponse(new Error(messages.db.not_available), res, filename, methodname, config.status.error, {msg: messages.db.not_available});
+            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
 
         }
 
