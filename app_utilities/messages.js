@@ -38,7 +38,8 @@ const messages = {
         typeof_plugin_error: 'The update plugin is not a function',
         object_created: 'Successful config creation',
         invalid_id: 'Configid is not valid',
-        created_model: 'Created Mongoose model: '
+        created_model: 'Created Mongoose model: ',
+        cannot_delete_object: "Cannot delete object: "
 
     },
     environment:{
