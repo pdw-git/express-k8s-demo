@@ -9,10 +9,7 @@ const serverOpts = require('./apiServerDefinitions');
 const apiCall = '/status';
 const testName = 'getStatusGoodStatus';
 
-const expectedBody = {
-    "status": 200,
-    "msg": "Sending good status"
-};
+const expectedBody = {mongo: process.env.MONGO_URI+process.env.MONGO_DB_NAME, connected: true};
 
 //============================================================================================
 // GET /api/version returns body and Good status

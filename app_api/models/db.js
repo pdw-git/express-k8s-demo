@@ -16,6 +16,7 @@ let maxRetries = 100;
 let connected = false;
 
 module.exports.dbConnected = isDB_connected;
+module.exports.getURI = getURI;
 
 //if there is no db connection then try to connect to defined database
 
@@ -144,6 +145,14 @@ function connectToMongo(uri){
  */
 function isDB_connected(){
     return connected;
+}
+
+/**
+ * getURI
+ * @returns {string}
+ */
+function getURI(){
+    return dbURI_Config;
 }
 
 /**
