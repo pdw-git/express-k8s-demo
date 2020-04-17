@@ -104,7 +104,7 @@ module.exports.createModel = function(configSchema){
 
     mongoose.model(config.mongo.configObjectName, configSchema);
 
-    logger._info({filename: __filename, methodName: methodname, message: messages.mongo.created_model+config.mongo.configObjectName});
+    logger._info({filename: __filename, methodname: methodname, message: messages.mongo.created_model+config.mongo.configObjectName});
 
 };
 
