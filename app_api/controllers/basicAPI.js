@@ -29,7 +29,7 @@ module.exports.getStatus = function(req, res){
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=> {
 
-        let responseMsg = db.dbConnected() ? {mongo: db.getURI(), connected: true} : {mongo: db.getURI(), connected: false};
+        let responseMsg = db.dbConnected() ? {mongo: db.getURI(), connected: true, logLevel: logger.getLogLevel()} : {mongo: db.getURI(), connected: false, logLevel: logger.getLogLevel()};
 
         responseFunctions.sendJSONresponse( null, res, filename, methodname, config.status.good, responseMsg);
 

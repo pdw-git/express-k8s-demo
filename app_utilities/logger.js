@@ -155,6 +155,10 @@ function setLoggingLevels(name, index){
 
 }
 
+module.exports.getLogLevel = function(){
+    return loggingLevelName;
+};
+
 module.exports._error = function(message){
     logMessage(levels[0], formatMessage(message));
 };
