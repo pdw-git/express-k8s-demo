@@ -22,7 +22,7 @@ function findObj(findObject, mongoObjectName, callback){
 
     let methodname = 'findObj';
 
-    logger._debug({filename: __filename, methodname: methodname, message: messages.started});
+    logger._debug({filename: __filename, methodname: methodname, message: messages.started+' : mongoObjectName : '+mongoObjectName+': '+': findObject '+JSON.stringify(findObject)});
 
     getMongoObject(mongoObjectName) ?
         getMongoObject(mongoObjectName).find(findObject, callback).sort(mongoObjectName) :
@@ -39,7 +39,7 @@ function createObj(mongoObjectName, dataObject){
 
     let methodname = 'createObj';
 
-    logger._debug({filename:__filename, methodname:methodname, message: messages.started});
+    logger._debug({filename:__filename, methodname:methodname, message: messages.started+' : mongoObjectName : '+mongoObjectName});
 
 
     if(getMongoObject(mongoObjectName)){
@@ -74,7 +74,7 @@ function deleteObj(mongoObjectName, id, callback){
 
     let methodname = 'deleteObj';
 
-    logger._debug({filename: __filename, methodname: methodname, message: messages.started});
+    logger._debug({filename: __filename, methodname: methodname, message: messages.started+' : mongoObjectName : '+mongoObjectName+': _id :'+id});
 
     getMongoObject(mongoObjectName)?
         getMongoObject(mongoObjectName).findOneAndDelete({_id: id}, callback): //.exec(callback):
@@ -94,7 +94,7 @@ function updateObj(mongoObjectName, id, plugin, callback){
 
     let methodname = 'update';
 
-    logger._debug({filename: __filename, methodname: methodname, message: messages.started});
+    logger._debug({filename: __filename, methodname: methodname, message: messages.started+' : mongoObjectName : '+mongoObjectName+': _id :'+id});
 
     getMongoObject(mongoObjectName) ?
         getMongoObject(mongoObjectName).findOne(id, callback) :
@@ -108,7 +108,7 @@ module.exports.createModel = function(configSchema){
 
     let methodname = 'createModel';
 
-    logger._debug({filename: __filename, methodname: methodname, message: messages.started});
+    logger._debug({filename: __filename, methodname: methodname, message: messages.started+': configSchema: '+JSON.stringify(configSchema)});
 
     mongoose.model(config.mongo.configObjectName, configSchema);
 
@@ -124,9 +124,10 @@ function createConfig(dataObject){
 
     let methodname = 'createConfig';
 
-    logger._debug({filename: __filename, methodname: methodname, message: messages.started});
+    logger._debug({filename: __filename, methodname: methodname, message: messages.started+': dataObject: '+JSON.stringify(dataObject)});
 
     findObj({}, config.mongo.configObjectName, (err,doc)=>{
+
         if(err){
             logger._error({filename: __filename, methodname:'mongo.find', message: err.message});
         }
