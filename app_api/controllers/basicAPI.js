@@ -14,6 +14,10 @@ const mongo = require('../models/mongoActions');
 const { exec } = require('child_process');
 const db = require('../models/db');
 
+// A simple testing lock. Stop a new test from being started until this flag is true.
+// This is in place because of the variences of running an external script and having
+// to read results from a file.
+let testRunning = false;
 
 /**
  * getStatus
@@ -115,7 +119,7 @@ module.exports.getTest = function(req, res){
                         doc[0].tests[0].directory :
                         logger._error({filename: filename, methodname: methodname, message: messages.api.object_undefined + 'doc[0].tests[0].directory'});
 
-                    if (fs.existsSync(testFiles)) {
+                    if ((fs.existsSync(testFiles)) && (!testRunning)) {
 
                         // noinspection JSUnresolvedVariable
                         const testScript = doc[0].homeDir + config.tests[0].testScript;
@@ -125,6 +129,8 @@ module.exports.getTest = function(req, res){
                         const command = testScript + ' ' + executionDIR + ' ' + deployment + ' ' + testFiles + ' ' + results;
 
                         try {
+
+                            testRunning = true;
 
                             //execute the shell script that will run the mocha tests
                             const mocha = exec(command, (err, stdout, stderr) => {
@@ -142,8 +148,11 @@ module.exports.getTest = function(req, res){
                             mocha.on('close', (code) => {
                                 const methodname = 'mocha.on(close)';
 
+
                                 //do an async read of the results file and then respond
                                 fs.readFile(doc[0].homeDir + config.tests[0].results, (err, data) => {
+
+                                    testRunning = false;
 
                                     if (err) {
 
@@ -192,6 +201,7 @@ module.exports.getTest = function(req, res){
 
                         } catch (err) {
 
+                            testRunning = false;
                             responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
 
                         }
@@ -199,7 +209,9 @@ module.exports.getTest = function(req, res){
                     } else {
                         //Test files were not found, log error and return appropriate status in response.
 
-                        responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.error);
+                        let errorMsg = testRunning ? {msg: 'Test already running'} : {msg: 'No test files'};
+
+                        responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, errorMsg );
 
                     }
 
