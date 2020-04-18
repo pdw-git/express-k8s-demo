@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/pdw-git/express-api#readme",
   "scripts": {
-    "start": "node ./bin/www --debug",
+    "start": "node ./bin/www",
     "test": "mocha test/testAPI/apiTests.js"
   },
   "dependencies": {
