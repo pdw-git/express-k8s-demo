@@ -126,11 +126,10 @@ module.exports.getTest = function(req, res){
 
                     });
 
-
-
                 }
 
             });
+
         }
         catch(err){
 
@@ -240,70 +239,77 @@ function executeTest(testFiles, doc, res){
         try {
 
             //testRunning = true;
-            dbConfig.setTestRunning(true);
+            dbConfig.setTestRunning(true, ()=>{
 
-            //execute the shell script that will run the mocha tests
-            const mocha = exec(command, (err, stdout, stderr) => {
+                //execute the shell script that will run the mocha tests
+                const mocha = exec(command, (err, stdout, stderr) => {
 
-                let methodname = 'exec';
+                    let methodname = 'exec';
 
-                let message = err ? 'ERROR: ' + err + ': STDERR: ' + stderr : 'Started tests';
+                    let message = err ? 'ERROR: ' + err + ': STDERR: ' + stderr : 'Started tests';
 
-                err ? logger._error({filename: __filename, methodname: methodname, message: message}) :
-                    logger._info({filename: __filename, methodname: methodname, message: message});
+                    err ? logger._error({filename: __filename, methodname: methodname, message: message}) :
+                        logger._info({filename: __filename, methodname: methodname, message: message});
 
-            });
+                });
 
-            //Handle the close event of Mocha
-            mocha.on('close', (code) => {
-                const methodname = 'mocha.on(close)';
+                //Handle the close event of Mocha
+                mocha.on('close', (code) => {
+                    const methodname = 'mocha.on(close)';
 
-                //do an async read of the results file and then respond
-                fs.readFile(doc[0].homeDir + config.tests[0].results, (err, data) => {
+                    //do an async read of the results file and then respond
+                    fs.readFile(doc[0].homeDir + config.tests[0].results, (err, data) => {
 
-                    //testRunning = false;
-                    dbConfig.setTestRunning(false);
+                        if (err) {
 
-                    if (err) {
-
-                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
-
-                    } else {
-
-                        //if mocha does not complete with an exit code of 0 or 1 then respond with an error
-                        //Mocha will exit with a 1 when an error is found but this is reported in the JSON
-                        //output where it will be captured in the response output.
-                        if (code < 0) {
-
-                            responseFunctions.sendJSONresponse((new Error('Mocha exited with code: ' + code)), res, filename, methodname, config.status.error, {msg: filename+'-'+methodname+': exit code: ' + code + ' data: ' + data});
+                            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
 
                         } else {
 
-                            //there should be a valid JSON file that can be parsed
+                            //if mocha does not complete with an exit code of 0 or 1 then respond with an error
+                            //Mocha will exit with a 1 when an error is found but this is reported in the JSON
+                            //output where it will be captured in the response output.
+                            if (code < 0) {
 
-                            let parsedData = null;
+                                responseFunctions.sendJSONresponse((new Error('Mocha exited with code: ' + code)), res, filename, methodname, config.status.error, {msg: filename+'-'+methodname+': exit code: ' + code + ' data: ' + data});
 
-                            try {
-                                // noinspection JSCheckFunctionSignatures
-                                parsedData = JSON.parse(data);
-                            } catch (err) {
+                            } else {
 
-                                logger._error({filename: __filename, methodname: methodname, message: messages.cannot_parse_JSON_file});
-                                parsedData = null;
+                                //there should be a valid JSON file that can be parsed
 
-                            } finally {
+                                let parsedData = null;
 
-                                parsedData === null ?
-                                    responseFunctions.sendJSONresponse((new Error(messages.cannot_parse_JSON_file)), res, __filename, methodname, config.status.error) :
-                                    responseFunctions.sendJSONresponse(null, res, __filename, methodname, config.status.good, getTestResults(parsedData));
+                                try {
+                                    // noinspection JSCheckFunctionSignatures
+                                    parsedData = JSON.parse(data);
+                                } catch (err) {
 
-                                logger._info({filename: filename, methodname: methodname, message: messages.basic.child_process_completed + code});
+                                    //testRunning = false;
+                                    dbConfig.setTestRunning(false, ()=>{
+                                        logger._error({filename: __filename, methodname: methodname, message: messages.cannot_parse_JSON_file});
+                                        parsedData = null;
+                                    });
+
+
+                                } finally {
+
+                                    dbConfig.setTestRunning(false, ()=>{
+
+                                        parsedData === null ?
+                                            responseFunctions.sendJSONresponse((new Error(messages.cannot_parse_JSON_file)), res, __filename, methodname, config.status.error) :
+                                            responseFunctions.sendJSONresponse(null, res, __filename, methodname, config.status.good, getTestResults(parsedData));
+
+                                        logger._info({filename: filename, methodname: methodname, message: messages.basic.child_process_completed + code});
+
+                                    });
+
+                                }
 
                             }
 
                         }
 
-                    }
+                    });
 
                 });
 
@@ -311,7 +317,6 @@ function executeTest(testFiles, doc, res){
 
         } catch (err) {
 
-            //testRunning = false;
             dbConfig.setTestRunning(false);
             responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
 
@@ -322,16 +327,14 @@ function executeTest(testFiles, doc, res){
 
         dbConfig.getTestRunning((err, doc)=>{
 
-            let errorMsg = doc[0].mongo.testRunning ? {msg: 'Test already running'} : {msg: 'No test files'};
+            let errorMsg = doc[0].mongo.testRunning ? {msg: 'Test already running'} : {msg: 'Tests were running: testsRunning: '+doc[0].mongo.testRunning};
+
 
             err ?
                 responseFunctions.sendJSONresponse(new Error(err.message), res, filename, methodname, config.status.error) :
                 responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, errorMsg );
 
         });
-        //let errorMsg = testRunning ? {msg: 'Test already running'} : {msg: 'No test files'};
-
-        //responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, errorMsg );
 
     }
 

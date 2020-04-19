@@ -50,7 +50,7 @@ module.exports.getConfig = function (){
 
 };
 
-function setTestRunning(value){
+function setTestRunning(value, callback){
 
     mongo.find({}, config.mongo.configObjectName, (err, doc)=> {
 
@@ -60,7 +60,7 @@ function setTestRunning(value){
         else {
             doc[0].mongo.testRunning = value;
 
-            doc[0].save().catch((reason)=>{throw new Error(reason) });
+            doc[0].save().then(callback).catch((reason)=>{throw new Error(reason) });
         }
 
     });
