@@ -2,10 +2,18 @@
 
 let request = require('request');
 
+let myArgs = process.argv.slice(2);
+
+let delay = myArgs[0] ? myArgs[0] : 1000;
+
+console.log('Delay = '+delay);
+
 let increment = 1;
 let start = Date.now();
 
 console.log('start time: '+start);
+
+
 
 let interval = setInterval(function(){
 
@@ -37,4 +45,4 @@ let interval = setInterval(function(){
 
     });
 
-}, 700);
+}, delay);
