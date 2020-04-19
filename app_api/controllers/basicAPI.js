@@ -14,6 +14,7 @@ const mongo = require('../models/mongoActions');
 const { exec } = require('child_process');
 const db = require('../models/db');
 const dbConfig = require('../models/config');
+const info = require('../../info');
 
 // A simple testing lock. Stop a new test from being started until this flag is true.
 // This is in place because of the variences of running an external script and having
@@ -56,7 +57,7 @@ module.exports.getInfo = function(req, res){
 
     const methodname = 'getInfo(req,res)';
 
-    const info = require('../../info');
+    info.version = process.env.API_VERSION;
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=> {
 

@@ -14,7 +14,7 @@ const expectedBody = {
     author : "Peter Whitehead",
     email : "peter.whitehead@atos.net",
     applicationName : "express-api-app",
-    version : "1.1.0.0",
+    version : process.env.API_VERSION,
     description : "A simple nodejs express based API server including an index page: NOT PRODUCTION CODE",
     GIT :{
         repo : "pdw-git/express-api",

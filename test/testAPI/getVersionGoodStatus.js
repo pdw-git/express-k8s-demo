@@ -9,7 +9,7 @@ const serverOpts = require('./apiServerDefinitions');
 const apiCall = '/version';
 const testName = 'getVersionGoodStatus';
 const expectedBody = {
-    version: "1.0.0"
+    version: process.env.API_VERSION
 };
 
 //============================================================================================
