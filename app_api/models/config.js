@@ -1,6 +1,10 @@
 'use strict';
 
 const config = require('../../app_config/config');
+const mongo = require('./mongoActions');
+
+module.exports.setTestRunning = setTestRunning;
+module.exports.getTestRunning = getTestRunning;
 
 
 /**
@@ -31,7 +35,8 @@ module.exports.getConfig = function (){
         mongo : {
             name: process.env.MONGO_DB_NAME,
             uri: process.env.MONGO_URI,
-            configObjectName: config.mongo.configObjectName
+            configObjectName: config.mongo.configObjectName,
+            testRunning: false
         },
         encryption: {
             enabled: process.env.HTTPS,
@@ -45,3 +50,25 @@ module.exports.getConfig = function (){
 
 };
 
+function setTestRunning(value){
+
+    mongo.find({}, config.mongo.configObjectName, (err, doc)=> {
+
+        if(err) {
+            throw new Error(messages.mongo.cannot_find_object);
+        }
+        else {
+            doc[0].mongo.testRunning = value;
+
+            doc[0].save().catch((reason)=>{throw new Error(reason) });
+        }
+
+    });
+
+}
+
+function getTestRunning(callback){
+
+    mongo.find({}, config.mongo.configObjectName, callback);
+
+}

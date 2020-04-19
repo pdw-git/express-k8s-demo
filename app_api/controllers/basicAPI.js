@@ -13,11 +13,12 @@ const responseFunctions = require('./responseFunctions');
 const mongo = require('../models/mongoActions');
 const { exec } = require('child_process');
 const db = require('../models/db');
+const dbConfig = require('../models/config');
 
 // A simple testing lock. Stop a new test from being started until this flag is true.
 // This is in place because of the variences of running an external script and having
 // to read results from a file.
-let testRunning = false;
+//let testRunning = false;
 
 /**
  * getStatus
@@ -119,101 +120,13 @@ module.exports.getTest = function(req, res){
                         doc[0].tests[0].directory :
                         logger._error({filename: filename, methodname: methodname, message: messages.api.object_undefined + 'doc[0].tests[0].directory'});
 
-                    if ((fs.existsSync(testFiles)) && (!testRunning)) {
+                    dbConfig.getTestRunning((err, doc)=>{
 
-                        // noinspection JSUnresolvedVariable
-                        const testScript = doc[0].homeDir + config.tests[0].testScript;
-                        const executionDIR = doc[0].homeDir;
-                        const deployment = doc[0].deploymentMethod;
-                        const results = doc[0].homeDir + config.tests[0].results;
-                        const command = testScript + ' ' + executionDIR + ' ' + deployment + ' ' + testFiles + ' ' + results;
+                        err ? responseFunctions(new Error('cannot get test flag'), filename, methodname, config.status.error) : executeTest(testFiles, doc, res);
 
-                        try {
-
-                            testRunning = true;
-
-                            //execute the shell script that will run the mocha tests
-                            const mocha = exec(command, (err, stdout, stderr) => {
-
-                                let methodname = 'exec';
-
-                                let message = err ? 'ERROR: ' + err + ': STDERR: ' + stderr : 'Started tests';
-
-                                err ? logger._error({filename: __filename, methodname: methodname, message: message}) :
-                                    logger._info({filename: __filename, methodname: methodname, message: message});
-
-                            });
-
-                            //Handle the close event of Mocha
-                            mocha.on('close', (code) => {
-                                const methodname = 'mocha.on(close)';
+                    });
 
 
-                                //do an async read of the results file and then respond
-                                fs.readFile(doc[0].homeDir + config.tests[0].results, (err, data) => {
-
-                                    testRunning = false;
-
-                                    if (err) {
-
-                                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
-
-                                    } else {
-
-                                        //if mocha does not complete with an exit code of 0 or 1 then respond with an error
-                                        //Mocha will exit with a 1 when an error is found but this is reported in the JSON
-                                        //output where it will be captured in the response output.
-                                        if (code < 0) {
-
-                                            responseFunctions.sendJSONresponse((new Error('Mocha exited with code: ' + code)), res, filename, methodname, config.status.error, {msg: filename+'-'+methodname+': exit code: ' + code + ' data: ' + data});
-
-                                        } else {
-
-                                            //there should be a valid JSON file that can be parsed
-
-                                            let parsedData = null;
-
-                                            try {
-                                                // noinspection JSCheckFunctionSignatures
-                                                parsedData = JSON.parse(data);
-                                            } catch (err) {
-
-                                                logger._error({filename: __filename, methodname: methodname, message: messages.cannot_parse_JSON_file});
-                                                parsedData = null;
-
-                                            } finally {
-
-                                                parsedData === null ?
-                                                    responseFunctions.sendJSONresponse((new Error(messages.cannot_parse_JSON_file)), res, __filename, methodname, config.status.error) :
-                                                    responseFunctions.sendJSONresponse(null, res, __filename, methodname, config.status.good, getTestResults(parsedData));
-
-                                                logger._info({filename: filename, methodname: methodname, message: messages.basic.child_process_completed + code});
-
-                                            }
-
-                                        }
-
-                                    }
-
-                                });
-
-                            });
-
-                        } catch (err) {
-
-                            testRunning = false;
-                            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
-
-                        }
-
-                    } else {
-                        //Test files were not found, log error and return appropriate status in response.
-
-                        let errorMsg = testRunning ? {msg: 'Test already running'} : {msg: 'No test files'};
-
-                        responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, errorMsg );
-
-                    }
 
                 }
 
@@ -308,6 +221,119 @@ function getErrors(jsonData){
     }
 
     return errors;
+
+}
+
+function executeTest(testFiles, doc, res){
+
+    let methodname = 'executeTest';
+
+    if ((fs.existsSync(testFiles)) && (!doc[0].mongo.testRunning)) {
+
+        // noinspection JSUnresolvedVariable
+        const testScript = doc[0].homeDir + config.tests[0].testScript;
+        const executionDIR = doc[0].homeDir;
+        const deployment = doc[0].deploymentMethod;
+        const results = doc[0].homeDir + config.tests[0].results;
+        const command = testScript + ' ' + executionDIR + ' ' + deployment + ' ' + testFiles + ' ' + results;
+
+        try {
+
+            //testRunning = true;
+            dbConfig.setTestRunning(true);
+
+            //execute the shell script that will run the mocha tests
+            const mocha = exec(command, (err, stdout, stderr) => {
+
+                let methodname = 'exec';
+
+                let message = err ? 'ERROR: ' + err + ': STDERR: ' + stderr : 'Started tests';
+
+                err ? logger._error({filename: __filename, methodname: methodname, message: message}) :
+                    logger._info({filename: __filename, methodname: methodname, message: message});
+
+            });
+
+            //Handle the close event of Mocha
+            mocha.on('close', (code) => {
+                const methodname = 'mocha.on(close)';
+
+                //do an async read of the results file and then respond
+                fs.readFile(doc[0].homeDir + config.tests[0].results, (err, data) => {
+
+                    //testRunning = false;
+                    dbConfig.setTestRunning(false);
+
+                    if (err) {
+
+                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+
+                    } else {
+
+                        //if mocha does not complete with an exit code of 0 or 1 then respond with an error
+                        //Mocha will exit with a 1 when an error is found but this is reported in the JSON
+                        //output where it will be captured in the response output.
+                        if (code < 0) {
+
+                            responseFunctions.sendJSONresponse((new Error('Mocha exited with code: ' + code)), res, filename, methodname, config.status.error, {msg: filename+'-'+methodname+': exit code: ' + code + ' data: ' + data});
+
+                        } else {
+
+                            //there should be a valid JSON file that can be parsed
+
+                            let parsedData = null;
+
+                            try {
+                                // noinspection JSCheckFunctionSignatures
+                                parsedData = JSON.parse(data);
+                            } catch (err) {
+
+                                logger._error({filename: __filename, methodname: methodname, message: messages.cannot_parse_JSON_file});
+                                parsedData = null;
+
+                            } finally {
+
+                                parsedData === null ?
+                                    responseFunctions.sendJSONresponse((new Error(messages.cannot_parse_JSON_file)), res, __filename, methodname, config.status.error) :
+                                    responseFunctions.sendJSONresponse(null, res, __filename, methodname, config.status.good, getTestResults(parsedData));
+
+                                logger._info({filename: filename, methodname: methodname, message: messages.basic.child_process_completed + code});
+
+                            }
+
+                        }
+
+                    }
+
+                });
+
+            });
+
+        } catch (err) {
+
+            //testRunning = false;
+            dbConfig.setTestRunning(false);
+            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+
+        }
+
+    } else {
+        //Test files were not found, log error and return appropriate status in response.
+
+        dbConfig.getTestRunning((err, doc)=>{
+
+            let errorMsg = doc[0].mongo.testRunning ? {msg: 'Test already running'} : {msg: 'No test files'};
+
+            err ?
+                responseFunctions.sendJSONresponse(new Error(err.message), res, filename, methodname, config.status.error) :
+                responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, errorMsg );
+
+        });
+        //let errorMsg = testRunning ? {msg: 'Test already running'} : {msg: 'No test files'};
+
+        //responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, errorMsg );
+
+    }
 
 }
 

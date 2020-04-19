@@ -35,7 +35,8 @@ const expectedBody = [{
     mongo : {
         name: process.env.MONGO_DB_NAME,
         uri: process.env.MONGO_URI,
-        configObjectName: config.mongo.configObjectName
+        configObjectName: config.mongo.configObjectName,
+        testRunning: true
     },
     encryption: {
         enabled: process.env.HTTPS,

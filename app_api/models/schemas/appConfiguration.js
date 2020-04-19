@@ -19,7 +19,8 @@ const configSchema = new mongoose.Schema(
         mongo : {
             name: {type: String, required: true},
             uri: {type: String, required: true},
-            configObjectName: {type: String, required: true}
+            configObjectName: {type: String, required: true},
+            testRunning:{type: Boolean}
         },
         encryption: {
             enabled: {type: String, required: true},
