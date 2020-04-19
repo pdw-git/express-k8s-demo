@@ -2,7 +2,14 @@
 
 let request = require('request');
 
+let increment = 1;
+let start = Date.now();
+
+console.log('start time: '+start);
+
 let interval = setInterval(function(){
+
+
 
     let options = {
 
@@ -12,18 +19,22 @@ let interval = setInterval(function(){
         qs: {}
     };
 
+    start = Date.now();
+
     request(options, function(err, res, body){
         if (err){
-            console.log('ERROR: '+err);
+            console.log(increment+': ERROR: '+err);
             clearInterval(interval);
         } else{
-            console.log(JSON.stringify(body))
+            console.log(increment+': '+String(Date.now()-start)+' : '+JSON.stringify(body))
         }
         if((res !== undefined) && (res.statusCode !== undefined ) && (res.statusCode !== 200)) {
             //clearInterval(interval); //stop the interval timer
-            console.log("ERROR: status code "+res.statusCode);
+            console.log(increment+': '+"ERROR: status code "+res.statusCode);
         }
+
+        increment++;
 
     });
 
-}, 300);
+}, 700);

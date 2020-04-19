@@ -230,17 +230,17 @@ function executeTest(testFiles, doc, res){
 
     if ((fs.existsSync(testFiles)) && (!doc[0].mongo.testRunning)) {
 
-        // noinspection JSUnresolvedVariable
-        const testScript = doc[0].homeDir + config.tests[0].testScript;
-        const executionDIR = doc[0].homeDir;
-        const deployment = doc[0].deploymentMethod;
-        const results = doc[0].homeDir + config.tests[0].results;
-        const command = testScript + ' ' + executionDIR + ' ' + deployment + ' ' + testFiles + ' ' + results;
-
         try {
 
             //testRunning = true;
             dbConfig.setTestRunning(true, ()=>{
+
+                // noinspection JSUnresolvedVariable
+                const testScript = doc[0].homeDir + config.tests[0].testScript;
+                const executionDIR = doc[0].homeDir;
+                const deployment = doc[0].deploymentMethod;
+                const results = doc[0].homeDir + config.tests[0].results;
+                const command = testScript + ' ' + executionDIR + ' ' + deployment + ' ' + testFiles + ' ' + results;
 
                 //execute the shell script that will run the mocha tests
                 const mocha = exec(command, (err, stdout, stderr) => {
@@ -263,7 +263,10 @@ function executeTest(testFiles, doc, res){
 
                         if (err) {
 
-                            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+                            dbConfig.setTestRunning(false, ()=>{
+                                responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+                            });
+
 
                         } else {
 
@@ -272,7 +275,12 @@ function executeTest(testFiles, doc, res){
                             //output where it will be captured in the response output.
                             if (code < 0) {
 
-                                responseFunctions.sendJSONresponse((new Error('Mocha exited with code: ' + code)), res, filename, methodname, config.status.error, {msg: filename+'-'+methodname+': exit code: ' + code + ' data: ' + data});
+                                dbConfig.setTestRunning(false, ()=>{
+
+                                    responseFunctions.sendJSONresponse((new Error('Mocha exited with code: ' + code)), res, filename, methodname, config.status.error, {msg: filename+'-'+methodname+': exit code: ' + code + ' data: ' + data});
+
+                                });
+
 
                             } else {
 
@@ -318,8 +326,11 @@ function executeTest(testFiles, doc, res){
 
         } catch (err) {
 
-            dbConfig.setTestRunning(false);
-            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+            dbConfig.setTestRunning(false, ()=>{
+
+                responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+
+            });
 
         }
 
