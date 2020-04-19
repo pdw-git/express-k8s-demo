@@ -5,23 +5,23 @@ let request = require('request');
 let myArgs = process.argv.slice(2);
 
 let delay = myArgs[0] ? myArgs[0] : 1000;
+let ipAddress = myArgs[1] ?  myArgs[1] : 'http://localhost:3000';
 
 console.log('Delay = '+delay);
+console.log('ipAddress = '+ipAddress);
 
 let increment = 1;
 let start = Date.now();
 
 console.log('start time: '+start);
 
+//let interval = setInterval(function(){
 
-
-let interval = setInterval(function(){
-
-
+setInterval(function(){
 
     let options = {
 
-        url: "http://localhost:3000/api/test",
+        url: ipAddress+"/api/test",
         method: "get",
         json: {},
         qs: {}
@@ -32,7 +32,7 @@ let interval = setInterval(function(){
     request(options, function(err, res, body){
         if (err){
             console.log(increment+': ERROR: '+err);
-            clearInterval(interval);
+            //clearInterval(interval);
         } else{
             console.log(increment+': '+String(Date.now()-start)+' : '+JSON.stringify(body))
         }

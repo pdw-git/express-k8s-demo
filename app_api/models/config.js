@@ -2,6 +2,7 @@
 
 const config = require('../../app_config/config');
 const mongo = require('./mongoActions');
+const logger = require('../../app_utilities/logger');
 
 module.exports.setTestRunning = setTestRunning;
 module.exports.getTestRunning = getTestRunning;
@@ -52,18 +53,36 @@ module.exports.getConfig = function (){
 
 function setTestRunning(value, callback){
 
-    mongo.find({}, config.mongo.configObjectName, (err, doc)=> {
+    let methodname = 'settestRunning';
 
-        if(err) {
-            throw new Error(messages.mongo.cannot_find_object);
-        }
-        else {
-            doc[0].mongo.testRunning = value;
+    try {
+        mongo.find({}, config.mongo.configObjectName, (err, doc) => {
 
-            doc[0].save().then(callback).catch((reason)=>{throw new Error(reason) });
-        }
+            let error = null;
 
-    });
+            if (err) {
+
+                throw new Error(messages.mongo.cannot_find_object);
+
+            } else if ((doc[0].mongo.testRunning) && (value)) {
+
+                error = new Error('Testing initiated by another request');
+
+                logger._error({filename: __filename, methodname: methodname, message: error.message});
+
+            } else {
+                doc[0].mongo.testRunning = value;
+
+                doc[0].save().then(callback(err)).catch((reason) => {
+                    throw new Error(reason)
+                });
+            }
+
+        });
+    }
+    catch(err){
+        throw(err);
+    }
 
 }
 
