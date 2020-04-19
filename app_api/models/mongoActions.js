@@ -142,14 +142,9 @@ function createConfig(dataObject){
                     logger._info({filename: __filename, methodname: methodname, message: messages.mongo.object_exists+config.mongo.configObjectName});
                     break;
 
-                //There is a config object: delete it and create a new one
+                //There is a config object: log a message stating config exists
                 case 1 :
-                    logger._debug({filename: __filename, methodname: methodname, message: 'delete '+doc[0]._id+' create new config object'});
-                    deleteObj(config.mongo.configObjectName, doc[0]._id, (err)=>{
-                        err ?
-                            logger._error({filename: __filename, methodname: methodname, message: err}) :
-                            createObj(config.mongo.configObjectName, dataObject);
-                    });
+                    logger._info({filename: __filename, methodname: methodname, message: 'configuration '+doc[0]._id+' already exists'});
                     break;
 
                 //if the length is greater than 1 then there is a problem with the database, log an error.
