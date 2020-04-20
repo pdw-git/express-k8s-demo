@@ -16,10 +16,6 @@ const db = require('../models/db');
 const dbConfig = require('../models/config');
 const info = require('../../info');
 
-// A simple testing lock. Stop a new test from being started until this flag is true.
-// This is in place because of the variences of running an external script and having
-// to read results from a file.
-//let testRunning = false;
 
 /**
  * getStatus
@@ -232,8 +228,6 @@ function executeTest(testFiles, doc, res){
 
         try {
 
-            //testRunning = true;
-
             try {
                 dbConfig.setTestRunning(true, (err) => {
 
@@ -284,22 +278,19 @@ function executeTest(testFiles, doc, res){
 
                                         });
 
-                                    } else {
-
-                                        //there should be a valid JSON file that can be parsed
+                                    }
+                                    else {
 
                                         let parsedData = null;
 
                                         try {
                                             // noinspection JSCheckFunctionSignatures
                                             parsedData = JSON.parse(data);
+
                                         } catch (err) {
 
-                                            //testRunning = false;
-                                            //dbConfig.setTestRunning(false, () => {
                                             logger._error({filename: __filename, methodname: methodname, message: messages.cannot_parse_JSON_file});
                                             parsedData = null;
-                                            //});
 
                                         } finally {
 
@@ -324,39 +315,36 @@ function executeTest(testFiles, doc, res){
                         });
 
                     }
+                    //There was an error in the setting of the mongo.testRunning flag
                     else{
                         responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: err.message});
                     }
 
                 });
             }
+            //Error caught in the whole test process. Catch all for any errors found once test started
+            //that were not handled elsewhere.
             catch(err){
+
+                dbConfig.setTestRunning(false, ()=>{
+
+                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+
+                });
 
             }
 
         } catch (err) {
 
-            dbConfig.setTestRunning(false, ()=>{
-
-                responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
-
-            });
+            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
 
         }
 
     } else {
-        //Test files were not found, log error and return appropriate status in response.
 
-        dbConfig.getTestRunning((err, doc)=>{
-
-            let errorMsg = doc[0].mongo.testRunning ? {msg: 'Test already running'} : {msg: 'Tests were running: testsRunning: '+doc[0].mongo.testRunning};
-
-
-            err ?
-                responseFunctions.sendJSONresponse(new Error(err.message), res, filename, methodname, config.status.error) :
-                responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, errorMsg );
-
-        });
+        doc[0].mongo.testRunning ?
+            responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: 'Test already running'} ) :
+            responseFunctions.sendJSONresponse(new Error('Test files not found'), res, filename, methodname, config.status.error);
 
     }
 
