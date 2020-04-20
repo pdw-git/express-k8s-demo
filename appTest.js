@@ -5,7 +5,7 @@ let request = require('request');
 let myArgs = process.argv.slice(2);
 
 let delay = myArgs[0] ? myArgs[0] : 1000;
-let ipAddress = myArgs[1] ?  myArgs[1] : 'http://localhost:3000';
+let ipAddress = myArgs[1] ?  myArgs[1] : 'http://127.0.0.1:3000';
 
 console.log('Delay = '+delay);
 console.log('ipAddress = '+ipAddress);
@@ -33,12 +33,12 @@ function test(err, res, body){
 
     if (err){
         console.log(increment+': ERROR: '+err);
-        //clearInterval(interval);
+
     } else{
         console.log(increment+': '+String(Date.now()-start)+' : '+JSON.stringify(body));
 
         if((res !== undefined) && (res.statusCode !== undefined ) && (res.statusCode !== 200)) {
-            //clearInterval(interval); //stop the interval timer
+
             console.log(increment+': '+"ERROR: status code "+res.statusCode);
         }
 
