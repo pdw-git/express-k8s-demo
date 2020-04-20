@@ -240,7 +240,7 @@ function executeTest(testFiles, doc, res){
  */
 function completeTest(testDir, res){
 
-    const methodname = 'mocha.on(close)';
+    const methodname = 'completeTest';
 
     //do an async read of the results file and then respond
     fs.readFile(testDir, (err, data) => {

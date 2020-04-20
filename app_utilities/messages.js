@@ -55,7 +55,7 @@ const messages = {
     },
     basic: {
        child_process_error: 'The child process exited with error: ',
-       child_process_completed: 'The child process has completed, exit code: '
+       child_process_completed: 'The child process has completed'
     },
     db: {
         connected_to: 'Connected to: ',
