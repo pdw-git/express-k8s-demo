@@ -4,7 +4,7 @@ let request = require('request');
 
 let myArgs = process.argv.slice(2);
 
-let delay = myArgs[0] ? myArgs[0] : 1000;
+let delay = myArgs[0] ? myArgs[0] : 0;
 let ipAddress = myArgs[1] ?  myArgs[1] : 'http://127.0.0.1:3000';
 
 console.log('Delay = '+delay);
@@ -13,9 +13,7 @@ console.log('ipAddress = '+ipAddress);
 let increment = 1;
 let start = Date.now();
 
-
 console.log('start time: '+start);
-
 
 let options = {
 
@@ -25,9 +23,7 @@ let options = {
     qs: {}
 };
 
-
 request(options, test);
-
 
 function test(err, res, body){
 
@@ -35,7 +31,7 @@ function test(err, res, body){
         console.log(increment+': ERROR: '+err);
 
     } else{
-        console.log(increment+': '+String(Date.now()-start)+' : '+JSON.stringify(body));
+        console.log(increment+': duration: '+String(Date.now()-start-delay)+'ms : '+JSON.stringify(body));
 
         if((res !== undefined) && (res.statusCode !== undefined ) && (res.statusCode !== 200)) {
 

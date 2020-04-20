@@ -16,7 +16,6 @@ const db = require('../models/db');
 const dbConfig = require('../models/config');
 const info = require('../../info');
 
-let testStarted = false;
 
 /**
  * getStatus
@@ -98,104 +97,47 @@ module.exports.getTest = function(req, res){
 
     const methodname = 'getTest';
 
-    testStarted = true;
-
     logger._debug({filename: filename, methodname: methodname, message: 'started'});
 
     if(db.dbConnected()) {
 
-        try {
+        mongo.find({}, mongo.configProject, (err, doc) => {
 
-            mongo.find({}, mongo.configProject, (err, doc) => {
+            if ((err)) {
 
-                if ((err) || (doc.length === 0)) {
+                logger._error({filename: filename, methodname: methodname, message: err.message});
+                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
 
-                    logger._error({filename: filename, methodname: methodname, message: err});
+            } else if(doc[0].mongo.testRunning) {
 
-                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.mongo.cannot_find_object + mongo.configProject});
+                let err = new Error('Test is already running');
 
-                } else {
+                logger._error({filename: filename, methodname: methodname, message: err.message});
 
-                    let testFiles = doc[0].tests[0].directory !== undefined ?
-                        doc[0].tests[0].directory :
-                        logger._error({filename: filename, methodname: methodname, message: messages.api.object_undefined + 'doc[0].tests[0].directory'});
+                responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
 
-                    dbConfig.getTestRunning((err, doc)=>{
+            }else{
 
-                        if(err) {
+                let testFiles = doc[0].tests[0].directory !== undefined ?
+                    doc[0].tests[0].directory :
+                    logger._error({filename: filename, methodname: methodname, message: messages.api.object_undefined + 'doc[0].tests[0].directory'});
 
-                            testStarted = false;
+                executeTest(testFiles, doc, res)
 
-                            responseFunctions(new Error('cannot get test flag'), filename, methodname, config.status.error);
+            }
 
-                        }
-                        else{
-                            executeTest(testFiles, doc, res);
-                        }
+        });
 
-                    });
-
-                }
-
-            });
-
-        }
-        catch(err){
-
-            testStarted = false;
-
-            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
-
-        }
-
-    }
+   }
     else{
 
-        testStarted = false;
         responseFunctions.sendJSONresponse(new Error(messages.db.not_available), res, filename, methodname, config.status.error);
 
     }
 
 };
 
-/**
- * getTestResults
- * @param results
- * @returns {{}}
- */
-function getTestResults(results){
 
-    const methodname = 'getTestResults';
-
-    logger._debug({filename: filename, methodname: methodname, message: 'started'});
-
-    let returnVal = {msg: messages.api.object_undefined+': results'};
-
-    if(typeof(results) !== 'object'){
-        logger._error({filename: __filename, methodName: methodname, message: returnVal.msg});
-    }
-    else{
-
-        returnVal = {
-            stats: {
-                suites: results.stats.suites,
-                tests: results.stats.tests,
-                passes: results.stats.passes,
-                pending: results.stats.pending,
-                failures: results.stats.failures,
-                start: results.stats.start,
-                end: results.stats.end,
-                duration: results.stats.duration,
-                errors: getErrors(results)
-            }
-
-        };
-
-    }
-
-    return returnVal
-
-}
 
 /**
  * getErrors
@@ -235,82 +177,68 @@ function getErrors(jsonData){
 
 }
 
+
+/**
+ * executeTest
+ *
+ * @param testFiles
+ * @param doc
+ * @param res
+ */
 function executeTest(testFiles, doc, res){
 
     let methodname = 'executeTest';
 
-    if(!doc[0].mongo.testRunning) {
 
-        if (fs.existsSync(testFiles)) {
+    if (fs.existsSync(testFiles)) {
 
-            try {
-                dbConfig.setTestRunning(true, (err) => {
+        dbConfig.setTestRunning(true, (err) => {
 
-                    if (!err) {
+            if(err){
 
-                        // noinspection JSUnresolvedVariable
-                        const testScript = doc[0].homeDir + config.tests[0].testScript;
-                        const executionDIR = doc[0].homeDir;
-                        const deployment = doc[0].deploymentMethod;
-                        const results = doc[0].homeDir + config.tests[0].results;
-                        const command = testScript + ' ' + executionDIR + ' ' + deployment + ' ' + testFiles + ' ' + results;
+                responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
 
-                        //execute the shell script that will run the mocha tests
-                        //const mocha = exec(command, (err, stdout, stderr) => {
-
-                        exec(command, (err, stdout, stderr) => {
-
-                            let methodname = 'exec';
-
-                            let message = err ? 'ERROR: ' + err + ': STDERR: ' + stderr : 'Started tests';
-
-                            err ? logger._error({filename: __filename, methodname: methodname, message: message}) :
-                                completeTest(results, res, 0);
-
-                        });
-
-                        //Handle the close event of Mocha
-                        //mocha.on('close', (code) => {
-
-                        //});
-
-                    }
-                    //There was an error in the setting of the mongo.testRunning flag
-                    else {
-                        responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: err.message});
-                    }
-
-                });
             }
-            //Error caught in the whole test process. Catch all for any errors found once test started
-            // that were not handled elsewhere.
-            catch (err) {
+            else {
 
-                dbConfig.setTestRunning(false, () => {
+                // noinspection JSUnresolvedVariable
+                const testScript = doc[0].homeDir + config.tests[0].testScript;
+                const executionDIR = doc[0].homeDir;
+                const deployment = doc[0].deploymentMethod;
+                const results = doc[0].homeDir + config.tests[0].results;
+                const command = testScript + ' ' + executionDIR + ' ' + deployment + ' ' + testFiles + ' ' + results;
 
-                    testStarted = false;
-                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+                exec(command, (err, stdout, stderr) => {
+
+                    let methodname = 'exec';
+
+                    let message = err ? 'ERROR: ' + err + ': STDERR: ' + stderr : 'Started tests';
+
+                    err ? logger._error({filename: __filename, methodname: methodname, message: message}) :
+                        completeTest(results, res, 0);
 
                 });
 
+
             }
 
-        } else {
+        });
 
-            testStarted = false;
-            responseFunctions.sendJSONresponse(new Error('Test files not found'), res, filename, methodname, config.status.error);
+    } else {
 
-        }
-    }
-    else {
-
-        responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: 'Test already running: testStarted: '+testStarted+' : mongo flag: '+doc[0].mongo.testRunning} );
+        responseFunctions.sendJSONresponse(new Error('Test files not found'), res, filename, methodname, config.status.error);
 
     }
 
 }
 
-function completeTest(testDir, res, code){
+/**
+ * completeTest
+ *
+ * @param testDir
+ * @param res
+ */
+function completeTest(testDir, res){
     const methodname = 'mocha.on(close)';
 
     //do an async read of the results file and then respond
@@ -319,55 +247,33 @@ function completeTest(testDir, res, code){
         if (err) {
 
             dbConfig.setTestRunning(false, () => {
-                testStarted = false;
                 responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
             });
 
         } else {
 
-            //if mocha does not complete with an exit code of 0 or 1 then respond with an error
-            //Mocha will exit with a 1 when an error is found but this is reported in the JSON
-            //output where it will be captured in the response output.
-            if (code < 0) {
+            let parsedData = null;
+
+            try {
+                // noinspection JSCheckFunctionSignatures
+                parsedData = JSON.parse(data);
+
+            } catch (err) {
+
+                logger._error({filename: __filename, methodname: methodname, message: messages.cannot_parse_JSON_file+err.message});
+                parsedData = null;
+
+            } finally {
+
+                parsedData === null ?
+                    responseFunctions.sendJSONresponse(new Error(messages.cannot_parse_JSON_file), res, __filename, methodname, config.status.error):
+                    responseFunctions.sendJSONresponse(null, res, __filename, methodname, config.status.good, getTestResults(parsedData));
 
                 dbConfig.setTestRunning(false, () => {
 
-                    testStarted = false;
-
-                    responseFunctions.sendJSONresponse((new Error('Mocha exited with code: ' + code)), res, filename, methodname, config.status.error, {msg: filename + '-' + methodname + ': exit code: ' + code + ' data: ' + data});
+                    logger._info({filename: filename, methodname: methodname, message: messages.basic.child_process_completed});
 
                 });
-
-            }
-            else {
-
-                let parsedData = null;
-
-                try {
-                    // noinspection JSCheckFunctionSignatures
-                    parsedData = JSON.parse(data);
-
-                } catch (err) {
-
-                    logger._error({filename: __filename, methodname: methodname, message: messages.cannot_parse_JSON_file+': testStarted: '+testStarted});
-                    parsedData = null;
-
-                } finally {
-
-
-                    dbConfig.setTestRunning(false, () => {
-
-                        parsedData === null ?
-                            responseFunctions.sendJSONresponse((new Error(messages.cannot_parse_JSON_file+' testStarted: '+testStarted)), res, __filename, methodname, config.status.error) :
-                            responseFunctions.sendJSONresponse(null, res, __filename, methodname, config.status.good, getTestResults(parsedData));
-
-                        testStarted=false;
-
-                        logger._info({filename: filename, methodname: methodname, message: messages.basic.child_process_completed + code});
-
-                    });
-
-                }
 
             }
 
@@ -375,6 +281,44 @@ function completeTest(testDir, res, code){
 
     });
 
+}
+
+/**
+ * getTestResults
+ * @param results
+ * @returns {{}}
+ */
+function getTestResults(results){
+
+    const methodname = 'getTestResults';
+
+    logger._debug({filename: filename, methodname: methodname, message: 'started'});
+
+    let returnVal = {msg: messages.api.object_undefined+': results'};
+
+    if(typeof(results) !== 'object'){
+        logger._error({filename: __filename, methodName: methodname, message: returnVal.msg});
+    }
+    else{
+
+        returnVal = {
+            stats: {
+                suites: results.stats.suites,
+                tests: results.stats.tests,
+                passes: results.stats.passes,
+                pending: results.stats.pending,
+                failures: results.stats.failures,
+                start: results.stats.start,
+                end: results.stats.end,
+                duration: results.stats.duration,
+                errors: getErrors(results)
+            }
+
+        };
+
+    }
+
+    return returnVal
 
 }
 
