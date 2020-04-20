@@ -13,36 +13,43 @@ console.log('ipAddress = '+ipAddress);
 let increment = 1;
 let start = Date.now();
 
+
 console.log('start time: '+start);
 
-//let interval = setInterval(function(){
 
-setInterval(function(){
+let options = {
 
-    let options = {
+    url: ipAddress+"/api/test",
+    method: "get",
+    json: {},
+    qs: {}
+};
 
-        url: ipAddress+"/api/test",
-        method: "get",
-        json: {},
-        qs: {}
-    };
 
-    start = Date.now();
+request(options, test);
 
-    request(options, function(err, res, body){
-        if (err){
-            console.log(increment+': ERROR: '+err);
-            //clearInterval(interval);
-        } else{
-            console.log(increment+': '+String(Date.now()-start)+' : '+JSON.stringify(body))
-        }
+
+function test(err, res, body){
+
+    if (err){
+        console.log(increment+': ERROR: '+err);
+        //clearInterval(interval);
+    } else{
+        console.log(increment+': '+String(Date.now()-start)+' : '+JSON.stringify(body));
+
         if((res !== undefined) && (res.statusCode !== undefined ) && (res.statusCode !== 200)) {
             //clearInterval(interval); //stop the interval timer
             console.log(increment+': '+"ERROR: status code "+res.statusCode);
         }
 
-        increment++;
+    }
 
-    });
+    increment++;
 
-}, delay);
+    start = Date.now();
+
+    setTimeout(()=>{request(options, test)},delay);
+
+}
+
+

@@ -16,6 +16,7 @@ const db = require('../models/db');
 const dbConfig = require('../models/config');
 const info = require('../../info');
 
+let testStarted = false;
 
 /**
  * getStatus
@@ -96,6 +97,8 @@ module.exports.getVersion = function(req, res){
 module.exports.getTest = function(req, res){
 
     const methodname = 'getTest';
+
+    testStarted = true;
 
     logger._debug({filename: filename, methodname: methodname, message: 'started'});
 
@@ -224,7 +227,7 @@ function executeTest(testFiles, doc, res){
 
     let methodname = 'executeTest';
 
-    if ((fs.existsSync(testFiles)) && (!doc[0].mongo.testRunning)) {
+    if ((fs.existsSync(testFiles)) && ((!doc[0].mongo.testRunning) && (testStarted))) {
 
         try {
 
@@ -262,6 +265,7 @@ function executeTest(testFiles, doc, res){
                                 if (err) {
 
                                     dbConfig.setTestRunning(false, () => {
+                                        testStarted = false;
                                         responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
                                     });
 
@@ -273,6 +277,8 @@ function executeTest(testFiles, doc, res){
                                     if (code < 0) {
 
                                         dbConfig.setTestRunning(false, () => {
+
+                                            testStarted = false;
 
                                             responseFunctions.sendJSONresponse((new Error('Mocha exited with code: ' + code)), res, filename, methodname, config.status.error, {msg: filename + '-' + methodname + ': exit code: ' + code + ' data: ' + data});
 
@@ -289,15 +295,16 @@ function executeTest(testFiles, doc, res){
 
                                         } catch (err) {
 
-                                            logger._error({filename: __filename, methodname: methodname, message: messages.cannot_parse_JSON_file});
+                                            logger._error({filename: __filename, methodname: methodname, message: messages.cannot_parse_JSON_file+': testStarted: '+testStarted});
                                             parsedData = null;
 
                                         } finally {
 
+                                            testStarted=false;
                                             dbConfig.setTestRunning(false, () => {
 
                                                 parsedData === null ?
-                                                    responseFunctions.sendJSONresponse((new Error(messages.cannot_parse_JSON_file)), res, __filename, methodname, config.status.error) :
+                                                    responseFunctions.sendJSONresponse((new Error(messages.cannot_parse_JSON_file+' testStarted: '+testStarted)), res, __filename, methodname, config.status.error) :
                                                     responseFunctions.sendJSONresponse(null, res, __filename, methodname, config.status.good, getTestResults(parsedData));
 
                                                 logger._info({filename: filename, methodname: methodname, message: messages.basic.child_process_completed + code});
@@ -328,6 +335,8 @@ function executeTest(testFiles, doc, res){
 
                 dbConfig.setTestRunning(false, ()=>{
 
+                    testStarted = false;
+
                     responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
 
                 });
@@ -342,7 +351,7 @@ function executeTest(testFiles, doc, res){
 
     } else {
 
-        doc[0].mongo.testRunning ?
+        (doc[0].mongo.testRunning) || (testStarted) ?
             responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: 'Test already running'} ) :
             responseFunctions.sendJSONresponse(new Error('Test files not found'), res, filename, methodname, config.status.error);
 
