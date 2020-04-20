@@ -105,24 +105,17 @@ module.exports.getTest = function(req, res){
 
             if ((err)) {
 
-                logger._error({filename: filename, methodname: methodname, message: err.message});
-                    responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+                responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
 
             } else if(doc[0].mongo.testRunning) {
 
-                let err = new Error('Test is already running');
-
-                logger._error({filename: filename, methodname: methodname, message: err.message});
-
-                responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+                responseFunctions.sendJSONresponse((new Error('Test is already running')), res, filename, methodname, config.status.error);
 
             }else{
 
-                let testFiles = doc[0].tests[0].directory !== undefined ?
-                    doc[0].tests[0].directory :
-                    logger._error({filename: filename, methodname: methodname, message: messages.api.object_undefined + 'doc[0].tests[0].directory'});
-
-                executeTest(testFiles, doc, res)
+                doc[0].tests[0].directory !== undefined ?
+                    executeTest(doc[0].tests[0].directory, doc, res):
+                    responseFunctions.sendJSONresponse((new Error('Missing test directory')), res, filename, methodname, config.status.error);
 
             }
 
@@ -208,14 +201,21 @@ function executeTest(testFiles, doc, res){
                 const results = doc[0].homeDir + config.tests[0].results;
                 const command = testScript + ' ' + executionDIR + ' ' + deployment + ' ' + testFiles + ' ' + results;
 
-                exec(command, (err, stdout, stderr) => {
+                exec(command, (err, stdout) => { //removed stderr to supress warnings
 
                     let methodname = 'exec';
 
-                    let message = err ? 'ERROR: ' + err + ': STDERR: ' + stderr : 'Started tests';
+                    if((err) && (err.code < 0)){
+                        dbConfig.setTestRunning(false, () => {
+                            logger._error({filename: __filename, methodname: methodname, message: 'err.code: '+err.code+': '+doc[0].mongo.testRunning+': '+doc[0].mongo.testRunning+': '+err.message+': STDOUT : '+stdout});
+                            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+                        });
+                    }
+                    else{
 
-                    err ? logger._error({filename: __filename, methodname: methodname, message: message}) :
-                        completeTest(results, res, 0);
+                        completeTest(results, res);
+
+                    }
 
                 });
 
@@ -239,6 +239,7 @@ function executeTest(testFiles, doc, res){
  * @param res
  */
 function completeTest(testDir, res){
+
     const methodname = 'mocha.on(close)';
 
     //do an async read of the results file and then respond

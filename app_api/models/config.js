@@ -55,34 +55,25 @@ function setTestRunning(value, callback){
 
     let methodname = 'settestRunning';
 
-    try {
-        mongo.find({}, config.mongo.configObjectName, (err, doc) => {
+    mongo.find({}, config.mongo.configObjectName, (err, doc) => {
 
-            let error = null;
+        if (err) {
 
-            if (err) {
+            logger._error({filename: __filename, methodname, message: err.message});
 
-                throw new Error(messages.mongo.cannot_find_object);
+        } else {
 
-            } else if ((doc[0].mongo.testRunning) && (value)) {
+            doc[0].mongo.testRunning = value;
 
-                error = new Error('Testing initiated by another request');
+            doc[0].save().then(callback(err)).catch((reason) => {
 
-                logger._error({filename: __filename, methodname: methodname, message: error.message});
+                logger._error({filename: __filename, methodname, message: reason});
 
-            } else {
-                doc[0].mongo.testRunning = value;
+            });
 
-                doc[0].save().then(callback(err)).catch((reason) => {
-                    throw new Error(reason)
-                });
-            }
+        }
 
-        });
-    }
-    catch(err){
-        throw(err);
-    }
+    });
 
 }
 
