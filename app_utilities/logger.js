@@ -3,9 +3,12 @@
 const EventEmitter = require('events');
 const mongo = require('../app_api/models/mongoActions');
 const config = require('../app_config/config');
+const messages = require('../app_utilities/messages').messages;
 
 class MyEmitter extends EventEmitter {}
 const myEmitter = new MyEmitter();
+
+const checkTime = 30*1000;
 
 module.exports.emitter = myEmitter;
 
@@ -28,17 +31,34 @@ let loggingLevelName = levels[defaultLoggingLevel];
 //Create an event listener that will update the logging level for the applicationon recieving a 'level' event
 //===================================================================================================================
 
-myEmitter.on('level', ()=>{
+myEmitter.on('level', ()=>{ getLoggingLevel();});
 
-    let methodname = 'logger: emitter.on';
+//===================================================================================================================
+//If we have multiple instances of this application we need to make sure that updates are picked up from the
+//configuration database. Set up an interval process that reads the database and updates the logger process.
+//===================================================================================================================
+
+setInterval(()=>{ getLoggingLevel()}, checkTime);
+
+
+/**
+ * getLoggingLevel
+ *
+ *
+ */
+function getLoggingLevel(){
+
+    let methodname = 'getLoggingLevel';
 
     mongo.find({},config.mongo.configObjectName,(err, doc)=>{
 
-        err ? logMessage(levels.indexOf('error'),formatMessage({filename:__filename, methodName: methodname, message: 'Cannot find doc'})) : updateLoggingLevel(doc);
+        err ?
+            logMessage(levels.indexOf('error'),formatMessage({filename:__filename, methodName: methodname, message: messages.mongo.cannot_find_object})) :
+            updateLoggingLevel(doc);
 
     });
 
-});
+}
 
 /**
  * update Logging Level

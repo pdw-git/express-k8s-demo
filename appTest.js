@@ -6,6 +6,16 @@ let myArgs = process.argv.slice(2);
 
 let delay = myArgs[0] ? myArgs[0] : 0;
 let ipAddress = myArgs[1] ?  myArgs[1] : 'http://127.0.0.1:3000';
+let apiCall = myArgs[2] ? myArgs[2] : status;
+let options = {
+    url: ipAddress + "/api/"+apiCall,
+    method: "get",
+    json: {},
+    qs: {}
+};
+
+
+console.log('Options: '+JSON.stringify(options));
 
 console.log('Delay = '+delay);
 console.log('ipAddress = '+ipAddress);
@@ -14,14 +24,6 @@ let increment = 1;
 let start = Date.now();
 
 console.log('start time: '+start);
-
-let options = {
-
-    url: ipAddress+"/api/test",
-    method: "get",
-    json: {},
-    qs: {}
-};
 
 request(options, test);
 

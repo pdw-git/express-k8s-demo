@@ -65,7 +65,7 @@ function setTestRunning(value, callback){
 
             doc[0].mongo.testRunning = value;
 
-            doc[0].save().then(callback(err)).catch((reason) => {
+            doc[0].save().then(callback(err, doc)).catch((reason) => {
 
                 logger._error({filename: __filename, methodname, message: reason});
 
