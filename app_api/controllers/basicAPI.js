@@ -182,53 +182,45 @@ function executeTest(testFiles, doc, res){
 
     let methodname = 'executeTest';
 
+    dbConfig.setTestRunning(true, (err) => {
 
-    if (fs.existsSync(testFiles)) {
+        if (err) {
 
-        dbConfig.setTestRunning(true, (err) => {
+            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
 
-            if(err){
+        } else {
 
-                responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+            // noinspection JSUnresolvedVariable
+            const testScript = doc[0].homeDir + config.tests[0].testScript;
+            const executionDIR = doc[0].homeDir;
+            const deployment = doc[0].deploymentMethod;
+            const results = doc[0].homeDir + config.tests[0].results;
+            const command = testScript + ' ' + executionDIR + ' ' + deployment + ' ' + testFiles + ' ' + results;
 
-            }
-            else {
+            exec(command, (err, stdout) => { //removed stderr to supress warnings
 
-                // noinspection JSUnresolvedVariable
-                const testScript = doc[0].homeDir + config.tests[0].testScript;
-                const executionDIR = doc[0].homeDir;
-                const deployment = doc[0].deploymentMethod;
-                const results = doc[0].homeDir + config.tests[0].results;
-                const command = testScript + ' ' + executionDIR + ' ' + deployment + ' ' + testFiles + ' ' + results;
+                let methodname = 'exec';
 
-                exec(command, (err, stdout) => { //removed stderr to supress warnings
+                if ((err) && (err.code < 0)) {
 
-                    let methodname = 'exec';
+                    dbConfig.setTestRunning(false, () => {
 
-                    if((err) && (err.code < 0)){
-                        dbConfig.setTestRunning(false, () => {
-                            logger._error({filename: __filename, methodname: methodname, message: 'err.code: '+err.code+': '+doc[0].mongo.testRunning+': '+doc[0].mongo.testRunning+': '+err.message+': STDOUT : '+stdout});
-                            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
-                        });
-                    }
-                    else{
+                        logger._error({filename: __filename, methodname: methodname, message: 'err.code: ' + err.code + ': ' + doc[0].mongo.testRunning + ': ' + doc[0].mongo.testRunning + ': ' + err.message + ': STDOUT : ' + stdout});
+                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
 
-                        completeTest(results, res);
+                    });
 
-                    }
+                } else {
 
-                });
+                    completeTest(results, res);
 
+                }
 
-            }
+            });
 
-        });
+        }
 
-    } else {
-
-        responseFunctions.sendJSONresponse(new Error('Test files not found'), res, filename, methodname, config.status.error);
-
-    }
+    });
 
 }
 

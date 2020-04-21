@@ -8,7 +8,7 @@ const messages = require('../app_utilities/messages').messages;
 class MyEmitter extends EventEmitter {}
 const myEmitter = new MyEmitter();
 
-const checkTime = 30*1000;
+//const checkTime = 30*1000;
 
 module.exports.emitter = myEmitter;
 
@@ -38,7 +38,7 @@ myEmitter.on('level', ()=>{ getLoggingLevel();});
 //configuration database. Set up an interval process that reads the database and updates the logger process.
 //===================================================================================================================
 
-setInterval(()=>{ getLoggingLevel()}, checkTime);
+//setInterval(()=>{ getLoggingLevel()}, checkTime);
 
 
 /**
