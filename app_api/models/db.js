@@ -8,6 +8,7 @@ const messages = require('../../app_utilities/messages').messages;
 const configSchema = require('./schemas/appConfiguration');
 const appConfig = require('./config');
 const mongo = require('./mongoActions');
+const config = require('../../app_config/config');
 
 const dbURI_Config = process.env.MONGO_URI+process.env.MONGO_DB_NAME;
 
@@ -64,7 +65,17 @@ mongoose.connection.on('connected', function(){
     try {
         mongo.createModel(configSchema.getSchema());
 
-        mongo.createConfig(appConfig.getConfig());
+        //create the config and when that has happened get the config._id and save it in the appConfig object.
+
+        appConfig.createConfig(appConfig.getConfig(), ()=>{
+
+            mongo.find({}, config.mongo.configObjectName, (err, doc)=>{
+
+                err ? logger._error({filename: __filename, methodname: methodname, messages: err.messages}) :
+                    appConfig.setID(doc[0]._id);
+
+            });
+        });
 
     }
     catch(err){

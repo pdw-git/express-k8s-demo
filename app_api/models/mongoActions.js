@@ -10,7 +10,6 @@ module.exports.find = findObj;
 module.exports.create = createObj;
 module.exports.delete = deleteObj;
 module.exports.update = updateObj;
-module.exports.createConfig = createConfig;
 
 /**
  * findObj
@@ -34,8 +33,9 @@ function findObj(findObject, mongoObjectName, callback){
  * createObj
  * @param mongoObjectName
  * @param dataObject
+ * @param callback
  */
-function createObj(mongoObjectName, dataObject){
+function createObj(mongoObjectName, dataObject, callback){
 
     let methodname = 'createObj';
 
@@ -50,9 +50,16 @@ function createObj(mongoObjectName, dataObject){
 
         // noinspection JSIgnoredPromiseFromCall
         mo.save((err)=>{
-            err ?
-                logger._error({filename: __filename, methodname:methodname, message: err.message}):
-                logger._info({filename:__filename, methodname:methodname, message: messages.mongo.object_created});
+            if(err) {
+                logger._error({filename: __filename, methodname: methodname, message: err.message});
+            }
+            else {
+
+                logger._info({filename: __filename, methodname: methodname, message: messages.mongo.object_created});
+
+                callback != null ? callback(): {};
+
+            }
 
         });
     }
@@ -116,48 +123,7 @@ module.exports.createModel = function(configSchema){
 
 };
 
-/**
- * createConfig
- * @param dataObject
- */
-function createConfig(dataObject){
 
-    let methodname = 'createConfig';
-
-    logger._debug({filename: __filename, methodname: methodname, message: messages.started+': dataObject: '+JSON.stringify(dataObject)});
-
-    findObj({}, config.mongo.configObjectName, (err,doc)=>{
-
-        if(err){
-            logger._error({filename: __filename, methodname:'mongo.find', message: err.message});
-        }
-        else {
-
-            switch(doc.length){
-
-                //Nothing found: create the config data object
-                case 0 :
-                    logger._debug({filename: __filename, methodname: methodname, message: 'create new config object'});
-                    createObj(config.mongo.configObjectName, dataObject);
-                    logger._info({filename: __filename, methodname: methodname, message: messages.mongo.object_exists+config.mongo.configObjectName});
-                    break;
-
-                //There is a config object: log a message stating config exists
-                case 1 :
-                    logger._info({filename: __filename, methodname: methodname, message: 'configuration '+doc[0]._id+' already exists'});
-                    break;
-
-                //if the length is greater than 1 then there is a problem with the database, log an error.
-                default:
-                    logger._error({filename: __filename, methodname:'mongo.find', message: messages.mongo.invalid_doc_length+doc.length});
-
-            }
-
-        }
-
-    });
-
-}
 
 /**
  * getMongoProject
