@@ -31,6 +31,7 @@ function getConfig(){
     }
 
     return {
+        testRunning: false,
         inProduction: process.env.NODE_ENV_PRODUCTION,
         deploymentMethod: process.env.NODE_ENV_DEPLOYMENT,
         logLevel: process.env.LOGGING_LEVEL,
@@ -43,8 +44,7 @@ function getConfig(){
         mongo : {
             name: process.env.MONGO_DB_NAME,
             uri: process.env.MONGO_URI,
-            configObjectName: config.mongo.configObjectName,
-            testRunning: false
+            configObjectName: config.mongo.configObjectName
         },
         encryption: {
             enabled: process.env.HTTPS,
@@ -114,7 +114,7 @@ function setTestRunning(value, callback){
 
         } else {
 
-            doc[0].mongo.testRunning = value;
+            doc[0].testRunning = value;
 
             doc[0].save().then(callback(err, doc)).catch((reason) => {
 

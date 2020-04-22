@@ -23,6 +23,7 @@ const testName = 'getCongfigGoodStatus';
 //set up the expected body object
 
 const expectedBody = [{
+    testRunning: true,
     inProduction: process.env.NODE_ENV_PRODUCTION,
     deploymentMethod: process.env.NODE_ENV_DEPLOYMENT,
     logLevel: process.env.LOGGING_LEVEL,
@@ -35,8 +36,7 @@ const expectedBody = [{
     mongo : {
         name: process.env.MONGO_DB_NAME,
         uri: process.env.MONGO_URI,
-        configObjectName: config.mongo.configObjectName,
-        testRunning: true
+        configObjectName: config.mongo.configObjectName
     },
     encryption: {
         enabled: process.env.HTTPS,

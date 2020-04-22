@@ -7,6 +7,7 @@ module.exports.getSchema = getSchema;
 const configSchema = new mongoose.Schema(
 
     {
+        testRunning:{type: Boolean},
         inProduction: {type: String, required: true},
         deploymentMethod: {type: String},
         logLevel: {type: String},
@@ -19,8 +20,7 @@ const configSchema = new mongoose.Schema(
         mongo : {
             name: {type: String, required: true},
             uri: {type: String, required: true},
-            configObjectName: {type: String, required: true},
-            testRunning:{type: Boolean}
+            configObjectName: {type: String, required: true}
         },
         encryption: {
             enabled: {type: String, required: true},

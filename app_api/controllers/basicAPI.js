@@ -107,7 +107,7 @@ module.exports.getTest = function(req, res){
 
                 responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
 
-            } else if(doc[0].mongo.testRunning) {
+            } else if(doc[0].testRunning) {
 
                 responseFunctions.sendJSONresponse((new Error('Test is already running')), res, filename, methodname, config.status.error);
 
