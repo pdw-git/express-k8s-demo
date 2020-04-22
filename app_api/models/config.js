@@ -106,7 +106,9 @@ function setTestRunning(value, callback){
 
     let methodname = 'settestRunning';
 
-    mongo.find({}, config.mongo.configObjectName, (err, doc) => {
+    let project = mongo.getMongoObject(config.mongo.configObjectName);
+
+    project.findOneAndUpdate({_id: getConfigID()},{testRunning: value}, {new: false}, (err, doc)=>{
 
         if (err) {
 
@@ -114,13 +116,8 @@ function setTestRunning(value, callback){
 
         } else {
 
-            doc[0].testRunning = value;
+            (callback) ? callback(err, doc) : logger._error({filename: __filename, methodname, message: 'Callback not a function'});
 
-            doc[0].save().then(callback(err, doc)).catch((reason) => {
-
-                logger._error({filename: __filename, methodname, message: reason});
-
-            });
 
         }
 
