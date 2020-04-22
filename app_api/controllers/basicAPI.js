@@ -182,19 +182,25 @@ function executeTest(testFiles, doc, res){
 
     let methodname = 'executeTest';
 
-    dbConfig.setTestRunning(true, (err) => {
+    dbConfig.setTestRunning(true, (err, doc) => {
+
+        //doc here is the version of configuration before the atomic update was attempted.
 
         if (err) {
 
             responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+        }
+        else if(doc.testRunning) {
+
+            responseFunctions.sendJSONresponse(new Error('Tests were running before atomic update attempted'), res, filename, methodname, config.status.error);
 
         } else {
 
             // noinspection JSUnresolvedVariable
-            const testScript = doc[0].homeDir + config.tests[0].testScript;
-            const executionDIR = doc[0].homeDir;
-            const deployment = doc[0].deploymentMethod;
-            const results = doc[0].homeDir + config.tests[0].results;
+            const testScript = doc.homeDir + config.tests[0].testScript;
+            const executionDIR = doc.homeDir;
+            const deployment = doc.deploymentMethod;
+            const results = doc.homeDir + config.tests[0].results;
             const command = testScript + ' ' + executionDIR + ' ' + deployment + ' ' + testFiles + ' ' + results;
 
             exec(command, (err, stdout) => { //removed stderr to supress warnings
