@@ -5,10 +5,10 @@ let request = require('request');
 let myArgs = process.argv.slice(2);
 
 let delay = myArgs[0] ? myArgs[0] : 0;
-let ipAddress = myArgs[1] ?  myArgs[1] : 'http://127.0.0.1:3000';
+let ipAddress = myArgs[1] ?  myArgs[1] : '127.0.0.1:3000';
 let apiCall = myArgs[2] ? myArgs[2] : status;
 let options = {
-    url: ipAddress + "/api/"+apiCall,
+    url: 'http://'+ipAddress + "/api/"+apiCall,
     method: "get",
     json: {},
     qs: {}
