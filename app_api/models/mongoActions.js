@@ -10,6 +10,7 @@ module.exports.find = findObj;
 module.exports.create = createObj;
 module.exports.delete = deleteObj;
 module.exports.update = updateObj;
+module.exports.getMongoObject = getMongoObject;
 
 /**
  * findObj
