@@ -87,6 +87,7 @@ function createConfig(dataObject, callback){
                 //There is a config object: log a message stating config exists
                 case 1 :
                     logger._info({filename: __filename, methodname: methodname, message: 'configuration '+doc[0]._id+' already exists'});
+                    setConfigID(doc[0]._id);
                     break;
 
                 //if the length is greater than 1 then there is a problem with the database, log an error.
