@@ -13,7 +13,7 @@ const responseFunctions = require('./responseFunctions');
 const mongo = require('../models/mongoActions');
 const { exec } = require('child_process');
 const db = require('../models/db');
-const dbConfig = require('../models/config');
+const configDB = require('../models/configDB/configDB_Actions');
 const info = require('../../info');
 
 
@@ -182,7 +182,7 @@ function executeTest(testFiles, doc, res){
 
     let methodname = 'executeTest';
 
-    dbConfig.setTestRunning(true, (err, doc) => {
+    configDB.setTestRunning(true, (err, doc) => {
 
         //doc here is the version of configuration before the atomic update was attempted.
 
@@ -209,7 +209,7 @@ function executeTest(testFiles, doc, res){
 
                 if ((err) && (err.code < 0)) {
 
-                    dbConfig.setTestRunning(false, () => {
+                    configDB.setTestRunning(false, () => {
 
                         logger._error({filename: __filename, methodname: methodname, message: 'err.code: ' + err.code + ': ' + doc[0].mongo.testRunning + ': ' + doc[0].mongo.testRunning + ': ' + err.message + ': STDOUT : ' + stdout});
                         responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
@@ -245,7 +245,7 @@ function completeTest(testDir, res){
 
         if (err) {
 
-            dbConfig.setTestRunning(false, () => {
+            configDB.setTestRunning(false, () => {
                 responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
             });
 
@@ -268,7 +268,7 @@ function completeTest(testDir, res){
                     responseFunctions.sendJSONresponse(new Error(messages.cannot_parse_JSON_file), res, __filename, methodname, config.status.error):
                     responseFunctions.sendJSONresponse(null, res, __filename, methodname, config.status.good, getTestResults(parsedData));
 
-                dbConfig.setTestRunning(false, () => {
+                configDB.setTestRunning(false, () => {
 
                     logger._info({filename: filename, methodname: methodname, message: messages.basic.child_process_completed});
 

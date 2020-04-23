@@ -7,7 +7,7 @@ For testing of Mongo use a docker image
 
    For docker-compose
 
-   config.json: mongo uri mogodb://mongo:
+   configDB_Actions.json: mongo uri mogodb://mongo:
 
    .evn APP_DIR /usr/src/app
 

@@ -11,7 +11,7 @@ To install the application ensure you have npm and nodejs available on the targe
 
 Run git clone against this repository to extract the code to a target directory.
 
-There is a default configuration that is described in the file app_config/config.json.
+There is a default configuration that is described in the file app_config/configDB_Actions.json.
 
 Elements of this configuration can be over ridden by setting environment variable. The following lists those elements 
 that can be altered:
@@ -123,7 +123,7 @@ On success you will see the following on the console:
 
 >>info: /Users/whitep/Node/WebstormProjects/express-api/bin/www-main : Application port: 3000 Encrpytion: no {"timestamp":"2020-04-17T19:35:07.076Z"}
 
->>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-mongoose.connection.on.connected : Create initial config in db {"timestamp":"2020-04-17T19:35:13.156Z"}
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-mongoose.connection.on.connected : Create initial configDB_Actions in db {"timestamp":"2020-04-17T19:35:13.156Z"}
 
 >>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/mongoActions.js-createModel : Created Mongoose model: configuration {"timestamp":"2020-04-17T19:35:13.166Z"}
 
@@ -147,11 +147,11 @@ The following RESTful APIs are provided for testing
 
 >>GET api/test - runs tests on the server and reports a result summary
 
->>GET /api/config - displays the configuration data that has been stored in the persistence lay
+>>GET /api/configDB_Actions - displays the configuration data that has been stored in the persistence lay
 
->>DELETE /api/config/:configid - deletes the config data in the persistence layer
+>>DELETE /api/configDB_Actions/:configid - deletes the configDB_Actions data in the persistence layer
 
->>POST /api/config - placeholder for updating the configuration information
+>>POST /api/configDB_Actions - placeholder for updating the configuration information
 
 There is some basic logging and error handling but this code is not suitable for production use. 
 

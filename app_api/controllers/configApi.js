@@ -6,7 +6,7 @@ const mongo = require('../models/mongoActions');
 const messages = require('../../app_utilities/messages').messages;
 const responseFunctions = require('./responseFunctions');
 const db = require('../models/db');
-const dbConfig = require('../models/config');
+const configDB = require('../models/configDB/configDB_Actions');
 const filename = __filename;
 
 
@@ -135,7 +135,7 @@ module.exports.getConfig = function(req,res){
 
         if (db.dbConnected()) {
 
-            mongo.find({_id: dbConfig.getID()}, mongo.configProject, (err, doc) => {
+            mongo.find({_id: configDB.getID()}, mongo.configProject, (err, doc) => {
 
                 responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, doc);
 

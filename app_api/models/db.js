@@ -6,7 +6,7 @@ const mongoose = require( 'mongoose' );
 const logger = require('../../app_utilities/logger');
 const messages = require('../../app_utilities/messages').messages;
 const configSchema = require('./schemas/appConfiguration');
-const appConfig = require('./config');
+const configDB = require('./configDB/configDB_Actions');
 const mongo = require('./mongoActions');
 const config = require('../../app_config/config');
 
@@ -67,12 +67,12 @@ mongoose.connection.on('connected', function(){
 
         //create the config and when that has happened get the config._id and save it in the appConfig object.
 
-        appConfig.createConfig(appConfig.getConfig(), ()=>{
+        configDB.createConfig(configDB.getConfig(), ()=>{
 
             mongo.find({}, config.mongo.configObjectName, (err, doc)=>{
 
                 err ? logger._error({filename: __filename, methodname: methodname, messages: err.messages}) :
-                    appConfig.setID(doc[0]._id);
+                    configDB.setID(doc[0]._id);
 
             });
         });

@@ -1,9 +1,9 @@
 'use strict';
 
-const config = require('../../app_config/config');
-const mongo = require('./mongoActions');
-const logger = require('../../app_utilities/logger');
-const messages = require('../../app_utilities/messages').messages;
+const config = require('../../../app_config/config');
+const mongo = require('../mongoActions');
+const logger = require('../../../app_utilities/logger');
+const messages = require('../../../app_utilities/messages').messages;
 
 module.exports.setTestRunning = setTestRunning;
 module.exports.getTestRunning = getTestRunning;
@@ -69,7 +69,7 @@ function createConfig(dataObject, callback){
 
     logger._debug({filename: __filename, methodname: methodname, message: messages.started+': dataObject: '+JSON.stringify(dataObject)});
 
-    mongo.find({}, config.mongo.configObjectName, (err,doc)=>{
+    mongo.find({}, config.mongo.configObjectName, (err, doc)=>{
 
         if(err){
             logger._error({filename: __filename, methodname:'mongo.find', message: err.message});
