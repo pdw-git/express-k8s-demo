@@ -63,7 +63,7 @@ mongoose.connection.on('connected', function(){
     logger._info({filename: __filename, methodname: methodname, message: messages.db.create_config });
 
     try {
-        mongo.createModel(configSchema.getSchema());
+        mongo.createModel(config.mongo.configObjectName, configSchema.getSchema());
 
         //create the config and when that has happened get the config._id and save it in the appConfig object.
 

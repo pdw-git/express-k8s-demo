@@ -112,13 +112,13 @@ function updateObj(mongoObjectName, id, plugin, callback){
 /**
  * createModel
  */
-module.exports.createModel = function(configSchema){
+module.exports.createModel = function(objectName, schema){
 
     let methodname = 'createModel';
 
-    logger._debug({filename: __filename, methodname: methodname, message: messages.started+': configSchema: '+JSON.stringify(configSchema)});
+    logger._debug({filename: __filename, methodname: methodname, message: messages.started+': configSchema: '+JSON.stringify(schema)});
 
-    mongoose.model(config.mongo.configObjectName, configSchema);
+    mongoose.model(objectName, schema);
 
     logger._info({filename: __filename, methodname: methodname, message: messages.mongo.created_model+config.mongo.configObjectName});
 
