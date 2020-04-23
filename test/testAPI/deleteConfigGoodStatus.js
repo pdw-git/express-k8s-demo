@@ -58,6 +58,7 @@ module.exports.deleteConfigGoodStatus={
                     let configModel = mongo.getMongoObject(appConfig.mongo.configObjectName, schema.getSchema());
                     let configObject = new configModel(configDB.getConfig());
 
+                    // noinspection JSIgnoredPromiseFromCall supress warning on promise not being caught. Adding .catch caused functional issues.
                     configObject.save((err, doc)=>{
 
                         testData.setupData.data._id = doc._id;
@@ -65,7 +66,7 @@ module.exports.deleteConfigGoodStatus={
                         err ? testFunction.handleError(err, done) :
                         testData.tests.testAction(testData, done);
 
-                    }).catch((reason)=>{testFunction.handleError(new Error(reason), done)});
+                    });
 
                 }
                 else {
