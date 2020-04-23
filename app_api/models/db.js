@@ -105,7 +105,7 @@ function connectToMongo(uri){
     {
 
         try {
-            mongoose.connect(uri, {useUnifiedTopology: true, useNewUrlParser: true}).
+            mongoose.connect(uri, {useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false}).
             then(() => {
 
                 logger._info({filename: __filename, methodname: methodname, message: messages.db.connected_to + uri});
