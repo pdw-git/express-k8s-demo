@@ -35,24 +35,27 @@ function findObj(findObject, mongoObjectName, callback){
  * @param mongoObjectName
  * @param dataObject
  * @param callback
+ * @param schema
  */
-function createObj(mongoObjectName, dataObject, callback){
+function createObj(mongoObjectName, dataObject, schema, callback){
 
     let methodname = 'createObj';
 
     logger._debug({filename:__filename, methodname:methodname, message: messages.started+' : mongoObjectName : '+mongoObjectName});
 
+    if(getMongoObject(mongoObjectName, schema)){
 
-    if(getMongoObject(mongoObjectName)){
-
-        let mongoObject = getMongoObject(mongoObjectName);
+        let mongoObject = getMongoObject(mongoObjectName, schema);
 
         let mo = new mongoObject(dataObject);
 
         // noinspection JSIgnoredPromiseFromCall
         mo.save((err)=>{
+
             if(err) {
+
                 logger._error({filename: __filename, methodname: methodname, message: err.message});
+
             }
             else {
 
@@ -129,10 +132,11 @@ module.exports.createModel = function(objectName, schema){
 /**
  * getMongoProject
  * @param mongoObjectName
+ * @param schema
  * @returns {Model}
  */
-function getMongoObject(mongoObjectName){
+function getMongoObject(mongoObjectName, schema){
 
-    return mongoose.model(mongoObjectName);
+    return mongoose.model(mongoObjectName, schema);
 
 }
