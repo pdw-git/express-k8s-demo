@@ -50,6 +50,7 @@ module.exports.postConfig = function(req,res){
                                     if (err) {
 
                                         responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+
                                     } else {
 
                                         doc.save().then(() => { //removed product to remove warning
@@ -178,11 +179,7 @@ module.exports.deleteConfig = function (req, res) {
                         // noinspection JSUnresolvedVariable
                         responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.good, {msg: mongo.configProject + ': deleted doc: ' + id});
 
-                        logger._info({
-                            filename: __filename,
-                            methodname: methodname,
-                            message: mongo.configProject + ': deleted doc: ' + id
-                        });
+                        logger._info({filename: __filename, methodname: methodname, message: mongo.configProject + ': deleted doc: ' + id});
 
                     }
 
