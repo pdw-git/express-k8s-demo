@@ -27,6 +27,16 @@ const {combine, timestamp, json, colorize, simple} = format;
 let loggingLevelIndex = defaultLoggingLevel;
 let loggingLevelName = levels[defaultLoggingLevel];
 
+//default config settings for the logger
+const loggerConfig = {
+    level: loggingLevelName,
+    format: combine(timestamp(), json(), colorize()),
+    transports: [
+        new transports.File({ filename: process.env.APP_DIR+'/error.log', level: 'error', format: simple()}),
+        new transports.File({ filename: process.env.APP_DIR+'/combined.log', format: simple()})
+    ]
+};
+
 //===================================================================================================================
 //Create an event listener that will update the logging level for the applicationon recieving a 'level' event
 //===================================================================================================================
@@ -88,8 +98,8 @@ function updateLoggingLevel(doc){
                         level: doc[0].logLevel,
                         format: combine(timestamp(), json(), colorize()),
                         transports: [
-                            new transports.File({ filename: 'error.log', level: 'error', format: simple()}),
-                            new transports.File({ filename: 'combined.log', format: simple()})
+                            new transports.File({ filename: process.env.APP_DIR+'/error.log', level: 'error', format: simple()}),
+                            new transports.File({ filename: process.env.APP_DIR+'/combined.log', format: simple()})
                         ]
                     });
 
@@ -132,15 +142,7 @@ process.env.LOGGING_LEVEL === undefined ?
     setLoggingLevels(loggingLevelName, loggingLevelIndex) :
     setLoggingLevels(process.env.LOGGING_LEVEL,levels.indexOf(process.env.LOGGING_LEVEL));
 
-//default config settings for the logger
-const loggerConfig = {
-    level: loggingLevelName,
-    format: combine(timestamp(), json(), colorize()),
-    transports: [
-        new transports.File({ filename: 'error.log', level: 'error', format: simple()}),
-        new transports.File({ filename: 'combined.log', format: simple()})
-    ]
-};
+
 
 const logger = createLogger(loggerConfig);
 
