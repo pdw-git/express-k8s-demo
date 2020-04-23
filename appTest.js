@@ -33,7 +33,7 @@ function test(err, res, body){
         console.log(increment+': ERROR: '+err);
 
     } else{
-        console.log(increment+': duration: '+String(Date.now()-start-delay)+'ms : '+JSON.stringify(body));
+        console.log(increment+': delay: '+delay+': duration: '+String(Date.now()-start-delay)+'ms : '+JSON.stringify(body));
 
         if((res !== undefined) && (res.statusCode !== undefined ) && (res.statusCode !== 200)) {
 
