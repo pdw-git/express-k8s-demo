@@ -8,7 +8,6 @@ const logger = require('../../app_utilities/logger');
 const config = require('../../app_config/config');
 const messages= require('../../app_utilities/messages').messages;
 const fs = require('fs');
-const filename = __filename;
 const responseFunctions = require('./responseFunctions');
 const mongo = require('../models/mongoActions');
 const { exec } = require('child_process');
@@ -16,6 +15,7 @@ const db = require('../models/db');
 const configDB = require('../models/configDB/configDB_Actions');
 const info = require('../../info');
 
+const filename = __filename;
 
 /**
  * getStatus
