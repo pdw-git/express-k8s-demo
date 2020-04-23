@@ -12,6 +12,7 @@ const skipMongoObjects = ['_id'];
 
 module.exports.handleError = error;
 
+
 module.exports.testStatusAndBody = function(testData, options,  done){
 
     //Retrieve the applications config inforamtion via the API}
@@ -157,11 +158,14 @@ function simpleAssert(actual, expected, msg){
 /**
  * handle Error
  * @param err
+ * @param callback (err)=>{}
  */
-function error(err){
+function error(err, callback){
 
     console.log('Error has been detected: ');
     console.log('full error: '+err);
+
+    callback ? callback(err) : {};
 }
 
 /**
@@ -183,3 +187,5 @@ function checkIfObjectShouldBeSkipped(objectNames, name){
     return returnVal;
 
 }
+
+

@@ -9,6 +9,7 @@ module.exports.testDefinitions={
       require('./getVersionGoodStatus').getVersionGoodStatus,
       require('./getStatusGoodStatus').getStatusGoodStatus,
       require('./getInvalidAPI_PageNotFound').getInvalidAPI_PageNotFound,
-      require('./onlyOneConfigObject').onlyOneConfigObject
+      require('./onlyOneConfigObject').onlyOneConfigObject,
+      require('./deleteConfigGoodStatus').deleteConfigGoodStatus
   ],
 };

@@ -155,7 +155,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 //log the current logging level
 
-logger.log('info', 'application logging level: '+levels[loggingLevelIndex]);
+//logger.log('info', 'application logging level: '+levels[loggingLevelIndex]);
 
 function logMessage(level, message) {
 

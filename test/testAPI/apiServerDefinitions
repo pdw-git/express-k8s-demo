@@ -2,6 +2,7 @@
 
 module.exports.GET = 'GET';
 module.exports.POST = 'POST';
+module.exports.DELETE = 'DELETE';
 module.exports.GOOD_STATUS = 200;
 module.exports.PAGE_NOT_FOUND = 404;
 module.exports.ERROR_STATUS = 500;

@@ -73,7 +73,9 @@ function createConfig(dataObject, callback){
     mongo.find({}, config.mongo.configObjectName, (err, doc)=>{
 
         if(err){
+
             logger._error({filename: __filename, methodname:'mongo.find', message: err.message});
+
         }
         else {
 
@@ -82,7 +84,7 @@ function createConfig(dataObject, callback){
                 //Nothing found: create the config data object
                 case 0 :
                     logger._debug({filename: __filename, methodname: methodname, message: 'create new config object'});
-                    mongo.create(config.mongo.configObjectName, getConfig(), schema.getSchema, callback);
+                    mongo.create(config.mongo.configObjectName, getConfig(), schema.getSchema(), callback);
                     break;
 
                 //There is a config object: log a message stating config exists
