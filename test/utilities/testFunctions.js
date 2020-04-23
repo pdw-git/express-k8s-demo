@@ -7,7 +7,7 @@
 const assert = require('assert');
 const request = require('request');
 
-const skipMongoObjects = ['_id'];
+const skipMongoObjects = ['_id', 'testRunning'];
 
 
 module.exports.handleError = error;
@@ -176,15 +176,7 @@ function error(err, callback){
  */
 function checkIfObjectShouldBeSkipped(objectNames, name){
 
-    let returnVal = false;
-
-    for(let index = 0; index < objectNames.length; index++){
-
-        returnVal = (name === objectNames[index]);
-
-    }
-
-    return returnVal;
+    return objectNames.includes(name);
 
 }
 
