@@ -24,8 +24,9 @@ module.exports.getEnvironmentVariables = function(){
                 dotenv.config({ path: process.env.EXP_API_APP_DIR+config.environments.npm});
                 break;
 
-            case 'docker-compose':
-                dotenv.config({path: process.env.EXP_API_APP_DIR+config.environments.dockerCompose});
+            case 'docker':
+                //dotenv.config({path: process.env.EXP_API_APP_DIR+config.environments.dockerCompose});
+
                 break;
 
             default:
