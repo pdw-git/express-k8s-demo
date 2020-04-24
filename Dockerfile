@@ -33,5 +33,5 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-EXPOSE $PORT
+EXPOSE $EXP_API_PORT
 CMD [ "npm", "start" ]

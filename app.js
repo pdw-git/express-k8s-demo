@@ -33,6 +33,8 @@ const usersRouter = require('./app_server/routes/users');
 const apiRouter = require('./app_api/routes/index');
 const app = express();
 
+applogger._info({filename: __filename, methodName: 'app.js', message: 'Deployment method: '+process.env.EXP_API_ENV_DEPLOYMENT});
+
 // view engine setup
 app.set('views', path.join(__dirname,'app_server', 'views'));
 app.set('view engine', 'pug');
