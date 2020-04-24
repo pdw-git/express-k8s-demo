@@ -53,7 +53,7 @@ module.exports.getInfo = function(req, res){
 
     const methodname = 'getInfo(req,res)';
 
-    info.version = process.env.API_VERSION;
+    info.version = process.env.EXP_API_API_VERSION;
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=> {
 
@@ -77,7 +77,7 @@ module.exports.getVersion = function(req, res){
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=> {
 
-        responseFunctions.sendJSONresponse( null, res, filename, methodname, config.status.good, {version: process.env.API_VERSION});
+        responseFunctions.sendJSONresponse( null, res, filename, methodname, config.status.good, {version: process.env.EXP_API_API_VERSION});
 
     });
 

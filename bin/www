@@ -23,25 +23,25 @@ const methodName = 'main';
 let server = null;
 
 //Get port from environment and store in Express.
-const port = normalizePort((process.env.PORT === undefined ? config.defaultPort : process.env.PORT));
+const port = normalizePort((process.env.EXP_API_PORT === undefined ? config.defaultPort : process.env.EXP_API_PORT));
 
 app.set('port', port);
 
 //set up the http/https server dependent on values stored in the application configuration file
 
-process.env.HTTPS === undefined ? process.env.HTTPS = 'no' : {};
+process.env.EXP_API_HTTPS === undefined ? process.env.EXP_API_HTTPS = 'no' : {};
 
-applogger._info({filename: filename, methodname: methodName, message: "Application port: "+port+' Encrpytion: '+process.env.HTTPS});
+applogger._info({filename: filename, methodname: methodName, message: "Application port: "+port+' Encrpytion: '+process.env.EXP_API_HTTPS});
 
 const options = {
-  key: fs.readFileSync(process.env.APP_DIR+process.env.KEY_STORE+process.env.APP_KEY),
-  cert: fs.readFileSync(process.env.APP_DIR+process.env.KEY_STORE+process.env.APP_CERT)
+  key: fs.readFileSync(process.env.EXP_API_APP_DIR+process.env.EXP_API_KEY_STORE+process.env.EXP_API_APP_KEY),
+  cert: fs.readFileSync(process.env.EXP_API_APP_DIR+process.env.EXP_API_KEY_STORE+process.env.EXP_API_APP_CERT)
 };
 
-server = process.env.HTTPS === 'yes' ? https.createServer(options, app) : http.createServer(app);
+server = process.env.EXP_API_HTTPS === 'yes' ? https.createServer(options, app) : http.createServer(app);
 
-process.env.HTTPS === 'yes' ?
-    applogger._info({filename: filename, methodName: methodName, message: messages.https_cert_provider+process.env.CERT_PROVIDER}):null;
+process.env.EXP_API_HTTPS === 'yes' ?
+    applogger._info({filename: filename, methodName: methodName, message: messages.https_cert_provider+process.env.EXP_API_CERT_PROVIDER}):null;
 
 if (server !== null) {
 

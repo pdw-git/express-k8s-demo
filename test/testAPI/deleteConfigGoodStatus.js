@@ -55,7 +55,7 @@ module.exports.deleteConfigGoodStatus={
         before : (testData, done)=>{
 
             //we need to open a connection to the data base. Remember the tests run outside of the the main applicaiton
-            mongoose.connect(process.env.MONGO_URI+process.env.MONGO_DB_NAME,
+            mongoose.connect(process.env.EXP_API_MONGO_URI+process.env.EXP_API_MONGO_DB_NAME,
                 {useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false}
                 ).catch((reason)=>{testFunction.handleError(new Error(reason), done)});
 

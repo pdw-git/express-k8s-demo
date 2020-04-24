@@ -13,7 +13,7 @@ let tests = [{}];
 
 for (let i=0; i < config.tests.length; i++){
 
-    tests[i] = {area: config.tests[i].area, directory: process.env.APP_DIR+config.tests[i].directory+config.tests[i].area};
+    tests[i] = {area: config.tests[i].area, directory: process.env.EXP_API_APP_DIR+config.tests[i].directory+config.tests[i].area};
 
 }
 
@@ -24,26 +24,26 @@ const testName = 'getCongfigGoodStatus';
 
 const expectedBody = [{
     testRunning: true,
-    inProduction: process.env.NODE_ENV_PRODUCTION,
-    deploymentMethod: process.env.NODE_ENV_DEPLOYMENT,
-    logLevel: process.env.LOGGING_LEVEL,
-    homeDir: process.env.APP_DIR,
-    ipAddress: process.env.APP_IP,
-    indexRoute: process.env.INDEX_ROUTE,
-    apiRoute: process.env.API_ROUTE,
-    userRoute: process.env.USER_ROUTE,
-    port: process.env.PORT,
+    inProduction: process.env.EXP_API_NODE_ENV_PRODUCTION,
+    deploymentMethod: process.env.EXP_API_ENV_DEPLOYMENT,
+    logLevel: process.env.EXP_API_LOGGING_LEVEL,
+    homeDir: process.env.EXP_API_APP_DIR,
+    ipAddress: process.env.EXP_API_APP_IP,
+    indexRoute: process.env.EXP_API_INDEX_ROUTE,
+    apiRoute: process.env.EXP_API_API_ROUTE,
+    userRoute: process.env.EXP_API_USER_ROUTE,
+    port: process.env.EXP_API_PORT,
     mongo : {
-        name: process.env.MONGO_DB_NAME,
-        uri: process.env.MONGO_URI,
+        name: process.env.EXP_API_MONGO_DB_NAME,
+        uri: process.env.EXP_API_MONGO_URI,
         configObjectName: config.mongo.configObjectName
     },
     encryption: {
-        enabled: process.env.HTTPS,
-        certProvider: process.env.CERT_PROVIDER,
-        store: process.env.KEY_STORE,
-        key: process.env.APP_KEY,
-        cert: process.env.APP_CERT
+        enabled: process.env.EXP_API_HTTPS,
+        certProvider: process.env.EXP_API_CERT_PROVIDER,
+        store: process.env.EXP_API_KEY_STORE,
+        key: process.env.EXP_API_APP_KEY,
+        cert: process.env.EXP_API_APP_CERT
     },
     tests: tests,
     __v: 0

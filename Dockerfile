@@ -1,9 +1,9 @@
 FROM node:12
 
-ENV NODE_ENV_DEPLOYMENT docker-compose
-ENV APP_DIR /usr/src/app
+ENV EXP_API_ENV_DEPLOYMENT docker-compose
+ENV EXP_API_APP_DIR /usr/src/app
 # Create app directory
-WORKDIR $APP_DIR
+WORKDIR $EXP_API_APP_DIR
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json.old AND package-lock.json are copied

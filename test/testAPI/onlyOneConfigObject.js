@@ -14,7 +14,7 @@ let tests = [{}];
 
 for (let i=0; i < config.tests.length; i++){
 
-    tests[i] = {area: config.tests[i].area, directory: process.env.APP_DIR+config.tests[i].directory+config.tests[i].area};
+    tests[i] = {area: config.tests[i].area, directory: process.env.EXP_API_APP_DIR+config.tests[i].directory+config.tests[i].area};
 
 }
 

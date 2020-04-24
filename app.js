@@ -21,7 +21,7 @@ const favicon = require('serve-favicon');
 require('./app_api/models/db');
 
 //if the NODE_ENV_PRODUCTION environment variable has not been set then set it to false
-process.env.NODE_ENV_PRODUCTION === undefined ? process.env.NODE_ENV_PRODUCTION = 'no' : null;
+process.env.EXP_API_ENV_PRODUCTION === undefined ? process.env.EXP_API__ENV_PRODUCTION = 'no' : null;
 
 const createError = require('http-errors');
 const express = require('express');
@@ -44,9 +44,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(process.env.INDEX_ROUTE, indexRouter);
-app.use(process.env.USER_ROUTE, usersRouter);
-app.use(process.env.API_ROUTE, apiRouter);
+app.use(process.env.EXP_API_INDEX_ROUTE, indexRouter);
+app.use(process.env.EXP_API_USER_ROUTE, usersRouter);
+app.use(process.env.EXP_API_API_ROUTE, apiRouter);
 
 //serve a favicon if requested
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -58,7 +58,7 @@ app.use(function(req, res ) { //removed next to stop warnings
 
     const data = pageConfig.notfound.data;
 
-    data.url = process.env.APP_IP + req.url;
+    data.url = process.env.EXP_API_APP_IP + req.url;
 
     defineErrorContent(err, data, messages.page_not_found, config.status.notFound, res);
 
@@ -72,7 +72,7 @@ app.use(function(err, req, res) { //removed next to suppress warnings
 
     const data = pageConfig.error.data;
 
-    data.url = process.env.APP_IP + req.url;
+    data.url = process.env.EXP_API_APP_IP + req.url;
 
     defineErrorContent(err, data, messages.production_error, config.status.error, res);
 
@@ -80,7 +80,7 @@ app.use(function(err, req, res) { //removed next to suppress warnings
 
 function defineErrorContent(err, data, msg, status, res){
 
-    if (process.env.NODE_ENV_PRODUCTION === 'no') {
+    if (process.env.EXP_API__ENV_PRODUCTION === 'no') {
         data.information = err.stack;
     }
     else{

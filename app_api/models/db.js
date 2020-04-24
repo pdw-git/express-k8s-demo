@@ -10,7 +10,7 @@ const configDB = require('./configDB/configDB_Actions');
 const mongo = require('./mongoActions');
 const config = require('../../app_config/config');
 
-const dbURI_Config = process.env.MONGO_URI+process.env.MONGO_DB_NAME;
+const dbURI_Config = process.env.EXP_API_MONGO_URI+process.env.EXP_API_MONGO_DB_NAME;
 
 let retryCount = 0;
 let maxRetries = 100;

@@ -32,8 +32,8 @@ const loggerConfig = {
     level: loggingLevelName,
     format: combine(timestamp(), json(), colorize()),
     transports: [
-        new transports.File({ filename: process.env.APP_DIR+'/error.log', level: 'error', format: simple()}),
-        new transports.File({ filename: process.env.APP_DIR+'/combined.log', format: simple()})
+        new transports.File({ filename: process.env.EXP_API_APP_DIR+'/error.log', level: 'error', format: simple()}),
+        new transports.File({ filename: process.env.EXP_API_APP_DIR+'/combined.log', format: simple()})
     ]
 };
 
@@ -98,12 +98,12 @@ function updateLoggingLevel(doc){
                         level: doc[0].logLevel,
                         format: combine(timestamp(), json(), colorize()),
                         transports: [
-                            new transports.File({ filename: process.env.APP_DIR+'/error.log', level: 'error', format: simple()}),
-                            new transports.File({ filename: process.env.APP_DIR+'/combined.log', format: simple()})
+                            new transports.File({ filename: process.env.EXP_API_APP_DIR+'/error.log', level: 'error', format: simple()}),
+                            new transports.File({ filename: process.env.EXP_API_APP_DIR+'/combined.log', format: simple()})
                         ]
                     });
 
-                    process.env.NODE_ENV !== 'production' ?
+                    process.env.EXP_API_NODE_ENV !== 'production' ?
                         logger.add(new transports.Console({format: simple()})) :
                         logMessage('info',formatMessage({filename:__filename, methodName: methodname, message: 'In production mode'}));
 
@@ -138,9 +138,9 @@ function updateLoggingLevel(doc){
 //if there is no NODE_ENV variable set and there is a configuration object then use the default valued from the config
 //object.
 
-process.env.LOGGING_LEVEL === undefined ?
+process.env.EXP_API_LOGGING_LEVEL === undefined ?
     setLoggingLevels(loggingLevelName, loggingLevelIndex) :
-    setLoggingLevels(process.env.LOGGING_LEVEL,levels.indexOf(process.env.LOGGING_LEVEL));
+    setLoggingLevels(process.env.EXP_API_LOGGING_LEVEL,levels.indexOf(process.env.EXP_API_LOGGING_LEVEL));
 
 
 
@@ -149,7 +149,7 @@ const logger = createLogger(loggerConfig);
 // If we're not in production then log to the `console` with the format:
 // `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.EXP_API_NODE_ENV !== 'production') {
     logger.add(new transports.Console({format: simple()}));
 }
 

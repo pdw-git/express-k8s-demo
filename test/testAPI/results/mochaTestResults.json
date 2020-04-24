@@ -1,13 +1,13 @@
 {
   "stats": {
-    "suites": 24,
-    "tests": 8,
-    "passes": 8,
+    "suites": 27,
+    "tests": 9,
+    "passes": 9,
     "pending": 0,
     "failures": 0,
-    "start": "2020-04-17T18:53:03.342Z",
-    "end": "2020-04-17T18:53:03.793Z",
-    "duration": 451
+    "start": "2020-04-24T08:18:15.689Z",
+    "end": "2020-04-24T08:18:15.974Z",
+    "duration": 285
   },
   "tests": [
     {
@@ -20,14 +20,14 @@
     {
       "title": "POST to config with invalid ID fails with expected error and ERROR response status",
       "fullTitle": "/api POST /api/config/:configid should return error status: 500 and an error message  POST to config with invalid ID fails with expected error and ERROR response status",
-      "duration": 6,
+      "duration": 7,
       "currentRetry": 0,
       "err": {}
     },
     {
       "title": "GET config returns with good status and valid body object",
       "fullTitle": "/api GET /api/config should return good status: 200 and an valid response body  GET config returns with good status and valid body object",
-      "duration": 9,
+      "duration": 10,
       "currentRetry": 0,
       "err": {}
     },
@@ -41,28 +41,35 @@
     {
       "title": "GET version returns with good status and valid body object",
       "fullTitle": "/api GET /api/version should return good status: 200 and an valid response body  GET version returns with good status and valid body object",
-      "duration": 3,
+      "duration": 5,
       "currentRetry": 0,
       "err": {}
     },
     {
       "title": "GET version returns with good status and valid body object",
       "fullTitle": "/api GET /api/status should return good status: 200 and an valid response body  GET version returns with good status and valid body object",
-      "duration": 3,
+      "duration": 4,
       "currentRetry": 0,
       "err": {}
     },
     {
       "title": "GET invalid API call returns Page Not Found status",
       "fullTitle": "/api GET /api/invalidRoute should return Page Not Found status GET invalid API call returns Page Not Found status",
-      "duration": 326,
+      "duration": 39,
       "currentRetry": 0,
       "err": {}
     },
     {
       "title": "GET config returns with good status and there should only be one config object",
       "fullTitle": "/api GET /api/config should return good status: 200 and an valid response body  GET config returns with good status and there should only be one config object",
-      "duration": 7,
+      "duration": 9,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "Config update has been updated and good status recieved",
+      "fullTitle": "/api DELETE /api/config/:configid should return good status: 200 and configuration should be deleted Config update has been updated and good status recieved",
+      "duration": 109,
       "currentRetry": 0,
       "err": {}
     }
@@ -80,14 +87,14 @@
     {
       "title": "POST to config with invalid ID fails with expected error and ERROR response status",
       "fullTitle": "/api POST /api/config/:configid should return error status: 500 and an error message  POST to config with invalid ID fails with expected error and ERROR response status",
-      "duration": 6,
+      "duration": 7,
       "currentRetry": 0,
       "err": {}
     },
     {
       "title": "GET config returns with good status and valid body object",
       "fullTitle": "/api GET /api/config should return good status: 200 and an valid response body  GET config returns with good status and valid body object",
-      "duration": 9,
+      "duration": 10,
       "currentRetry": 0,
       "err": {}
     },
@@ -101,28 +108,35 @@
     {
       "title": "GET version returns with good status and valid body object",
       "fullTitle": "/api GET /api/version should return good status: 200 and an valid response body  GET version returns with good status and valid body object",
-      "duration": 3,
+      "duration": 5,
       "currentRetry": 0,
       "err": {}
     },
     {
       "title": "GET version returns with good status and valid body object",
       "fullTitle": "/api GET /api/status should return good status: 200 and an valid response body  GET version returns with good status and valid body object",
-      "duration": 3,
+      "duration": 4,
       "currentRetry": 0,
       "err": {}
     },
     {
       "title": "GET invalid API call returns Page Not Found status",
       "fullTitle": "/api GET /api/invalidRoute should return Page Not Found status GET invalid API call returns Page Not Found status",
-      "duration": 326,
+      "duration": 39,
       "currentRetry": 0,
       "err": {}
     },
     {
       "title": "GET config returns with good status and there should only be one config object",
       "fullTitle": "/api GET /api/config should return good status: 200 and an valid response body  GET config returns with good status and there should only be one config object",
-      "duration": 7,
+      "duration": 9,
+      "currentRetry": 0,
+      "err": {}
+    },
+    {
+      "title": "Config update has been updated and good status recieved",
+      "fullTitle": "/api DELETE /api/config/:configid should return good status: 200 and configuration should be deleted Config update has been updated and good status recieved",
+      "duration": 109,
       "currentRetry": 0,
       "err": {}
     }
