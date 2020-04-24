@@ -20,6 +20,7 @@ module.exports.getEnvironmentVariables = function(){
 
         switch(process.env.EXP_API_ENV_DEPLOYMENT){
             case 'npm':
+
                 dotenv.config({ path: process.env.EXP_API_APP_DIR+config.environments.npm});
                 break;
 
@@ -33,6 +34,17 @@ module.exports.getEnvironmentVariables = function(){
 
         }
 
+        //Check that all the expected environment variables have been passed to the application
+        let notFound = environmentVariablesExist(config.expectedEnvironmentVariables);
+
+        //if any environment variables are missing then exist the applications with error code -1.
+        if(notFound.length > 0){
+
+            console.error('The following environment variables cannot be found find : '+notFound.toString());
+            process.exit(-1);
+
+        }
+
     }
     else{
         console.error('EXP_API_ENV_DEPLOYMENT or EXP_API_APP_DIR are missing from the environment');
@@ -41,3 +53,38 @@ module.exports.getEnvironmentVariables = function(){
 
 
 };
+
+
+/**
+ * enviromentVariablesExist
+ *
+ * Checks the process.env keys looking for variables that are defined in the
+ * application configuration file. If any are missing return and array that
+ * contains the names of the missing variables.
+ *
+ * @param keyArray
+ * @returns {Array}
+ */
+function environmentVariablesExist(keyArray){
+
+    let notFound = [];
+
+
+    //Get an array of keys
+    let keys = Object.keys(process.env);
+
+    if(Array.isArray(keys)) {
+
+        keyArray.forEach((element) => {
+
+            !keys.includes(element) ? notFound.push(element) : {};
+
+
+        });
+    }
+    else{
+        console.error('The object is not an Array');
+    }
+
+    return notFound;
+}
