@@ -31,7 +31,7 @@ spec:
             - containerPort: 3000
           env:
             - name: EXP_API_ENV_DEPLOYMENT
-              value: "docker-compose"
+              value: "docker"
             - name: EXP_API_APP_DIR
               value: "/usr/src/app"
           imagePullPolicy: Always
