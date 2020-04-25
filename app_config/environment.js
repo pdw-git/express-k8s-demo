@@ -20,12 +20,18 @@ module.exports.getEnvironmentVariables = function(){
 
         switch(process.env.EXP_API_ENV_DEPLOYMENT){
             case 'npm':
-
                 dotenv.config({ path: process.env.EXP_API_APP_DIR+config.environments.npm});
                 break;
 
             case 'docker':
                 //dotenv.config({path: process.env.EXP_API_APP_DIR+config.environments.dockerCompose});
+                break;
+
+            case 'docker-compose':
+
+                break;
+
+            case 'K8S':
 
                 break;
 
