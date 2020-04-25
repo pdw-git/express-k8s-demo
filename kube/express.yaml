@@ -31,7 +31,40 @@ spec:
             - containerPort: 3000
           env:
             - name: EXP_API_ENV_DEPLOYMENT
-              value: "docker"
+              value: "K8S"
             - name: EXP_API_APP_DIR
               value: "/usr/src/app"
+            - name: EXP_API_API_ROUTE
+              value: "/api1"
+            - name:  EXP_API_PORT
+              value: "3000"
+            - name: EXP_API_MONGO_URI
+              value: "mongodb://mongo:27017/"
+            - name: EXP_API_MONGO_DB_NAME
+              value: "EXPRESS_API"
+            - name: EXP_API_LOGGING_LEVEL
+              value: "info"
+            - name: EXP_API_NODE_ENV_PRODUCTION
+              value: "yes"
+            - name: EXP_API_HTTPS
+              value: "no"
+            - name: EXP_API_APP_IP
+              value: localhost
+            - name: EXP_API_INDEX_ROUTE
+              value: "/"
+            - name: EXP_API_API_ROUTE
+              value: "/api"
+            - name: EXP_API_USER_ROUTE
+              value: "/users"
+            - name: EXP_API_API_VERSION
+              value: "1.1.0"
+            - name: EXP_API_CERT_PROVIDER
+              value: "SELF_SIGNED"
+            - name: EXP_API_KEY_STORE
+              value: "/bin/keystore/"
+            - name: "EXP_API_APP_CERT"
+              value: "cert.pem"
+            - name: EXP_API_APP_KEY
+              value: "key.pem"
+
           imagePullPolicy: Always
