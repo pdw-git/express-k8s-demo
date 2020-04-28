@@ -21,23 +21,37 @@ module.exports.postConfig = function(req,res){
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=> {
 
-        if(db.dbConnected()) {
+        if(!db.dbConnected()) {
+
+            responseFunctions.sendJSONresponse(new Error(messages.db.not_available), res, filename, methodname, config.status.error);
+
+        }
+        else {
+
             // noinspection JSUnresolvedVariable
             if (!req.params.configid) {
+
                 responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.error, {msg: messages.req_params_not_found + 'req.params.config'});
 
             } else {
+
                 // noinspection JSUnresolvedVariable
                 mongo.update(config.mongo.configObjectName, {_id: req.params.configid}, updateConfig, (err, doc) => {
 
                     let plugin = updateConfig;
 
                     if (err) {
+
                         responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error, {msg: messages.mongo.invalid_id});
 
                     } else {
 
-                        if (typeof (req.body) === "object") {
+                        if (typeof (req.body) !== "object") {
+
+                            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error)
+
+                        }
+                        else {
 
                             if (typeof (plugin) !== 'function') {
 
@@ -45,34 +59,10 @@ module.exports.postConfig = function(req,res){
 
                             } else {
 
-                                plugin(doc, req.body, (err, doc) => {
-
-                                    if (err) {
-
-                                        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
-
-                                    } else {
-
-                                        doc.save().then(() => { //removed product to remove warning
-
-                                            logger.emitter.emit('level');
-                                            responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.config_updated});
-
-                                        }).catch((reason) => {
-
-                                            responseFunctions.sendJSONresponse(reason, res, filename, methodname, config.status.error);
-
-                                        });
-
-                                    }
-
-                                });
+                                plugin(res, doc, req.body, saveDoc);
 
                             }
 
-                        } else {
-
-                            responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
                         }
 
                     }
@@ -82,23 +72,52 @@ module.exports.postConfig = function(req,res){
             }
 
         }
-        else{
-
-            responseFunctions.sendJSONresponse(new Error(messages.db.not_available), res, filename, methodname, config.status.error);
-
-        }
 
     });
 
 };
 
 /**
- * postConfig
+ * saveDoc
+ * @param err
+ * @param doc
+ * @param res
+ */
+function saveDoc(err, doc, res){
+
+    let methodname = 'saveDoc';
+
+    if (err) {
+
+        responseFunctions.sendJSONresponse(err, res, filename, methodname, config.status.error);
+
+    } else {
+
+        doc.save().then(() => { //removed product to remove warning
+
+            logger.emitter.emit('level');
+            responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.config_updated});
+
+        }).catch((reason) => {
+
+            responseFunctions.sendJSONresponse(reason, res, filename, methodname, config.status.error);
+
+        });
+
+    }
+
+}
+
+/**
+ * updateConfig
+ * @param res
  * @param doc
  * @param body
  * @param callback
  */
-function updateConfig(doc, body, callback){
+function updateConfig(res, doc, body, callback){
+
+    let methodname = 'updateConfig';
 
     let err = null;
 
@@ -118,7 +137,7 @@ function updateConfig(doc, body, callback){
 
     }
 
-    callback(err, doc);
+    typeof(callback) === 'function' ?callback(err, doc, res): responseFunctions.sendJSONresponse(new Error(messages.mongo.typeof_plugin_error), res, filename, methodname, config.status.error);
 
 }
 
