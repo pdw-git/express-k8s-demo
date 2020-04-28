@@ -99,6 +99,8 @@ function saveDoc(err, doc, res){
 
             responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.config_updated});
 
+            //TODO raise an event here that will go an update the elements of the application that respond to changes in configuration
+
         }).catch((reason) => {
 
             responseFunctions.sendJSONresponse(reason, res, filename, methodname, config.status.error);
@@ -122,6 +124,7 @@ function updateConfig(res, doc, body, callback){
 
     let err = null;
 
+    //validate that we have objects to work with
     if ((typeof (doc) !== 'object') || (typeof (body) != 'object')){
 
         err = new Error(messages.config.config_objects_undefined);
@@ -129,13 +132,17 @@ function updateConfig(res, doc, body, callback){
     }
     else {
 
+        //do the mongoose document update
         doc = updateMongooseDoc(doc, body);
 
         err = doc === null ? (new Error(messages.config.config_cannot_update_database)) : null;
 
     }
 
-    typeof(callback) === 'function' ?callback(err, doc, res): responseFunctions.sendJSONresponse(new Error(messages.mongo.typeof_plugin_error), res, filename, methodname, config.status.error);
+    //check that we have a valid callback function and execute or respond with an error.
+    typeof(callback) === 'function' ?
+        callback(err, doc, res):
+        responseFunctions.sendJSONresponse(new Error(messages.mongo.typeof_plugin_error), res, filename, methodname, config.status.error);
 
 }
 
