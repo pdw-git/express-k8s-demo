@@ -73,7 +73,7 @@ mongoose.connection.on('connected', function(){
             mongo.find({}, config.mongo.configObjectName, (err, doc)=>{
 
                 err ? logger._error({filename: __filename, methodname: methodname, messages: err.messages}) :
-                    configDB.setID(doc[0]._id);
+                    configDB.setID(doc[0].id);
 
             });
         });
