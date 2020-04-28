@@ -96,6 +96,7 @@ function saveDoc(err, doc, res){
         doc.save().then(() => { //removed product to remove warning
 
             logger.emitter.emit('level');
+
             responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.config_updated});
 
         }).catch((reason) => {
@@ -121,23 +122,52 @@ function updateConfig(res, doc, body, callback){
 
     let err = null;
 
-    if (doc.logLevel) {
+    if ((typeof (doc) !== 'object') || (typeof (body) != 'object')){
 
-        if(logger.validate(body.logLevel)) {
-            doc.logLevel = body.logLevel ? body.logLevel : 'undefined';
-
-        }
-        else{
-            err = new Error(messages.config.config_invalid_logLevel+body.logLevel);
-        }
+        err = new Error(messages.config.config_objects_undefined);
 
     }
     else {
-        err = new Error(messages.config.config_doc_logLevel_undefined)
+
+        doc = updateMongooseDoc(doc, body);
+
+        err = doc === null ? (new Error(messages.config.config_cannot_update_database)) : null;
 
     }
 
     typeof(callback) === 'function' ?callback(err, doc, res): responseFunctions.sendJSONresponse(new Error(messages.mongo.typeof_plugin_error), res, filename, methodname, config.status.error);
+
+}
+
+
+/**
+ * updateMongooseDoc
+ * @param doc
+ * @param newData
+ * @returns {*}
+ */
+function updateMongooseDoc(doc, newData){
+
+    //Get the keys from the JSON object
+    let keys = Object.keys(newData);
+
+    let retVal = null;
+
+    if (Array.isArray(keys)){
+
+        keys.forEach((value) => {
+
+            //set the path in the doc with the corresponding data from the source object.
+            //doc.set ignores any paths that do not exist in the schema
+            doc.set(value, newData[value]);
+
+            retVal = doc;
+
+        });
+
+    }
+
+    return retVal;
 
 }
 

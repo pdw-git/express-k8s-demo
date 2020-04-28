@@ -50,8 +50,9 @@ const messages = {
         config_updated: 'Config was updated',
         config_was_not_updated: 'Config was not updated: ',
         config_invalid_logLevel: 'The value of logLevel is not valid: ',
-        config_doc_logLevel_undefined: 'The field doc.logLevel in req.body is not defined',
-        config_invalid_data: 'The data requested for update is not valid'
+        config_objects_undefined: 'Either doc or body is not an object',
+        config_invalid_data: 'The data requested for update is not valid',
+        config_cannot_update_database: 'Was unable to update the database document'
     },
     basic: {
        child_process_error: 'The child process exited with error: ',
