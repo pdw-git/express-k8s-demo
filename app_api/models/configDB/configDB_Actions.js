@@ -19,7 +19,7 @@ let configID = null;
 /**
  * getConfig
  *
- * @returns {{mongo: {name: string, uri: string, configObjectName}, tests: {}[], logLevel: string, encryption: {certProvider: string, cert: string, store: string, enabled: string, key: string}, port: string, ipAddress: string, indexRoute: string, deploymentMethod, userRoute: string, inProduction: string, homeDir, apiRoute: string}}
+ * @returns {{testRunning: boolean, ipAddress: string, mongoName: string, cert: string, inProduction: string, homeDir, mongoURI: string, encryptionEnabled: string, mongoConfigObjectName, tests: {}[], logLevel: string, port: string, certProvider: string, keyStore: string, indexRoute: string, deploymentMethod, userRoute: string, key: string, apiRoute: string}}
  */
 function getConfig(){
 
@@ -42,19 +42,16 @@ function getConfig(){
         apiRoute: process.env.EXP_API_API_ROUTE,
         userRoute: process.env.EXP_API_USER_ROUTE,
         port: process.env.EXP_API_PORT,
-        mongo : {
-            name: process.env.EXP_API_MONGO_DB_NAME,
-            uri: process.env.EXP_API_MONGO_URI,
-            configObjectName: config.mongo.configObjectName
-        },
-        encryption: {
-            enabled: process.env.EXP_API_HTTPS,
-            certProvider: process.env.EXP_API_CERT_PROVIDER,
-            store: process.env.EXP_API_KEY_STORE,
-            key: process.env.EXP_API_APP_KEY,
-            cert: process.env.EXP_API_APP_CERT
-        },
+        mongoName: process.env.EXP_API_MONGO_DB_NAME,
+        mongoURI: process.env.EXP_API_MONGO_URI,
+        mongoConfigObjectName: config.mongo.configObjectName,
+        encryptionEnabled: process.env.EXP_API_HTTPS,
+        certProvider: process.env.EXP_API_CERT_PROVIDER,
+        keyStore: process.env.EXP_API_KEY_STORE,
+        key: process.env.EXP_API_APP_KEY,
+        cert: process.env.EXP_API_APP_CERT,
         tests: tests
+
     };
 
 }

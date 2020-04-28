@@ -17,18 +17,14 @@ const configSchema = new mongoose.Schema(
         apiRoute: {type: String, required: true},
         userRoute: {type: String, required: true},
         port: {type: Number, required: true},
-        mongo : {
-            name: {type: String, required: true},
-            uri: {type: String, required: true},
-            configObjectName: {type: String, required: true}
-        },
-        encryption: {
-            enabled: {type: String, required: true},
-            certProvider: {type: String, required: true},
-            store: {type: String, required: true},
-            key: {type: String, required: true},
-            cert: {type: String, required: true}
-        },
+        mongoName: {type: String, required: true},
+        mongoURI: {type: String, required: true},
+        mongoConfigObjectName: {type: String, required: true},
+        encryptionEnabled: {type: String, required: true},
+        certProvider: {type: String, required: true},
+        keyStore: {type: String, required: true},
+        key: {type: String, required: true},
+        cert: {type: String, required: true},
         tests: [{
             area: {type: String, required: true},
             directory: {type: String, required: true}
@@ -36,15 +32,10 @@ const configSchema = new mongoose.Schema(
         testResults: [{
             start: {type: String},
             end:  {type: String},
-            results: {
-                suites: {type: Number},
-                tests: {type: Number},
-                passes: {type: Number},
-                pending: {type: Number},
-                failures: {type: Number},
-                errors: [{type: String}]
+            results: [{
 
-            }
+            }]
+
         }]
 
     }
