@@ -14,6 +14,7 @@ let options = {
     qs: {}
 };
 
+const testAlreadyRunning = 'Test is already running';
 
 console.log('Options: '+JSON.stringify(options));
 
@@ -33,12 +34,13 @@ function test(err, res, body){
         console.log(increment+': ERROR: '+err);
 
     } else{
-        console.log(increment+': delay: '+delay+': duration: '+String(Date.now()-start-delay)+'ms : '+JSON.stringify(body));
 
-        if((res !== undefined) && (res.statusCode !== undefined ) && (res.statusCode !== 200)) {
+        if ((res !== undefined) && (res.statusCode !== undefined ) && (body.err !== testAlreadyRunning)) {
 
-            console.log(increment+': '+"ERROR: status code "+res.statusCode);
-        }
+            res.statusCode === 200 ?
+                console.log(increment + ': delay: ' + delay + ': duration: ' + String(Date.now() - start - delay) + 'ms : ' + JSON.stringify(body)) :
+                console.log(increment + ': ' + "ERROR: status code " + res.statusCode + ' ' + JSON.stringify(res.body));
+       }
 
     }
 
