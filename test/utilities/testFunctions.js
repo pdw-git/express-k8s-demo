@@ -7,12 +7,17 @@
 const assert = require('assert');
 const request = require('request');
 
-const skipMongoObjects = ['_id', 'testRunning'];
-
+const skipMongoObjects = ['_id', 'testRunning', '__v'];
 
 module.exports.handleError = error;
 
-
+/**
+ * testStatusAndBody
+ *
+ * @param testData
+ * @param options
+ * @param done
+ */
 module.exports.testStatusAndBody = function(testData, options,  done){
 
     //Retrieve the applications config inforamtion via the API}
@@ -38,6 +43,11 @@ module.exports.testStatusAndBody = function(testData, options,  done){
 
 };
 
+/**
+ * doAssertions
+ *
+ * @param testData
+ */
 module.exports.doAssertions = function(testData){
 
     testData.setupData.assert ?
@@ -53,7 +63,11 @@ module.exports.doAssertions = function(testData){
 
 };
 
-
+/**
+ * testFunction
+ *
+ * @param testData
+ */
 module.exports.testFunction = function(testData){
 
     describe(testData.root, function(){

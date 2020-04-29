@@ -88,11 +88,12 @@ function createConfig(dataObject, callback){
                 case 1 :
                     logger._info({filename: __filename, methodname: methodname, message: 'configuration '+doc[0]._id+' already exists'});
                     setConfigID(doc[0]._id);
+                    updateConfig();
                     break;
 
                 //if the length is greater than 1 then there is a problem with the database, log an error.
                 default:
-                    logger._error({filename: __filename, methodname:'mongo.find', message: messages.mongo.invalid_doc_length+doc.length});
+                    logger._error({filename: __filename, methodname: methodname, message: messages.mongo.invalid_doc_length+doc.length});
 
             }
 
@@ -102,6 +103,65 @@ function createConfig(dataObject, callback){
 
 }
 
+/**
+ * updateConfig
+ *
+ */
+function updateConfig(){
+
+    let methodname = 'updateConfig';
+
+    //call the update function from the mongo object, the callback will use the plugin function updateAfterRestart.
+    //updateAfterRestart(doc, callback) doc is the doc object from mongoose. Callback is the action taken after
+    //the doc object has been updated with the new data. In this case the doc will be saved.
+
+    mongo.update(config.mongo.configObjectName, getConfigID(), updateAfterRestart, (err, doc)=>{
+
+        err ?
+            logger._error({filename: __filename, methodname:'mongo.find', message: 'Failure to save database document'}) :
+            updateAfterRestart(doc, (doc)=>{
+
+                if (err) {
+
+                    logger._error({filename: __filename, methodname: methodname, messaage: messages.config.config_cannot_update_database});
+
+                } else {
+
+                    doc.save().then(()=>{}).catch((reason) => {logger._error({filename: __filename, methodname: methodname, messages: reason});});
+
+                }
+
+            });
+
+    });
+
+}
+
+/**
+ * updateAfterRestart
+ *
+ * @param doc
+ * @param callback
+ */
+function updateAfterRestart(doc, callback){
+
+    let methodname = 'updateAfterRestart';
+
+    mongo.updateDoc(doc, getConfig());
+
+    typeof (callback) === 'function' ?
+        callback(doc) :
+        logger._error({filename: __filename, methodname: methodname, messages: 'Callback is not a function'});
+
+
+}
+
+/**
+ * setTestRunning
+ *
+ * @param value
+ * @param callback
+ */
 function setTestRunning(value, callback){
 
     let methodname = 'settestRunning';
@@ -125,14 +185,29 @@ function setTestRunning(value, callback){
 
 }
 
+/**
+ * getTestRunning
+ *
+ * @param callback
+ */
 function getTestRunning(callback){
 
     mongo.find({}, config.mongo.configObjectName, callback);
 
 }
 
+/**
+ * setConfigID
+ *
+ * @param id
+ */
 function setConfigID(id){configID=id;}
 
+/**
+ * getConfigID
+ *
+ * @returns {*}
+ */
 function getConfigID(){return configID;}
 
 

@@ -11,6 +11,8 @@ module.exports.create = createObj;
 module.exports.delete = deleteObj;
 module.exports.update = updateObj;
 module.exports.getMongoObject = getMongoObject;
+module.exports.updateDoc = updateMongooseDoc;
+
 
 /**
  * findObj
@@ -105,7 +107,7 @@ function updateObj(mongoObjectName, id, plugin, callback){
 
     let methodname = 'update';
 
-    logger._debug({filename: __filename, methodname: methodname, message: messages.started+' : mongoObjectName : '+mongoObjectName+': _id :'+id});
+    logger._debug({filename: __filename, methodname: methodname, message: messages.started+' : mongoObjectName : '+mongoObjectName+': id :'+id});
 
     getMongoObject(mongoObjectName) ?
         getMongoObject(mongoObjectName).findOne(id, callback) :
@@ -138,5 +140,36 @@ module.exports.createModel = function(objectName, schema){
 function getMongoObject(mongoObjectName, schema){
 
     return mongoose.model(mongoObjectName, schema);
+
+}
+
+/**
+ * updateMongooseDoc
+ * @param doc
+ * @param newData
+ * @returns {*}
+ */
+function updateMongooseDoc(doc, newData){
+
+    //Get the keys from the JSON object
+    let keys = Object.keys(newData);
+
+    let retVal = null;
+
+    if (Array.isArray(keys)){
+
+        keys.forEach((value) => {
+
+            //set the path in the doc with the corresponding data from the source object.
+            //doc.set ignores any paths that do not exist in the schema
+            doc.set(value, newData[value]);
+
+            retVal = doc;
+
+        });
+
+    }
+
+    return retVal;
 
 }
