@@ -1,13 +1,13 @@
 /**
-* pages
-*
-* Created by Peter Whitehead September 2018
-* Baseline application that serves an API and basic web pages
-*
-* Copyright Peter Whitehead @2018 to 2020
-*
-* Licensed under Apache-2.0
-*/
+ * pages
+ *
+ * Created by Peter Whitehead September 2018
+ * Baseline application that serves an API and basic web pages
+ *
+ * Copyright Peter Whitehead @2018 to 2020
+ *
+ * Licensed under Apache-2.0
+ */
 
 'use strict';
 
