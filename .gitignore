@@ -47,7 +47,7 @@ node_modules
 secrets.sh
 
 # certs and keys
-#*.pem
+*.pem
 
 # Local dev bundle
 local-dev/bundle.js
