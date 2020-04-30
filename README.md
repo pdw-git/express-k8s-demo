@@ -113,28 +113,38 @@ npm start
 
 On success you will see the following on the console:
 
->>/usr/local/bin/node /usr/local/lib/node_modules/npm/bin/npm-cli.js start
-
 >> express-api@1.0.0 start /Users/whitep/Node/WebstormProjects/express-api
->> node ./bin/www --debug
+>> node ./bin/www
 
->>info: application logging level: info {"timestamp":"2020-04-17T19:35:06.879Z"}
-
->>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-connectToMongo : Connecting to: mongodb://localhost:27017/EXPRESS_API {"timestamp":"2020-04-17T19:35:06.904Z"}
-
->>info: /Users/whitep/Node/WebstormProjects/express-api/bin/www-main : Application port: 3000 Encrpytion: no {"timestamp":"2020-04-17T19:35:07.076Z"}
-
->>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-mongoose.connection.on.connected : Create initial configDB_Actions in db {"timestamp":"2020-04-17T19:35:13.156Z"}
-
->>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/mongoActions.js-createModel : Created Mongoose model: configuration {"timestamp":"2020-04-17T19:35:13.166Z"}
-
->>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-connectToMongo : Connected to: mongodb://localhost:27017/EXPRESS_API {"timestamp":"2020-04-17T19:35:13.179Z"}
-
-
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-connectToMongo : Connecting to: mongodb://localhost:27017/EXPRESS_API {"timestamp":"2020-04-30T17:05:05.148Z"}
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app.js-undefined : Deployment method: npm {"timestamp":"2020-04-30T17:05:05.325Z"}
+>>info: /Users/whitep/Node/WebstormProjects/express-api/bin/www-main : Application port: 3000 Encrpytion: no {"timestamp":"2020-04-30T17:05:05.332Z"}
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-mongoose.connection.on.connected : Create initial config in db {"timestamp":"2020-04-30T17:05:05.355Z"}
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/mongoActions.js-createModel : Created Mongoose model: configuration {"timestamp":"2020-04-30T17:05:05.363Z"}
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-connectToMongo : Connected to: mongodb://localhost:27017/EXPRESS_API {"timestamp":"2020-04-30T17:05:05.374Z"}
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/mongoActions.js-createObj : Successful config creation {"timestamp":"2020-04-30T17:05:05.418Z"}
 
 NOTE: by default the application starts with loggingLevel set to info mode;
 
-Pointing a browser at https://localhost:<port> where <port> is defined in the environment variables. Default port is 3000. 
+If the applicaiton is not installed with a database it will wait for up to 50 minutes before terminating. If a database
+is found during that time it will be connected and a configuration object will be created or updated as necessary.
+While there is no database the following API calls will work. 
+
+>>GET api/version
+>
+>>GET api/info
+>
+>>GET api/status
+>
+None of these API calls rely on there being a database. Any API call that requires access to the configuration 
+database object will fail with a message stating that the database is not connected. The applciation also presents
+two web pages, a basic index page and a basic about page. Pointing a browser at:
+
+>>http//host-ip-address:port 
+
+Will provide access to the applications home page. The about page can be accessed from there. This gives another
+indication that the application is working. All logs can be found in the conbined.log file in the home directory of
+the application. Errors can be found in the error.log of the application.  
 
 If you are using encryption then use a port such as 3443. 
 
@@ -148,11 +158,11 @@ The following RESTful APIs are provided for testing
 
 >>GET api/test - runs tests on the server and reports a result summary
 
->>GET /api/configDB_Actions - displays the configuration data that has been stored in the persistence lay
+>>GET /api/config - displays the configuration data that has been stored in the persistence lay
 
->>DELETE /api/configDB_Actions/:configid - deletes the configDB_Actions data in the persistence layer
+>>DELETE /api/config/:configid - deletes the configDB_Actions data in the persistence layer
 
->>POST /api/configDB_Actions - placeholder for updating the configuration information
+>>POST /api/config/:configid - updates the configuration data with the updates sent as a JSON object in the request body
 
 There is some basic logging and error handling but this code is not suitable for production use. 
 
