@@ -60,25 +60,42 @@ request(options, test);
  */
 function test(err, res){
 
-    let LogHeader = increment + ': delay: ' + delay + ': duration: '+ String(Date.now() - start - delay) + 'ms : ';
-
-    (err) ?
-
-        console.log(increment+': ERROR: '+err)
-        //if the objects we need are defined
-        : ((res.statusCode !== undefined) && (res.body.err !== testAlreadyRunning)) ?
-
-            //if there is a good status log the full response otherwise output the response and the associated error code
-            res.statusCode === 200 ?
-                console.log(LogHeader + JSON.stringify(res.body)) :
-                console.log(LogHeader + "ERROR: " + res.statusCode + ' ' + JSON.stringify(res.body))
-
-            : console.log('required objects are undefined ');
+    (err) ? handleErr(err) : responseReport(res);
 
     increment++;
 
     start = Date.now();
 
     setTimeout(()=>{request(options, test)},delay);
+
+}
+
+/**
+ * handleErr
+ * @param err
+ */
+function handleErr(err){
+
+    console.log(increment+': ERROR: '+err)
+    console.log('Exiting test application');
+    process.exit(-1);
+
+}
+
+function responseReport(res){
+
+    let LogHeader = increment + ': delay: ' + delay + ': duration: '+ String(Date.now() - start - delay) + 'ms : ';
+
+    //validate that the data needed in the report is available
+    //Do not report on errors that are due to a test already running if the API call is api/test
+    ((res.statusCode !== undefined) && ((res.body.err !== testAlreadyRunning) && apiCall === 'test')) ?
+
+        //if there is a good status log the full response otherwise log the response and the associated error code
+        res.statusCode === 200 ?
+
+            console.log(LogHeader + JSON.stringify(res.body)) :
+            console.log(LogHeader + "ERROR: " + res.statusCode + ' ' + JSON.stringify(res.body))
+
+        : {};
 
 }
