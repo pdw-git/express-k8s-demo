@@ -1,3 +1,15 @@
+/**
+ * configApi
+ *
+ * Created by Peter Whitehead March 2018
+ *
+ * Baseline application that serves an API and basic web pages
+ *
+ * Copyright Peter Whitehead @2020
+ *
+ * Licensed under Apache-2.0
+ */
+
 'use strict';
 
 const logger = require('../../app_utilities/logger');
@@ -122,6 +134,7 @@ function updateConfig(res, doc, body, callback){
 
     let methodname = 'updateConfig';
 
+    // noinspection JSUnusedAssignment
     let err = null;
 
     //validate that we have objects to work with

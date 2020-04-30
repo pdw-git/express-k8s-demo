@@ -1,3 +1,15 @@
+/**
+ * mongoActions
+ *
+ * Created by Peter Whitehead March 2020
+ *
+ * Baseline application that serves an API and basic web pages
+ *
+ * Copyright Peter Whitehead @2020
+ *
+ * Licensed under Apache-2.0
+ */
+
 'use strict';
 
 const mongoose = require('mongoose');
@@ -5,7 +17,10 @@ const logger = require('../../app_utilities/logger');
 const messages = require('../../app_utilities/messages').messages;
 const config = require('../../app_config/config');
 
+// noinspection,DuplicatedCode
 module.exports.configProject = config.mongo.configObjectName;
+
+// noinspection DuplicatedCode,DuplicatedCode
 module.exports.find = findObj;
 module.exports.create = createObj;
 module.exports.delete = deleteObj;
@@ -49,6 +64,7 @@ function createObj(mongoObjectName, dataObject, schema, callback){
 
         let mongoObject = getMongoObject(mongoObjectName, schema);
 
+        // noinspection JSValidateTypes
         let mo = new mongoObject(dataObject);
 
         // noinspection JSIgnoredPromiseFromCall

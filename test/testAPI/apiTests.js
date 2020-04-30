@@ -1,3 +1,17 @@
+/**
+ * apiTests
+ *
+ * Created by Peter Whitehead March 2020
+ *
+ * Baseline application that serves an API and basic web pages
+ *
+ * Copyright Peter Whitehead @2020
+ *
+ * Licensed under Apache-2.0
+ *
+ */
+'use strict';
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 //Get the test definitions and the test functions

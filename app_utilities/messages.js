@@ -1,4 +1,16 @@
-
+/**
+ * messages
+ *
+ * Created by Peter Whitehead March 2020
+ *
+ * Baseline application that serves an API and basic web pages
+ *
+ * Copyright Peter Whitehead @2020
+ *
+ * Licensed under Apache-2.0
+ *
+ */
+'use strict';
 
 
 const messages = {

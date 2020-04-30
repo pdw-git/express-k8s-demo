@@ -1,6 +1,16 @@
 /**
- * Created by whitep on 26/03/2020
+ * db
+ *
+ * Created by Peter Whitehead March 2020
+ *
+ * Baseline application that serves an API and basic web pages
+ *
+ * Copyright Peter Whitehead @2020
+ *
+ * Licensed under Apache-2.0
  */
+
+'use strict';
 
 const mongoose = require( 'mongoose' );
 const logger = require('../../app_utilities/logger');

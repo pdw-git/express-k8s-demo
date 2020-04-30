@@ -1,7 +1,13 @@
-#!/usr/bin/env node
-
 /**
- * Module dependencies.
+ * Express-api-app: www
+ *
+ * Created by Peter Whitehead 23 September 2018
+ *
+ * Baseline application that serves an API and basic web pages
+ *
+ * Copyright Peter Whitehead @2010 to 2020
+ *
+ * Licensed under Apache-2.0
  */
 
 /*

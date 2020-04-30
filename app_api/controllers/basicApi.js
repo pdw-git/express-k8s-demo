@@ -1,8 +1,16 @@
 /**
-
- created 28th March 2020
-
+ * basicApi
+ *
+ * Created by Peter Whitehead March 2020
+ *
+ * Baseline application that serves an API and basic web pages
+ *
+ * Copyright Peter Whitehead @2020
+ *
+ * Licensed under Apache-2.0
  */
+
+'use strict';
 
 const logger = require('../../app_utilities/logger');
 const config = require('../../app_config/config');

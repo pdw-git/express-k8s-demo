@@ -1,3 +1,15 @@
+/**
+ * configDB_Actions
+ *
+ * Created by Peter Whitehead March 2018
+ *
+ * Baseline application that serves an API and basic web pages
+ *
+ * Copyright Peter Whitehead @2020
+ *
+ * Licensed under Apache-2.0
+ */
+
 'use strict';
 
 const config = require('../../../app_config/config');
@@ -6,6 +18,7 @@ const logger = require('../../../app_utilities/logger');
 const messages = require('../../../app_utilities/messages').messages;
 const schema = require('../schemas/appConfiguration');
 
+// noinspection DuplicatedCode
 module.exports.setTestRunning = setTestRunning;
 module.exports.getTestRunning = getTestRunning;
 module.exports.createConfig = createConfig;

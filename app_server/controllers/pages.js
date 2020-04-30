@@ -1,8 +1,16 @@
 /**
+* pages
+*
+* Created by Peter Whitehead September 2018
+* Baseline application that serves an API and basic web pages
+*
+* Copyright Peter Whitehead @2018 to 2020
+*
+* Licensed under Apache-2.0
+*/
 
- created 7th September 2018
+'use strict';
 
- */
 const logger = require('../../app_utilities/logger');
 const pageConfig = require('../../app_config/pageConfig');
 const config = require('../../app_config/config');

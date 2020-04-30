@@ -5,61 +5,61 @@
 NOT PRODUCTION READY CODE
 
 This is a simple API server built on Node.js and the Express framework. It has been created as an educational 
-tool for use to explore development and deployment patterns. This is not production ready code. 
+tool for use to explore development and deployment patterns. **_This is not production ready code_**. 
 
 To install the application ensure you have npm and nodejs available on the target system. 
 
 Run git clone against this repository to extract the code to a target directory.
 
-There is a default configuration that is described in the file app_config/configDB_Actions.json.
+There is a default configuration that is described in the file environment/npm/.env.
 
-Elements of this configuration can be over ridden by setting environment variable. The following lists those elements 
+Elements of this configuration can be over-ridden by the setting environment variables. The following lists those elements 
 that can be altered:
 
-MANDATORY VARIABLES TO BE SET IN THE SHELL BEFORE TRYING TO DEPLOY OR IN THE DOCKER FILE BEFORE BUILDING
+MANDATORY VARIABLES TO BE SET IN THE SHELL BEFORE TRYING TO DEPLOY OR IN THE DOCKER FILE BEFORE BUILDING A DOCKER CONTAINER
+OR IN THE KUBERNETES YAML FILE BEFORE DEPLOYING. 
 
->>APP_DIR = root directory for the application
+>>EXP_API_APP_DIR = root directory for the application
 
->>NODE_ENV_DEPLOYMENT = can be either npm, docker or docker-compose and determines the environment variable file that will
+>>EXP_API_ENV_DEPLOYMENT = can be either npm, docker or docker-compose and determines the environment variable file that will
 used.
 
-ENVIRONMENT VARIABLES TO BE SET IN THE /environment/deployment/.env file where deployment is one of npm or docker-compose
+ENVIRONMENT VARIABLES TO BE SET IN THE /environment/deployment/.env file where deployment is one of npm, docker, or docker-compose
 
 A list of example environment variables is provided here. 
 
-PORT=3443 : port to be exposed for the application 
+EXP_API_PORT=3000 : port to be exposed for the application 
 
-MONGO_URI=mongodb://mongo: : location of the Mongo db - used for persistance
+EXP_API_MONGO_URI=mongodb://mongo:27017 : location of the Mongo db - used for persistance
 
-MONGO_PORT=27017 : port of the Mongo db
+EXP_API_MONGO_DB_NAME=EXPRESS_API : Name of the collections for this application
 
-MONGO_DB_NAME=EXPRESS_API : Name of the collections for this application
+EXP_API_LOGGING_LEVEL=debug : the required logging level for this application [err, warn, info, verbose, debug, silly ]
 
-LOGGING_LEVEL=debug : the required logging level for this application [err, warn, info, verbose, debug, silly ]
+EXP_API_NODE_ENV_PRODUCTION=no : can be yes or no
 
-NODE_ENV_PRODUCTION=no : can be yes or no
+EXP_API_HTTPS=yes : can be yes or no
 
-HTTPS=yes : can be yes or no
+EXP_API_APP_IP=localhost : IP address of the applicaiton
 
-APP_IP=localhost : IP address of the applicaiton
+EXP_API_INDEX_ROUTE=/ : route of served HTML pages
 
-INDEX_ROUTE=/ : route of served HTML pages
+EXP_API_API_ROUTE=/api : route of the api
 
-API_ROUTE=/api : route of the api
+EXP_API_USER_ROUTE=/users : route for users
 
-USER_ROUTE=/users : route for users
+EXP_API_API_VERSION=1.0.0 : api version string
 
-API_VERSION=1.0.0 : api version string
+EXP_API_CERT_PROVIDER=SELF_SIGNED : encryption certificate provider
 
-CERT_PROVIDER=SELF_SIGNED : encryption certificate provider
+EXP_API_KEY_STORE=/bin/keystore/ : certificate key store
 
-KEY_STORE=/bin/keystore/ : certificate key store
+EXP_API_APP_CERT=cert.pem : certificate
 
-APP_CERT=cert.pem : certificate
+EXP_API_APP_KEY=key.pem : encryption key
 
-APP_KEY=key.pem : encryption key
-
-Environment variables should be set in  a .env file.
+Environment variables should be set in  a .env file, the docker file or in the docker-compose file or the kubernetes
+yaml deployment file. 
 
 By default encryption is NOT enabled. 
 
@@ -76,13 +76,14 @@ For testing purposes a self signed cert and Key can be created using the followi
 
 >rm csr.pem
 
-The default configuration is to no use https with self signed certificates. If slef signed certificates are used
+The default configuration is not to use encryption. However self signed certificates can be used to explore deployment
+and use of apps secured by keys and certificates. If slef signed certificates are used
 this will mean that any browser or API testing tools need to disable certificate verification. Most tools will block 
 access because the signing request was self created. 
 
 ## Running the application with npm
 
-The default is to deploy this application with Docker compose but to run this with nodejs locally do the following. 
+The default is to deploy this application with docker-compose but to run this with nodejs locally do the following. 
 
 This application requires a mongo db, to enable the application to run successfully install Mongo locally:
 
@@ -131,11 +132,11 @@ On success you will see the following on the console:
 
 
 
-NOTE: by default the application starts in debug mode and has verbose tracing enabled
+NOTE: by default the application starts with loggingLevel set to info mode;
 
-Pointing a browser at https://localhost:3443 will show a basic home page. 
+Pointing a browser at https://localhost:<port> where <port> is defined in the environment variables. Default port is 3000. 
 
-If you are not using encryption then point a browser at http://localhost:3000. 
+If you are using encryption then use a port such as 3443. 
 
 The following RESTful APIs are provided for testing
 
@@ -164,10 +165,8 @@ in the installed source directory.
 
 ## Docker Compose
 
-To make the dependency of installing and running Mongo easier there is a docker compose file that will build the required
+To make the dependency of installing and running Mongo easier there is a docker-compose.yml file that will build the required
 images so they can be run using docker-compose
-
-The composition is defined in docker-compose.yml
 
 Ensure that docker-compose is installed and then run
 
@@ -184,5 +183,22 @@ Assuming there is a kubernetes environment these two applications can be deploye
 
 >>kubectl apply -f kube
 
-From the directory that contains kube. 
+From the directory that contains kube. The YAML file will create a name space called express create a replication set 
+with 2 instances of the application, a service so that the application can be accessed and an instance of mongo in 
+a persistant volume. 
+
+## appTest.js
+
+There is an application that will send a stream of client requests to the API server. 
+
+node appTest.js <delay (ms)> <ip address> <API call>
+
+e.g node appTest.js 0 127.0.0.1:3000 test
+
+This will continually run get http://127.0.0.1:3000/api/test without any delay between API calls. A simple report is 
+logged to stdout. 
+
+The test will work with any of the GET calls to the API. It does not support POST/UPDATE/DELETE operations. api/test
+exercises all the API calls available in the application. 
+
 

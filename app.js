@@ -1,6 +1,5 @@
-'use strict';
 /**
- * Express App
+ * Express-api-app
  *
  * Created by Peter Whitehead 23 September 2018
  *
@@ -10,6 +9,8 @@
  *
  * Licensed under Apache-2.0
  */
+
+'use strict';
 
 let config = require('./app_config/config.json');
 const pageConfig = require('./app_config/pageConfig');

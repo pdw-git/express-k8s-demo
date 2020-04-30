@@ -1,8 +1,16 @@
 /**
+* index.js
+*
+* Created by Peter Whitehead March 2020
+*
+* Baseline application that serves an API and basic web pages
+*
+* Copyright Peter Whitehead @2020
+*
+* Licensed under Apache-2.0
+*/
 
- Created 7th September 2018
-
- */
+'use strict';
 
 const express = require('express');
 const router = express.Router();

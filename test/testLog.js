@@ -1,17 +1,17 @@
 'use strict';
 
-var logger = require('morgan');
+//let logger = require('morgan');
 
-var date = new Date();
+let date = new Date();
 
-var dateSeparator = "-";
-var timeSeparator = ":";
-var space = " ";
-var separator = timeSeparator+space;
+let dateSeparator = "-";
+let timeSeparator = ":";
+let space = " ";
+let separator = timeSeparator+space;
 
 module.exports.log = function(testName, message){
 
-    var timestamp = date.getDate()+dateSeparator+
+    let timestamp = date.getDate()+dateSeparator+
                     (date.getMonth()+1)+dateSeparator+  //Jan = 0, Dec = 11 ?!?!
                     date.getFullYear()+space+
                     date.getHours()+timeSeparator+
