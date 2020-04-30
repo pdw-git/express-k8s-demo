@@ -13,7 +13,7 @@
 'use strict';
 
 const configAPI = require('./configApi');
-const basicAPI = require('./basicAPI');
+const basicAPI = require('./basicApi');
 
 module.exports.deleteConfig = configAPI.deleteConfig;
 module.exports.postConfig = configAPI.postConfig;
