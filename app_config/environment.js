@@ -1,14 +1,14 @@
 /**
-* environment
-*
-* Created by Peter Whitehead April 2020
-*
-* Baseline application that serves an API and basic web pages
-*
-* Copyright Peter Whitehead @2020
-*
-* Licensed under Apache-2.0
-*/
+ * environment
+ *
+ * Created by Peter Whitehead April 2020
+ *
+ * Baseline application that serves an API and basic web pages
+ *
+ * Copyright Peter Whitehead @2020
+ *
+ * Licensed under Apache-2.0
+ */
 
 'use strict';
 
