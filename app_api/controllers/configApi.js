@@ -109,7 +109,7 @@ function saveDoc(err, doc, res){
 
             logger.emitter.emit('level');
 
-            responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.config_updated});
+            responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.updated});
 
             //TODO raise an event here that will go an update the elements of the application that respond to changes in configuration
 
@@ -140,7 +140,7 @@ function updateConfig(res, doc, body, callback){
     //validate that we have objects to work with
     if ((typeof (doc) !== 'object') || (typeof (body) != 'object')){
 
-        err = new Error(messages.config.config_objects_undefined);
+        err = new Error(messages.config.objects_undefined);
 
     }
     else {
@@ -148,7 +148,7 @@ function updateConfig(res, doc, body, callback){
         //do the mongoose document update
         doc = mongo.updateDoc(doc, body);
 
-        err = doc === null ? (new Error(messages.config.config_cannot_update_database)) : null;
+        err = doc === null ? (new Error(messages.config.cannot_update_database)) : null;
 
     }
 

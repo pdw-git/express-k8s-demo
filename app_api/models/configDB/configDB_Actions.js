@@ -32,7 +32,7 @@ let configID = null;
 /**
  * getConfig
  *
- * @returns {{testRunning: boolean, ipAddress: string, mongoName: string, cert: string, inProduction: string, homeDir, mongoURI: string, encryptionEnabled: string, mongoConfigObjectName, tests: {}[], logLevel: string, port: string, certProvider: string, keyStore: string, indexRoute: string, deploymentMethod, userRoute: string, key: string, apiRoute: string}}
+ * @returns Object
  */
 function getConfig(){
 
@@ -93,14 +93,14 @@ function createConfig(dataObject, callback){
 
                 //Nothing found: create the config data object
                 case 0 :
-                    logger._debug({filename: __filename, methodname: methodname, message: 'create new config object'});
+                    logger._debug({filename: __filename, methodname: methodname, message: messages.config.create_new_config});
                     mongo.create(config.mongo.configObjectName, getConfig(), schema.getSchema(), callback);
                     break;
 
                 //There is a config object: log a message stating config exists
                 case 1 :
-                    logger._info({filename: __filename, methodname: methodname, message: 'configuration '+doc[0]._id+' already exists'});
-                    setConfigID(doc[0]._id);
+                    logger._info({filename: __filename, methodname: methodname, message: config.mongo.configObjectName+' '+doc[0]._id+' '+messages.already_exists});
+                    setConfigID(doc[0].id);
                     updateConfig();
                     break;
 
@@ -131,12 +131,12 @@ function updateConfig(){
     mongo.update(config.mongo.configObjectName, getConfigID(), updateAfterRestart, (err, doc)=>{
 
         err ?
-            logger._error({filename: __filename, methodname:'mongo.find', message: 'Failure to save database document'}) :
+            logger._error({filename: __filename, methodname:'mongo.find', message: messages.mongo.failure_to_save_db }) :
             updateAfterRestart(doc, (doc)=>{
 
                 if (err) {
 
-                    logger._error({filename: __filename, methodname: methodname, messaage: messages.config.config_cannot_update_database});
+                    logger._error({filename: __filename, methodname: methodname, messaage: messages.config.cannot_update_database});
 
                 } else {
 
@@ -164,7 +164,7 @@ function updateAfterRestart(doc, callback){
 
     typeof (callback) === 'function' ?
         callback(doc) :
-        logger._error({filename: __filename, methodname: methodname, messages: 'Callback is not a function'});
+        logger._error({filename: __filename, methodname: methodname, messages: messages.callback_not_a_function});
 
 
 }
@@ -177,7 +177,7 @@ function updateAfterRestart(doc, callback){
  */
 function setTestRunning(value, callback){
 
-    let methodname = 'settestRunning';
+    let methodname = 'setTestRunning';
 
     let project = mongo.getMongoObject(config.mongo.configObjectName);
 
@@ -189,7 +189,7 @@ function setTestRunning(value, callback){
 
         } else {
 
-            (callback) ? callback(err, doc) : logger._error({filename: __filename, methodname, message: 'Callback not a function'});
+            (callback) ? callback(err, doc) : logger._error({filename: __filename, methodname, message: messages.callback_not_a_function});
 
 
         }

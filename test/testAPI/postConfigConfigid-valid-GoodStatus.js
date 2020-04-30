@@ -33,7 +33,7 @@ module.exports.postConfigConfigidValidUpdateSuccess={
     method:serverOpts.POST+' '+serverOpts.apiOptions.path+apiCall+':configid',
     result: 'should return good status: '+serverOpts.GOOD_STATUS+' and configuration should be updated',
     resultMsg: "Config update has been updated and good status recieved",
-    expectedBody: {msg: messages.config.config_updated},
+    expectedBody: {msg: messages.config.updated},
     expectedStatus: serverOpts.GOOD_STATUS,
     setupData: {
         assert:{},

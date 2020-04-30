@@ -126,7 +126,7 @@ function updateObj(mongoObjectName, id, plugin, callback){
     logger._debug({filename: __filename, methodname: methodname, message: messages.started+' : mongoObjectName : '+mongoObjectName+': id :'+id});
 
     getMongoObject(mongoObjectName) ?
-        getMongoObject(mongoObjectName).findOne(id, callback) :
+        getMongoObject(mongoObjectName).findById(id, callback) :
         logger._error({filename: __filename, methodname: methodname, message: messages.mongo.cannot_get_model});
 }
 

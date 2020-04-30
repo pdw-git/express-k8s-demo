@@ -35,6 +35,9 @@ const messages = {
     no_res_json: 'No response JSON defined',
     http_response_sent: 'HTTP response sent with status: ',
     error: 'Error: ',
+    does_not_exist:'Does not exist',
+    already_exists: 'Already exists',
+    callback_not_a_function: 'Callback is not a function',
     api:{
         good_status: 'Sending good status',
         cannot_find_test_files: 'Cannot find the test files ',
@@ -51,7 +54,8 @@ const messages = {
         object_created: 'Successful config creation',
         invalid_id: 'Configid is not valid',
         created_model: 'Created Mongoose model: ',
-        cannot_delete_object: "Cannot delete object: "
+        cannot_delete_object: 'Cannot delete object: ',
+        failure_to_save_db: 'Failure to save database document'
 
     },
     environment:{
@@ -59,12 +63,13 @@ const messages = {
         mandatory_environment_variables_missing: 'Mandatory environment variables are missing: '
     },
     config:{
-        config_updated: 'Config was updated',
-        config_was_not_updated: 'Config was not updated: ',
-        config_invalid_logLevel: 'The value of logLevel is not valid: ',
-        config_objects_undefined: 'Either doc or body is not an object',
-        config_invalid_data: 'The data requested for update is not valid',
-        config_cannot_update_database: 'Was unable to update the database document'
+        updated: 'Config was updated',
+        was_not_updated: 'Config was not updated: ',
+        invalid_logLevel: 'The value of logLevel is not valid: ',
+        objects_undefined: 'Either doc or body is not an object',
+        invalid_data: 'The data requested for update is not valid',
+        cannot_update_database: 'Was unable to update the database document',
+        create_new_config: 'Create new config object'
     },
     basic: {
        child_process_error: 'The child process exited with error: ',
