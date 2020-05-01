@@ -196,8 +196,19 @@ function filterReporting(res, message){
     //we can choose to ignore logging errors that are caused by responses failing because the api/test is running.
     //either log all failures or filter out those with a the defined err message.
     ingoreTestRunningError === true ?
-        (res.body.err !== testAlreadyRunning) ?
+        filter(res) ?
             logResults(message) : {}
         : logResults(message);
+
+}
+
+/**
+ *
+ * @param res
+ * @returns {boolean}
+ */
+function filter(res){
+
+    return res.body.err !== testAlreadyRunning;
 
 }
