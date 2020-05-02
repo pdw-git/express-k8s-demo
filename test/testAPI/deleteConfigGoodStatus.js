@@ -127,7 +127,6 @@ module.exports.deleteConfigGoodStatus={
         after : (error, testData, done)=>{
 
             mongoose.connection.close((err)=>{
-
                 error ? done(err): done();
 
             });

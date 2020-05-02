@@ -89,7 +89,7 @@ const messages = {
     },
     mqlight:{
         initial_msg: 'mqlight started',
-        received_message: 'mqlight: recieived: ',
+        received_message: 'mqlight: recieved: ',
         sent_message: 'mqlight: sent: ',
         subscribed_to: 'mqlight: subscribed to: ',
         to_topic: ' to topic: '
