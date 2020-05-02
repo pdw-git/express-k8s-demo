@@ -55,6 +55,47 @@ spec:
           persistentVolumeClaim:
             claimName: mongo-pvc
 ---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqlight
+  namespace: express
+spec:
+  selector:
+    app: mqlight
+  ports:
+    - port: 5672
+      targetPort: 5682
+      name: amqp
+    - port: 9180
+      targetPort: 9180
+      name: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mqlight
+  namespace: express
+spec:
+  selector:
+    matchLabels:
+      app: mqlight
+  template:
+    metadata:
+      labels:
+        app: mqlight
+    spec:
+      containers:
+        - name: mqlight
+          image: ibmcom/mqlight
+          ports:
+            - containerPort: 5672
+            - containerPort: 9180
+          env:
+            - name: LICENSE
+              value: accept
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -99,6 +140,8 @@ spec:
               value: "3000"
             - name: EXP_API_MONGO_URI
               value: "mongodb://mongo:27017/"
+            - name: EXP_API_AMQP_URI
+              value: "amqp://mqlight:5672"
             - name: EXP_API_MONGO_DB_NAME
               value: "EXPRESS_API"
             - name: EXP_API_LOGGING_LEVEL

@@ -28,6 +28,7 @@
   "expectedEnvironmentVariables": [
     "EXP_API_PORT",
     "EXP_API_MONGO_URI",
+    "EXP_API_AMQP_URI",
     "EXP_API_MONGO_DB_NAME",
     "EXP_API_LOGGING_LEVEL",
     "EXP_API_NODE_ENV_PRODUCTION",

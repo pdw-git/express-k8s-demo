@@ -86,6 +86,13 @@ const messages = {
         closed_connection: 'Closed connection with: ',
         not_available: 'DB is not available'
 
+    },
+    mqlight:{
+        initial_msg: 'mqlight started',
+        received_message: 'mqlight: recieived: ',
+        sent_message: 'mqlight: sent: ',
+        subscribed_to: 'mqlight: subscribed to: ',
+        to_topic: ' to topic: '
     }
 
 };

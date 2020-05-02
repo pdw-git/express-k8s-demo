@@ -20,8 +20,6 @@ const messages = require('../app_utilities/messages').messages;
 class MyEmitter extends EventEmitter {}
 const myEmitter = new MyEmitter();
 
-//const checkTime = 30*1000;
-
 module.exports.emitter = myEmitter;
 
 const levels = ['error', 'warn', 'info', 'verbose', 'debug', 'silly'];
@@ -54,14 +52,6 @@ const loggerConfig = {
 //===================================================================================================================
 
 myEmitter.on('level', ()=>{ getLoggingLevel();});
-
-//===================================================================================================================
-//If we have multiple instances of this application we need to make sure that updates are picked up from the
-//configuration database. Set up an interval process that reads the database and updates the logger process.
-//===================================================================================================================
-
-//setInterval(()=>{ getLoggingLevel()}, checkTime);
-
 
 /**
  * getLoggingLevel

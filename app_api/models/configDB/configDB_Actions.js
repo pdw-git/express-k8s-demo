@@ -17,6 +17,7 @@ const mongo = require('../mongoActions');
 const logger = require('../../../app_utilities/logger');
 const messages = require('../../../app_utilities/messages').messages;
 const schema = require('../schemas/appConfiguration');
+const mq = require('../../../app_utilities/messaging/messageQ');
 
 // noinspection DuplicatedCode
 module.exports.setTestRunning = setTestRunning;
@@ -27,7 +28,6 @@ module.exports.setID = setConfigID;
 module.exports.getConfig = getConfig;
 
 let configID = null;
-
 
 /**
  * getConfig
@@ -140,7 +140,9 @@ function updateConfig(){
 
                 } else {
 
-                    doc.save().then(()=>{}).catch((reason) => {logger._error({filename: __filename, methodname: methodname, messages: reason});});
+                    doc.save().then(()=>{
+                        mq.getMsgTX().send(mq.configTopic, messages.config.updated,{}, null);
+                    }).catch((reason) => {logger._error({filename: __filename, methodname: methodname, messages: reason});});
 
                 }
 

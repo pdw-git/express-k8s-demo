@@ -19,6 +19,7 @@ const messages = require('../../app_utilities/messages').messages;
 const responseFunctions = require('./responseFunctions');
 const db = require('../models/db');
 const configDB = require('../models/configDB/configDB_Actions');
+const mq = require('../../app_utilities/messaging/messageQ');
 const filename = __filename;
 
 
@@ -107,11 +108,12 @@ function saveDoc(err, doc, res){
 
         doc.save().then(() => { //removed product to remove warning
 
-            logger.emitter.emit('level');
+            //TODO move this to a central configuration change capability.
+            //logger.emitter.emit('level');
+
+            mq.getMsgTX().send(mq.configTopic, messages.config.updated, {}, null);
 
             responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.updated});
-
-            //TODO raise an event here that will go an update the elements of the application that respond to changes in configuration
 
         }).catch((reason) => {
 

@@ -6,7 +6,15 @@ services:
     - "3000:3000"
     depends_on:
     - mongo
+    - mqlight
   mongo:
     image: mongo
     ports:
     - "27017:27017"
+  mqlight:
+    image: ibmcom/mqlight
+    environment:
+    - LICENSE=accept
+    ports:
+    - "5672:5672"
+    - "9180:9180"
