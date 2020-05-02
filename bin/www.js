@@ -39,12 +39,14 @@ process.env.EXP_API_HTTPS === undefined ? process.env.EXP_API_HTTPS = 'no' : {};
 
 applogger._info({filename: filename, methodname: methodName, message: "Application port: "+port+' Encrpytion: '+process.env.EXP_API_HTTPS});
 
-const options = {
-  key: fs.readFileSync(process.env.EXP_API_APP_DIR+process.env.EXP_API_KEY_STORE+process.env.EXP_API_APP_KEY),
-  cert: fs.readFileSync(process.env.EXP_API_APP_DIR+process.env.EXP_API_KEY_STORE+process.env.EXP_API_APP_CERT)
-};
-
-server = process.env.EXP_API_HTTPS === 'yes' ? https.createServer(options, app) : http.createServer(app);
+server = process.env.EXP_API_HTTPS === 'yes' ?
+    https.createServer(
+        {
+        key: fs.readFileSync(process.env.EXP_API_APP_DIR+process.env.EXP_API_KEY_STORE+process.env.EXP_API_APP_KEY),
+        cert: fs.readFileSync(process.env.EXP_API_APP_DIR+process.env.EXP_API_KEY_STORE+process.env.EXP_API_APP_CERT)
+      },
+    app)
+    : http.createServer(app);
 
 process.env.EXP_API_HTTPS === 'yes' ?
     applogger._info({filename: filename, methodName: methodName, message: messages.https_cert_provider+process.env.EXP_API_CERT_PROVIDER}):null;
