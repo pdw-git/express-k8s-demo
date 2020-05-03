@@ -50,14 +50,14 @@ sendClient.on('error', (err)=>{
 });
 
 recvClient.on('started', function () {
-    let methodname = recvClient;
 
     recvClient.subscribe(topicPattern, null, {}, ()=>{
+        let methodname = 'recvClient.subscribe';
         logger._info({filename: __filename, methodname: methodname, message: messages.mqlight.subscribed_to + topicPattern});
     });
 
     recvClient.on('message', function (data) { //removed delivery to suppress warnings
-        let methodname = 'recvClinet.on.message';
+        let methodname = 'recvClient.on.message';
         logger._info({filename: __filename, methodname: methodname, message: messages.mqlight.received_message + '- '+ data+' -'});
     });
 

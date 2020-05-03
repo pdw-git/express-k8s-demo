@@ -29,7 +29,7 @@ const filename = __filename;
 //====================================================================================================================
 
 mq.getmsgRX().on('message', function (data) { //removed delivery to suppress warnings
-    let methodname = 'recvClinet.on.message';
+    let methodname = 'recvClient.on.message';
     logger._info({filename: __filename,
         methodname: methodname,
         message: 'emitting changed event: '+messages.mqlight.received_message+' - '+data+' - '});

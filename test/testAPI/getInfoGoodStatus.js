@@ -41,7 +41,8 @@ const expectedBody = {
         getVersion :  "GET API version",
         getConfig : "GET config Data",
         postConfig : "POST config data update",
-        deleteConfig: "DELETE config data"
+        deleteConfig: "DELETE config data",
+        test: "GET results of running tests for all APIs"
     }
 };
 
