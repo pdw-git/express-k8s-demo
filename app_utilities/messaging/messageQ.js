@@ -58,7 +58,7 @@ recvClient.on('started', function () {
 
     recvClient.on('message', function (data) { //removed delivery to suppress warnings
         let methodname = 'recvClinet.on.message';
-        logger._info({filename: __filename, methodname: methodname, message: messages.mqlight.received_message + data});
+        logger._info({filename: __filename, methodname: methodname, message: messages.mqlight.received_message + '- '+ data+' -'});
     });
 
 });

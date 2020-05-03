@@ -12,15 +12,7 @@
  */
 'use strict';
 
-const EventEmitter = require('events');
-const mongo = require('../app_api/models/mongoActions');
-const config = require('../app_config/config');
-const messages = require('../app_utilities/messages').messages;
-
-class MyEmitter extends EventEmitter {}
-const myEmitter = new MyEmitter();
-
-module.exports.emitter = myEmitter;
+module.exports.setLogLevel = updateLoggingLevel;
 
 const levels = ['error', 'warn', 'info', 'verbose', 'debug', 'silly'];
 let defaultLoggingLevel = levels.indexOf('info');
@@ -47,31 +39,6 @@ const loggerConfig = {
     ]
 };
 
-//===================================================================================================================
-//Create an event listener that will update the logging level for the applicationon recieving a 'level' event
-//===================================================================================================================
-
-myEmitter.on('level', ()=>{ getLoggingLevel();});
-
-/**
- * getLoggingLevel
- *
- *
- */
-function getLoggingLevel(){
-
-    let methodname = 'getLoggingLevel';
-
-    mongo.find({},config.mongo.configObjectName,(err, doc)=>{
-
-        err ?
-            logMessage(levels.indexOf('error'),formatMessage({filename:__filename, methodName: methodname, message: messages.mongo.cannot_find_object})) :
-            updateLoggingLevel(doc);
-
-    });
-
-}
-
 /**
  * update Logging Level
  *
@@ -96,6 +63,8 @@ function updateLoggingLevel(doc){
 
                     setLoggingLevels(doc[0].logLevel, levels.indexOf(doc[0].logLevel));
 
+                    process.env.EXP_API_LOGGING_LEVEL = doc[0].logLevel;
+
                     logger.configure({
                         level: doc[0].logLevel,
                         format: combine(timestamp(), json(), colorize()),
@@ -118,7 +87,7 @@ function updateLoggingLevel(doc){
 
             }
             else {
-                logMessage('error',formatMessage({filename:__filename, methodName: methodname, message: 'Invalid logging level'+doc[0].logLevel}));
+                logMessage('error',formatMessage({filename:__filename, methodName: methodname, message: 'Invalid logging level '+doc[0].logLevel}));
 
             }
 
@@ -136,15 +105,12 @@ function updateLoggingLevel(doc){
 
 }
 
-
 //if there is no NODE_ENV variable set and there is a configuration object then use the default valued from the config
 //object.
 
 process.env.EXP_API_LOGGING_LEVEL === undefined ?
     setLoggingLevels(loggingLevelName, loggingLevelIndex) :
     setLoggingLevels(process.env.EXP_API_LOGGING_LEVEL,levels.indexOf(process.env.EXP_API_LOGGING_LEVEL));
-
-
 
 const logger = createLogger(loggerConfig);
 
@@ -154,10 +120,6 @@ const logger = createLogger(loggerConfig);
 if (process.env.EXP_API_NODE_ENV !== 'production') {
     logger.add(new transports.Console({format: simple()}));
 }
-
-//log the current logging level
-
-//logger.log('info', 'application logging level: '+levels[loggingLevelIndex]);
 
 function logMessage(level, message) {
 

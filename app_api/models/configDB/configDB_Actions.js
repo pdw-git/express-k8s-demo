@@ -10,6 +10,12 @@
  * Licensed under Apache-2.0
  */
 
+//===================================================================================================================
+//This object encapsulates actions around the configuration objects held in the persistence layer.
+//This object consumes the following emitted events:
+//  changed: emitted when the configuration is updated
+//===================================================================================================================
+
 'use strict';
 
 const config = require('../../../app_config/config');
@@ -17,6 +23,24 @@ const mongo = require('../mongoActions');
 const logger = require('../../../app_utilities/logger');
 const messages = require('../../../app_utilities/messages').messages;
 const schema = require('../schemas/appConfiguration');
+const EventEmitter = require('events');
+
+//===================================================================================================================
+//Create an event listener that will update elements of the application when the configuration is changed.
+//===================================================================================================================
+
+class Emitter extends EventEmitter {}
+const emitter = new Emitter();
+
+emitter.on('changed', ()=>{
+
+    mongo.find({_id: getConfigID()},config.mongo.configObjectName, (err, doc)=>{
+        let methodname = 'emitter.on.changed';
+        err ?  logger._error({filename: __filename, methodname: methodname, message: err})
+            : changeConfig(doc);
+    });
+
+});
 
 // noinspection DuplicatedCode
 module.exports.setTestRunning = setTestRunning;
@@ -25,6 +49,7 @@ module.exports.createConfig = createConfig;
 module.exports.getID = getConfigID;
 module.exports.setID = setConfigID;
 module.exports.getConfig = getConfig;
+module.exports.emitter= emitter;
 
 let configID = null;
 
@@ -221,5 +246,24 @@ function setConfigID(id){configID=id;}
  * @returns {*}
  */
 function getConfigID(){return configID;}
+
+/**
+ * changeConfig
+ *
+ * Changes the elements of the application that can be udated by a change to the configuration.
+ * Changeable elements:
+ *      logLevel
+ * @param doc
+ */
+function changeConfig(doc){
+
+    let methodname = 'changeConfig';
+
+    doc[0].logLevel === undefined ?
+        logger._error({filename: __filename, methodname: methodname, message: 'doc[0].logLevel: '+messages.does_not_exist})
+        : logger.setLogLevel(doc);
+
+
+}
 
 

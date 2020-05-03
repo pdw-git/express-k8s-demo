@@ -22,6 +22,19 @@ const configDB = require('../models/configDB/configDB_Actions');
 const mq = require('../../app_utilities/messaging/messageQ');
 const filename = __filename;
 
+//====================================================================================================================
+//The message queue has been set up to subscribe to data sent to topic config/changed.
+//When data is received on this topic log the data and then update the actions of the application that can be changed.
+//These actions are encapsulated in the configDB object.
+//====================================================================================================================
+
+mq.getmsgRX().on('message', function (data) { //removed delivery to suppress warnings
+    let methodname = 'recvClinet.on.message';
+    logger._info({filename: __filename,
+        methodname: methodname,
+        message: 'emitting changed event: '+messages.mqlight.received_message+' - '+data+' - '});
+    configDB.emitter.emit('changed');
+});
 
 /**
  * postConfig
@@ -111,9 +124,13 @@ function saveDoc(err, doc, res){
             //TODO move this to a central configuration change capability.
             //logger.emitter.emit('level');
 
-            mq.getMsgTX().send(mq.configTopic, messages.config.updated, {}, null);
+            mq.getMsgTX().send(mq.configTopic, messages.config.updated, {}, (err)=>{
+                err ?
+                    responseFunctions.sendJSONresponse(new Error(err), res, filename, methodname, config.status.error)
+                    :responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.updated});
+            });
 
-            responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.updated});
+            //responseFunctions.sendJSONresponse(null, res, filename, methodname, config.status.good, {msg: messages.config.updated});
 
         }).catch((reason) => {
 

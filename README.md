@@ -19,6 +19,12 @@ that can be altered:
 MANDATORY VARIABLES TO BE SET IN THE SHELL BEFORE TRYING TO DEPLOY OR IN THE DOCKER FILE BEFORE BUILDING A DOCKER CONTAINER
 OR IN THE KUBERNETES YAML FILE BEFORE DEPLOYING. 
 
+The application has a api layer, a persistance layer and a messaging layer. The applicaiton has a basic configuration 
+which is maintained in the persistence layer. Any changes to the configuration and communicated to the API layer. There
+could be multiple instances of the API deployed and a pub/sub mechanism has been employed to enable communication between 
+the various API instances. This feature can be demonstrated to show that changing the configuraiton through one instance
+of the API will alter the behaviour of all instances of the API. 
+
 >>EXP_API_APP_DIR = root directory for the application
 
 >>EXP_API_ENV_DEPLOYMENT = can be either npm, docker or docker-compose and determines the environment variable file that will
@@ -85,23 +91,26 @@ access because the signing request was self created.
 
 The default is to deploy this application with docker-compose but to run this with nodejs locally do the following. 
 
-This application requires a mongo db, to enable the application to run successfully install Mongo locally:
+This application requires a mongo db, and an amqp message bus to enable the application to run successfully install 
+Mongo and ibmcom/mqlight locally:
 
 login to docker-hub
 
 docker pull mongo
+docker pull ibmcom/mqlight
 
 docker run -d -p 27017: 27017 mongo 
+ docker run --env LICENSE=accept -p 5672:5672 -p 9180:9180 ibmcom/mqlight
 
 From within the target directory run clone the git repository
 
 Update the .env file with the appropriate environment variables
 
-export APP_DIR=/folder/containing/application/source
-export NODE_ENV_DEPLOYMENT=npm
+export EXP_API_APP_DIR=/folder/containing/application/source
+export EXP_API_ENV_DEPLOYMENT=npm
 
-Change MONGO_URI to mongo://ipa-ddress: as required for your system. 
-Change MONGO_PORT as required for your system
+Change EXP_API_MONGO_URI to mongo://ip-address:port as required for your system. 
+Change EXP_API_AMQP_URI to ampq://ip-address:port
 
 npm install 
 
@@ -116,13 +125,20 @@ On success you will see the following on the console:
 >> express-api@1.0.0 start /Users/whitep/Node/WebstormProjects/express-api
 >> node ./bin/www
 
->>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-connectToMongo : Connecting to: mongodb://localhost:27017/EXPRESS_API {"timestamp":"2020-04-30T17:05:05.148Z"}
->>info: /Users/whitep/Node/WebstormProjects/express-api/app.js-undefined : Deployment method: npm {"timestamp":"2020-04-30T17:05:05.325Z"}
->>info: /Users/whitep/Node/WebstormProjects/express-api/bin/www-main : Application port: 3000 Encrpytion: no {"timestamp":"2020-04-30T17:05:05.332Z"}
->>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-mongoose.connection.on.connected : Create initial config in db {"timestamp":"2020-04-30T17:05:05.355Z"}
->>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/mongoActions.js-createModel : Created Mongoose model: configuration {"timestamp":"2020-04-30T17:05:05.363Z"}
->>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-connectToMongo : Connected to: mongodb://localhost:27017/EXPRESS_API {"timestamp":"2020-04-30T17:05:05.374Z"}
->>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/mongoActions.js-createObj : Successful config creation {"timestamp":"2020-04-30T17:05:05.418Z"}
+>> info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-connectToMongo : Connecting to: mongodb://localhost:27017/EXPRESS_API {"timestamp":"2020-05-03T05:10:10.787Z"}
+>> info: /Users/whitep/Node/WebstormProjects/express-api/app.js-undefined : Deployment method: npm {"timestamp":"2020-05-03T05:10:11.107Z"}
+>> info: /Users/whitep/Node/WebstormProjects/express-api/bin/www.js-main : Application port: 3000 Encrpytion: no {"timestamp":"2020-05-03T05:10:11.114Z"}
+>> info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-mongoose.connection.on.connected : Create initial config in db {"timestamp":"2020-05-03T05:10:11.143Z"}
+>> info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/mongoActions.js-createModel : Created Mongoose model: configuration {"timestamp":"2020-05-03T05:10:11.151Z"}
+>> info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-connectToMongo : Connected to: mongodb://localhost:27017/EXPRESS_API {"timestamp":"2020-05-03T05:10:11.161Z"}
+>> info: /Users/whitep/Node/WebstormProjects/express-api/app_utilities/messaging/messageQ.js-createClient : mqlight sendClient created {"timestamp":"2020-05-03T05:10:11.187Z"}
+>> info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/configDB/configDB_Actions.js-createConfig : configuration 5eadb0e946d9a8eb4a4ffd72 Already exists {"timestamp":"2020-05-03T05:10:11.198Z"}
+>> info: /Users/whitep/Node/WebstormProjects/express-api/app_utilities/messaging/messageQ.js-createClient : mqlight recvClient created {"timestamp":"2020-05-03T05:10:11.204Z"}
+>> info: /Users/whitep/Node/WebstormProjects/express-api/app_utilities/messaging/messageQ.js-sendClient.send : mqlight: sent: mqlight started to topic: config/change {"timestamp":"2020-05-03T05:10:11.210Z"}
+>> info: /Users/whitep/Node/WebstormProjects/express-api/app_utilities/messaging/messageQ.js-[object Object] : mqlight: subscribed to: config/change {"timestamp":"2020-05-03T05:10:11.228Z"}
+>> info: /Users/whitep/Node/WebstormProjects/express-api/app_api/controllers/configApi.js-recvClinet.on.message : emitting changed event: mqlight: recieved:  - mqlight started -  {"timestamp":"2020-05-03T05:10:11.233Z"}
+>> info: /Users/whitep/Node/WebstormProjects/express-api/app_utilities/messaging/messageQ.js-recvClinet.on.message : mqlight: recieved: - mqlight started - {"timestamp":"2020-05-03T05:10:11.234Z"}
+>> info: /Users/whitep/Node/WebstormProjects/express-api/app_api/controllers/configApi.js-getConfig : HTTP response sent with status: 200 {"timestamp":"2020-05-03T05:10:15.165Z"}
 
 NOTE: by default the application starts with loggingLevel set to info mode;
 
