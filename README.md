@@ -232,12 +232,33 @@ a persistant volume.
 
 There is an application that will send a stream of client requests to the API server. 
 
-node appTest.js <delay (ms)> <ip address> <API call>
+node appTest.js [delay (ms)] [ip address] [API call] [ignore tests already running errors]
 
-e.g node appTest.js 0 127.0.0.1:3000 test
+e.g node appTest.js 0 127.0.0.1:3000 test true
 
 This will continually run get http://127.0.0.1:3000/api/test without any delay between API calls. A simple report is 
 logged to stdout. 
+
+API Call can be one of:
+
+>version 
+
+>info 
+
+>config
+
+>status
+
+>test
+
+>random
+
+Using random will cause the application to randomly choose which of the API calls to send to the application.
+
+When using GET test it can take between 700 and 1200 ms to complete. If running multiple appTest.js it is possible that 
+API calls  will fails with a status code of 500 and a message stating that a test is already running. Due to the very 
+high volumes of these messages it is possible to disable this particular response. Setting 
+[ignore tests already running error] true these errors will not be logged to the console. 
 
 The test will work with any of the GET calls to the API. It does not support POST/UPDATE/DELETE operations. api/test
 exercises all the API calls available in the application. 
