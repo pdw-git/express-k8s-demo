@@ -23,7 +23,7 @@ const testName = 'getStatusGoodStatus';
 const expectedBody = {
     "logLevel": "info",
     "dataBase": {
-        "location": "mongodb://localhost:27017/EXPRESS_API",
+        "location": process.env.EXP_API_MONGO_URI+process.env.EXP_API_MONGO_DB_NAME,
         "connected": true
     },
     "messageBus": {
