@@ -20,7 +20,18 @@ const serverOpts = require('./apiServerDefinitions');
 const apiCall = '/status';
 const testName = 'getStatusGoodStatus';
 
-const expectedBody = {mongo: process.env.EXP_API_MONGO_URI+process.env.EXP_API_MONGO_DB_NAME, connected: true, logLevel: 'info'};
+const expectedBody = {
+    "logLevel": "info",
+    "dataBase": {
+        "location": "mongodb://localhost:27017/EXPRESS_API",
+        "connected": true
+    },
+    "messageBus": {
+        "subscribed": "config/change",
+        "recvClient": "started",
+        "sendClient": "started"
+    }
+};
 
 //============================================================================================
 // GET /api/version returns body and Good status
