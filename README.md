@@ -108,10 +108,12 @@ From within the target directory run clone the git repository
 
 Update the .env file with the appropriate environment variables
 
-export EXP_API_APP_DIR=/folder/containing/application/source
+export EXP_API_APP_DIR=/folder/containing/application/source 
+
 export EXP_API_ENV_DEPLOYMENT=npm
 
 Change EXP_API_MONGO_URI to mongo://ip-address:port as required for your system. 
+
 Change EXP_API_AMQP_URI to ampq://ip-address:port
 
 npm install 
@@ -185,7 +187,7 @@ The following RESTful APIs are provided for testing
 
 >>GET api/info - returns information about the application
 
->>GET api/status - returns the status of the data base connection
+>>GET api/status - returns the status of the data base connection and message clients
 
 >>GET api/version - returns version information for the api
 
