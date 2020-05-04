@@ -97,10 +97,12 @@ Mongo and ibmcom/mqlight locally:
 login to docker-hub
 
 docker pull mongo
+
 docker pull ibmcom/mqlight
 
 docker run -d -p 27017: 27017 mongo 
- docker run --env LICENSE=accept -p 5672:5672 -p 9180:9180 ibmcom/mqlight
+
+docker run --env LICENSE=accept -p 5672:5672 -p 9180:9180 ibmcom/mqlight
 
 From within the target directory run clone the git repository
 

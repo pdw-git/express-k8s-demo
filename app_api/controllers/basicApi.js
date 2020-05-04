@@ -22,6 +22,7 @@ const { exec } = require('child_process');
 const db = require('../models/db');
 const configDB = require('../models/configDB/configDB_Actions');
 const info = require('../../info');
+const mq = require('../../app_utilities/messaging/messageQ');
 
 const filename = __filename;
 
@@ -39,7 +40,23 @@ module.exports.getStatus = function(req, res){
 
     responseFunctions.defaultResponse(req, res, filename, methodname, (req, res)=> {
 
-        let responseMsg = db.dbConnected() ? {mongo: db.getURI(), connected: true, logLevel: logger.getLogLevel()} : {mongo: db.getURI(), connected: false, logLevel: logger.getLogLevel()};
+        let responseMsg =
+            {
+                logLevel: logger.getLogLevel(),
+                inProduction: process.env.EXP_API_IN_PRODUCTION,
+                dataBase: {
+                  location: db.getURI(),
+                  connected: db.dbConnected(),
+                },
+                messageBus:{
+                    subscribed: mq.configTopic,
+                    recvClient: mq.getmsgRX().state,
+                    sendClient: mq.getMsgTX().state
+
+                }
+
+            };
+
 
         responseFunctions.sendJSONresponse( null, res, filename, methodname, config.status.good, responseMsg);
 
