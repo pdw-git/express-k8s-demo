@@ -53,9 +53,9 @@ function updateLoggingLevel(doc){
     //reconfigure the looger
     //determine if messages should go to stdout
 
-    if(doc[0] !== "undefined"){
+    if(typeof doc[0] !== "undefined"){
 
-        if(doc[0].logLevel !== "undefined"){
+        if(typeof doc[0].logLevel !== "undefined"){
 
             if(levels.indexOf(doc[0].logLevel) !== -1){
 

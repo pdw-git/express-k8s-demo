@@ -259,7 +259,7 @@ function changeConfig(doc){
 
     let methodname = 'changeConfig';
 
-    doc[0].logLevel === undefined ?
+    typeof doc === 'undefined' && typeof doc[0].logLevel === 'undefined'?
         logger._error({filename: __filename, methodname: methodname, message: 'doc[0].logLevel: '+messages.does_not_exist})
         : logger.setLogLevel(doc);
 
