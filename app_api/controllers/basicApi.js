@@ -172,7 +172,7 @@ function getErrors(jsonData){
 
     const errors = [];
 
-    if(jsonData.failures !== undefined){
+    if(typeof jsonData.failures !== 'undefined'){
 
         if(jsonData.failures.length > 0){
 
@@ -228,6 +228,10 @@ function executeTest(testFiles, doc, res){
             const results = doc.homeDir + config.tests[0].results;
             const command = testScript + ' ' + executionDIR + ' ' + deployment + ' ' + testFiles + ' ' + results;
 
+            //Run the test script as a child process
+            //If the tests pass the script returns 0
+            //If the the test exection fails the script will return -1
+            //If there are test failures the script returns an integer value === to the number of tests that have failed.
             exec(command, (err, stdout) => { //removed stderr to supress warnings
 
                 let methodname = 'exec';
