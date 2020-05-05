@@ -34,35 +34,35 @@ ENVIRONMENT VARIABLES TO BE SET IN THE /environment/deployment/.env file where d
 
 A list of example environment variables is provided here. 
 
-EXP_API_PORT=3000 : port to be exposed for the application 
+>>EXP_API_PORT=3000 : port to be exposed for the application 
 
-EXP_API_MONGO_URI=mongodb://mongo:27017 : location of the Mongo db - used for persistance
+>>EXP_API_MONGO_URI=mongodb://mongo:27017 : location of the Mongo db - used for persistance
 
-EXP_API_MONGO_DB_NAME=EXPRESS_API : Name of the collections for this application
+>>EXP_API_MONGO_DB_NAME=EXPRESS_API : Name of the collections for this application
 
-EXP_API_LOGGING_LEVEL=debug : the required logging level for this application [err, warn, info, verbose, debug, silly ]
+>>EXP_API_LOGGING_LEVEL=debug : the required logging level for this application [err, warn, info, verbose, debug, silly ]
 
-EXP_API_NODE_ENV_PRODUCTION=no : can be yes or no
+>>EXP_API_NODE_ENV_PRODUCTION=no : can be yes or no
 
-EXP_API_HTTPS=yes : can be yes or no
+>>EXP_API_HTTPS=yes : can be yes or no
 
-EXP_API_APP_IP=localhost : IP address of the applicaiton
+>>EXP_API_APP_IP=localhost : IP address of the applicaiton
 
-EXP_API_INDEX_ROUTE=/ : route of served HTML pages
+>>EXP_API_INDEX_ROUTE=/ : route of served HTML pages
 
-EXP_API_API_ROUTE=/api : route of the api
+>>EXP_API_API_ROUTE=/api : route of the api
 
-EXP_API_USER_ROUTE=/users : route for users
+>>EXP_API_USER_ROUTE=/users : route for users
 
-EXP_API_API_VERSION=1.0.0 : api version string
+>>EXP_API_API_VERSION=1.0.0 : api version string
 
-EXP_API_CERT_PROVIDER=SELF_SIGNED : encryption certificate provider
+>>EXP_API_CERT_PROVIDER=SELF_SIGNED : encryption certificate provider
 
-EXP_API_KEY_STORE=/bin/keystore/ : certificate key store
+>>EXP_API_KEY_STORE=/bin/keystore/ : certificate key store
 
-EXP_API_APP_CERT=cert.pem : certificate
+>>EXP_API_APP_CERT=cert.pem : certificate
 
-EXP_API_APP_KEY=key.pem : encryption key
+>>EXP_API_APP_KEY=key.pem : encryption key
 
 Environment variables should be set in  a .env file, the docker file or in the docker-compose file or the kubernetes
 yaml deployment file. 
@@ -74,13 +74,13 @@ application to work.
 
 For testing purposes a self signed cert and Key can be created using the following commands on a linux system. 
 
->openssl genrsa -out key.pem
+>>openssl genrsa -out key.pem
 
->openssl req -new -key key.pem -out csr.pem
+>>openssl req -new -key key.pem -out csr.pem
 
->openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
+>>openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
 
->rm csr.pem
+>>rm csr.pem
 
 The default configuration is not to use encryption. However self signed certificates can be used to explore deployment
 and use of apps secured by keys and certificates. If slef signed certificates are used
@@ -94,70 +94,70 @@ The default is to deploy this application with docker-compose but to run this wi
 This application requires a mongo db, and an amqp message bus to enable the application to run successfully install 
 Mongo and ibmcom/mqlight locally:
 
-login to docker-hub
+>>login to docker-hub
 
-docker pull mongo
+>>docker pull mongo
 
-docker pull ibmcom/mqlight
+>>docker pull ibmcom/mqlight
 
-docker run -d -p 27017: 27017 mongo 
+>>docker run -d -p 27017: 27017 mongo 
 
-docker run --volume [directory]/mqlight:/var/mqlight --env LICENSE=accept -p 5672:5672 -p 9180:9180 ibmcom/mqlight
+>>docker run --volume [directory]/mqlight:/var/mqlight --env LICENSE=accept -p 5672:5672 -p 9180:9180 ibmcom/mqlight
 
-From within the target directory run clone the git repository
+>>From within the target directory run clone the git repository
 
-Update the .env file with the appropriate environment variables
+>>Update the .env file with the appropriate environment variables
 
-export EXP_API_APP_DIR=/folder/containing/application/source 
+>>export EXP_API_APP_DIR=/folder/containing/application/source 
 
-export EXP_API_ENV_DEPLOYMENT=npm
+>>export EXP_API_ENV_DEPLOYMENT=npm
 
-Change EXP_API_MONGO_URI to mongo://ip-address:port as required for your system. 
+>>Change EXP_API_MONGO_URI to mongo://ip-address:port as required for your system. 
 
-Change EXP_API_AMQP_URI to ampq://ip-address:port
+>>Change EXP_API_AMQP_URI to ampq://ip-address:port
 
-npm install 
+>>npm install 
 
-to pull all the necessary dependencies and start the application.
+>>to pull all the necessary dependencies and start the application.
 
-run:
+>>run:
 
-npm start
+>>npm start
 
-On success you will see the following on the console:
+>>On success you will see the following on the console:
 
-> express-api@1.0.0 start /Users/whitep/Node/WebstormProjects/express-ap
+>> express-api@1.0.0 start /Users/whitep/Node/WebstormProjects/express-ap
 
-> node ./bin/www
+>> node ./bin/www
 
 
->info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-connectToMongo : Connecting to: mongodb://localhost:27017/EXPRESS_API 
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-connectToMongo : Connecting to: mongodb://localhost:27017/EXPRESS_API 
 
->info: /Users/whitep/Node/WebstormProjects/express-api/app.js-undefined : Deployment method: npm 
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app.js-undefined : Deployment method: npm 
 
->info: /Users/whitep/Node/WebstormProjects/express-api/bin/www.js-main : Application port: 3000 Encrpytion: no
+>>info: /Users/whitep/Node/WebstormProjects/express-api/bin/www.js-main : Application port: 3000 Encrpytion: no
 
->info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-mongoose.connection.on.connected : Create initial config in db 
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-mongoose.connection.on.connected : Create initial config in db 
 
->info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/mongoActions.js-createModel : Created Mongoose model: configuration
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/mongoActions.js-createModel : Created Mongoose model: configuration
  
-> info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-connectToMongo : Connected to: mongodb://localhost:27017/EXPRESS_API 
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/db.js-connectToMongo : Connected to: mongodb://localhost:27017/EXPRESS_API 
 
-> info: /Users/whitep/Node/WebstormProjects/express-api/app_utilities/messaging/messageQ.js-createClient : mqlight sendClient created
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_utilities/messaging/messageQ.js-createClient : mqlight sendClient created
  
-> info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/configDB/configDB_Actions.js-createConfig : configuration 5eadb0e946d9a8eb4a4ffd72 
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/models/configDB/configDB_Actions.js-createConfig : configuration 5eadb0e946d9a8eb4a4ffd72 
 
-> info: /Users/whitep/Node/WebstormProjects/express-api/app_utilities/messaging/messageQ.js-createClient : mqlight recvClient created 
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_utilities/messaging/messageQ.js-createClient : mqlight recvClient created 
 
-> info: /Users/whitep/Node/WebstormProjects/express-api/app_utilities/messaging/messageQ.js-sendClient.send : mqlight: sent: mqlight started to topic: config/change 
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_utilities/messaging/messageQ.js-sendClient.send : mqlight: sent: mqlight started to topic: config/change 
 
-> info: /Users/whitep/Node/WebstormProjects/express-api/app_utilities/messaging/messageQ.js-recvClient.subscribe : mqlight: subscribed to: config/change 
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_utilities/messaging/messageQ.js-recvClient.subscribe : mqlight: subscribed to: config/change 
 
-> info: /Users/whitep/Node/WebstormProjects/express-api/app_api/controllers/configApi.js-recvClient.on.message : emitting changed event: mqlight: recieved:  - mqlight started - 
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/controllers/configApi.js-recvClient.on.message : emitting changed event: mqlight: recieved:  - mqlight started - 
  
-> info: /Users/whitep/Node/WebstormProjects/express-api/app_utilities/messaging/messageQ.js-recvClient.on.message : mqlight: recieved: - mqlight started - 
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_utilities/messaging/messageQ.js-recvClient.on.message : mqlight: recieved: - mqlight started - 
 
-> info: /Users/whitep/Node/WebstormProjects/express-api/app_api/controllers/configApi.js-getConfig : HTTP response sent with status: 200 
+>>info: /Users/whitep/Node/WebstormProjects/express-api/app_api/controllers/configApi.js-getConfig : HTTP response sent with status: 200 
 
 NOTE: by default the application starts with loggingLevel set to info mode;
 
@@ -166,11 +166,11 @@ is found during that time it will be connected and a configuration object will b
 While there is no database the following API calls will work. 
 
 >>GET api/version
->
+
 >>GET api/info
->
+
 >>GET api/status
->
+
 None of these API calls rely on there being a database. Any API call that requires access to the configuration 
 database object will fail with a message stating that the database is not connected. The applciation also presents
 two web pages, a basic index page and a basic about page. Pointing a browser at:
@@ -215,9 +215,9 @@ images so they can be run using docker-compose
 
 Ensure that docker-compose is installed and then run
 
-docker-compose build
+>>docker-compose build
 
-docker-compose up
+>>docker-compose up
 
 
 ## Kubernetes
@@ -226,11 +226,31 @@ There are yaml files to enable the deployment of the app and the supporting data
 
 Assuming there is a kubernetes environment these two applications can be deployed into the default namespace using
 
->>kubectl apply -f kube
+>>kubectl apply -f kube/express.yaml
 
 From the directory that contains kube. The YAML file will create a name space called express create a replication set 
 with 2 instances of the application, a service so that the application can be accessed and an instance of mongo in 
 a persistant volume. 
+
+NOTE: This yaml file sets up a application that has encryption enabled and makes the mqlight http server available. 
+
+This yaml will create a namespace called express and deploys mongo, mqlight and a replica set of 2 instances of express-api.
+
+To test this I have used minikube:
+
+>>minikube start --driver=virtualbox
+
+>>kubectl apply -f kube/express.yaml 
+
+>>kubectl describe services -n express mqlight - gets information about the mqlight service
+
+>>kubectl describe services -n express expres-api - gets inforamtion about the express-api service
+
+Minikube will set up a proxy to the cluster and describe the IP address that can be used to access the applicaiton
+
+>>minikube service -n express express-api
+
+This command will try to start the application. This will fail for the defauly yaml settings becuase it uses http not https. 
 
 ## appTest.js
 
@@ -245,17 +265,17 @@ logged to stdout.
 
 API Call can be one of:
 
->version 
+>>version 
 
->info 
+>>info 
 
->config
+>>config
 
->status
+>>status
 
->test
+>>test
 
->random
+>>random
 
 Using random will cause the application to randomly choose which of the API calls to send to the application.
 
