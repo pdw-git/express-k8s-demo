@@ -70,6 +70,7 @@ spec:
     - port: 9180
       targetPort: 9180
       name: http
+  type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -104,8 +105,8 @@ spec:
   selector:
     app: express-api
   ports:
-    - port: 80
-      targetPort: 3000
+    - port: 3443
+      targetPort: 3443
   type: LoadBalancer
 ---
 apiVersion: apps/v1
@@ -127,7 +128,7 @@ spec:
         - name: express-api
           image: boselane6633/express-api-app:latest
           ports:
-            - containerPort: 3000
+            - containerPort: 3443
           env:
             - name: EXP_API_ENV_DEPLOYMENT
               value: "K8S"
@@ -136,7 +137,7 @@ spec:
             - name: EXP_API_API_ROUTE
               value: "/api1"
             - name:  EXP_API_PORT
-              value: "3000"
+              value: "3443"
             - name: EXP_API_MONGO_URI
               value: "mongodb://mongo:27017/"
             - name: EXP_API_AMQP_URI
@@ -148,7 +149,7 @@ spec:
             - name: EXP_API_NODE_ENV_PRODUCTION
               value: "yes"
             - name: EXP_API_HTTPS
-              value: "no"
+              value: "yes"
             - name: EXP_API_APP_IP
               value: localhost
             - name: EXP_API_INDEX_ROUTE
