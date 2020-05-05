@@ -7,9 +7,9 @@ NOT PRODUCTION READY CODE
 This is a simple API server built on Node.js and the Express framework. It has been created as an educational 
 tool for use to explore development and deployment patterns. **_This is not production ready code_**. 
 
-To install the application ensure you have npm and nodejs available on the target system. 
+To install the application ensure that npm and node.js are available on the target system. 
 
-Run git clone against this repository to extract the code to a target directory.
+Run git clone against the https://github.com/pdw-git/express-api directory to get the latest source code. 
 
 There is a default configuration that is described in the file environment/npm/.env.
 
@@ -19,7 +19,7 @@ that can be altered:
 MANDATORY VARIABLES TO BE SET IN THE SHELL BEFORE TRYING TO DEPLOY OR IN THE DOCKER FILE BEFORE BUILDING A DOCKER CONTAINER
 OR IN THE KUBERNETES YAML FILE BEFORE DEPLOYING. 
 
-The application has a api layer, a persistance layer and a messaging layer. The applicaiton has a basic configuration 
+The application has an API layer, a persistance layer and a messaging layer. The applicaiton has a basic configuration
 which is maintained in the persistence layer. Any changes to the configuration and communicated to the API layer. There
 could be multiple instances of the API deployed and a pub/sub mechanism has been employed to enable communication between 
 the various API instances. This feature can be demonstrated to show that changing the configuraiton through one instance
