@@ -203,7 +203,7 @@ There is some basic logging and error handling but this code is not suitable for
 
 Tests for the API are included and can be executed by typing; 
 
-npm test
+>>npm test
 
 in the installed source directory.
 
@@ -236,7 +236,7 @@ NOTE: This yaml file sets up a application that has encryption enabled and makes
 
 This yaml will create a namespace called express and deploys mongo, mqlight and a replica set of 2 instances of express-api.
 
-To test this I have used minikube:
+To test there needs to be a kubernetes cluster. One that is easily attainable and simple to use is minikube:
 
 >>minikube start --driver=virtualbox
 
