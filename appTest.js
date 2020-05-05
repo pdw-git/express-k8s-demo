@@ -17,7 +17,12 @@ usage appTest.js <delay> <ipaddress:port> <test> <ignore testAlreadyRunning>
 <ingore testAlreadyRunning> can be true or false
 random will pick a new API command for each request based on a simple random number choice.
 
+node appTest.js 100 https://192.168.99.125:31024 info false
+node appTest.jas 0 http:localhost:3000 random true
+
  */
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 let request = require('request');
 //Get input from the command line
@@ -27,7 +32,7 @@ let myArgs = process.argv.slice(2);
 let delay = myArgs[0] ? myArgs[0] : 0;
 
 //The ip Address of the application
-let ipAddress = myArgs[1] ?  myArgs[1] : '127.0.0.1:3000';
+let ipAddress = myArgs[1] ?  myArgs[1] : 'http://127.0.0.1:3000';
 
 //The API call to be made
 let apiCall = myArgs[2] ? myArgs[2] : status;
@@ -38,7 +43,7 @@ let ingoreTestRunningError = myArgs[3] === 'true';
 
 //The request options used when a specific test is chosen
 let options = {
-    url: 'http://'+ipAddress + "/api/"+apiCall,
+    url: ipAddress + "/api/"+apiCall,
     method: "get",
     json: {},
     qs: {}
@@ -47,31 +52,31 @@ let options = {
 //Options used when random testing is chose
 let testOptions = [
     {
-        url: 'http://'+ipAddress + '/api/info',
+        url: ipAddress + '/api/info',
         method: "get",
         json: {},
         qs: {}
     },
     {
-        url: 'http://'+ipAddress + '/api/status',
+        url: ipAddress + '/api/status',
         method: "get",
         json: {},
         qs: {}
     },
     {
-        url: 'http://'+ipAddress + '/api/version',
+        url: ipAddress + '/api/version',
         method: "get",
         json: {},
         qs: {}
     },
     {
-        url: 'http://'+ipAddress + '/api/config',
+        url: ipAddress + '/api/config',
         method: "get",
         json: {},
         qs: {}
     },
     {
-        url: 'http://'+ipAddress + '/api/test',
+        url: ipAddress + '/api/test',
         method: "get",
         json: {},
         qs: {}
