@@ -60,7 +60,7 @@ There is a yaml files to enable the deployment of the app and the supporting con
 Assuming there is a kubernetes environment the application can be deployed into a a new namespace using the following command
 run from the directory that contains kube. 
 
->>kubectl apply -f kube/express.yaml
+>>kubectl apply -f kubernetes/express.yaml
 
 The YAML file will create a name space called express create a replication set with:
 
