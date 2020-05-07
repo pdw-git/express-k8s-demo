@@ -23,4 +23,4 @@ services:
       - "5672:5672"
       - "9180:9180"
     volumes:
-    - /home/whitep/WebstormProjects/express-api/mqlight:/var/mqlight
+    - ${DKR_MQLIGHT_DIR}:/var/mqlight
