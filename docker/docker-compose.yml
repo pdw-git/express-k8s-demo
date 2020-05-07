@@ -1,12 +1,16 @@
 version: "3.3"
 services:
   web:
-    build: .
+    image: boselane6633/express-api-app:latest
     ports:
     - "3000:3000"
     depends_on:
     - mongo
-    - mqlight
+    environment:
+      - EXP_API_ENV_DEPLOYMENT=docker
+      - EXP_API_APP_DIR=/usr/src/app
+    env_file:
+      - ./environment/docker.env
   mongo:
     image: mongo
     ports:
@@ -14,7 +18,9 @@ services:
   mqlight:
     image: ibmcom/mqlight
     environment:
-    - LICENSE=accept
+      - LICENSE=accept
     ports:
-    - "5672:5672"
-    - "9180:9180"
+      - "5672:5672"
+      - "9180:9180"
+    volumes:
+    - /home/whitep/WebstormProjects/express-api/mqlight:/var/mqlight
