@@ -134,8 +134,6 @@ spec:
               value: "K8S"
             - name: EXP_API_APP_DIR
               value: "/usr/src/app"
-            - name: EXP_API_API_ROUTE
-              value: "/api1"
             - name:  EXP_API_PORT
               value: "3443"
             - name: EXP_API_MONGO_URI
