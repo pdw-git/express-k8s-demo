@@ -20,6 +20,8 @@ random will pick a new API command for each request based on a simple random num
 node appTest.js 100 https://192.168.99.125:31024 info false
 node appTest.jas 0 http:localhost:3000 random true
 
+TODO: who can we safely encoporate post and delete commands into this testing application
+
  */
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";

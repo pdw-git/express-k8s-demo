@@ -6,11 +6,8 @@ services:
     - "3000:3000"
     depends_on:
     - mongo
-    environment:
-      - EXP_API_ENV_DEPLOYMENT=docker
-      - EXP_API_APP_DIR=/usr/src/app
     env_file:
-      - ./environment/docker.env
+      - environment/docker_web.env
   mongo:
     image: mongo
     ports:
