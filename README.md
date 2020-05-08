@@ -131,6 +131,17 @@ high volumes of these messages it is possible to disable this particular respons
 [ignore tests already running error] true these errors will not be logged to the console. 
 
 The test will work with any of the GET calls to the API. It does not support POST/UPDATE/DELETE operations. api/test
-exercises all the API calls available in the application. 
+exercises all the API calls available in the application.
+
+## docker-compose
+
+Incase there is no access to a kubernetes cluster there is a docker-compose file that can be used to validate the application 
+is working. The following mandatory environment varidable needs to be set. 
+
+>>DKR_MQLIGHT_DIR=[directory of a shared volume for the mqlight service]
+
+To run the applicaiton use:
+
+>>docker-compose-up
 
 
