@@ -105,8 +105,8 @@ spec:
   selector:
     app: express-api
   ports:
-    - port: 3443
-      targetPort: 3443
+    - port: 3000
+      targetPort: 3000
   type: LoadBalancer
 ---
 apiVersion: apps/v1
@@ -128,14 +128,14 @@ spec:
         - name: express-api
           image: boselane6633/express-api-app:latest
           ports:
-            - containerPort: 3443
+            - containerPort: 3000
           env:
             - name: EXP_API_ENV_DEPLOYMENT
               value: "K8S"
             - name: EXP_API_APP_DIR
               value: "/usr/src/app"
             - name:  EXP_API_PORT
-              value: "3443"
+              value: "3000"
             - name: EXP_API_MONGO_URI
               value: "mongodb://mongo:27017/"
             - name: EXP_API_AMQP_URI
@@ -147,9 +147,9 @@ spec:
             - name: EXP_API_NODE_ENV_PRODUCTION
               value: "yes"
             - name: EXP_API_HTTPS
-              value: "yes"
+              value: "no"
             - name: EXP_API_APP_IP
-              value: localhost
+              value: 127.0.0.1
             - name: EXP_API_INDEX_ROUTE
               value: "/"
             - name: EXP_API_API_ROUTE
@@ -166,5 +166,7 @@ spec:
               value: "cert.pem"
             - name: EXP_API_APP_KEY
               value: "key.pem"
+            - name:   EXP_API_APP_EXTERNAL_ERROR
+              value: "http://pdwraspbx2:3000/api/gpio/component/display/lcd/message"
 
           imagePullPolicy: Always
