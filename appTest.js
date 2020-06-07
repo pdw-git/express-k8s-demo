@@ -66,12 +66,6 @@ let testOptions = [
         qs: {}
     },
     {
-        url: ipAddress + '/api/version',
-        method: "get",
-        json: {},
-        qs: {}
-    },
-    {
         url: ipAddress + '/api/config',
         method: "get",
         json: {},

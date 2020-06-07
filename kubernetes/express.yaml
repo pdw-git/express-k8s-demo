@@ -167,6 +167,6 @@ spec:
             - name: EXP_API_APP_KEY
               value: "key.pem"
             - name:   EXP_API_APP_EXTERNAL_ERROR
-              value: "http://pdwraspbx2:3000/api/gpio/component/display/lcd/message"
+              value: "false"
 
           imagePullPolicy: Always

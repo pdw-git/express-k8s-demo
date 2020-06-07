@@ -30,7 +30,7 @@ A list of example environment variables is provided here.
 
 >>EXP_API_NODE_ENV_PRODUCTION=no : can be yes or no
 
->>EXP_API_HTTPS=yes : can be yes or no
+>>EXP_API_HTTPS=mo : can be yes or no
 
 >>EXP_API_APP_IP=localhost : IP address of the applicaiton
 
@@ -50,7 +50,10 @@ A list of example environment variables is provided here.
 
 >>EXP_API_APP_KEY=key.pem : encryption key
 
-By default encryption is enabled. 
+>>EXP_API_APP_EXTERNAL_ERROR : api address of applicaiton that will take a message in the form of 
+>>{msg: string, row: 0 or 1, col: 0 or 1, scroll: true or false, delay: integer [number of ms to display the message]}
+
+By default encryption is disabled. 
 
 
 ## Kubernetes
@@ -86,7 +89,7 @@ To test there needs to be a kubernetes cluster. One that is easily attainable an
 
 >>minikube start --driver=virtualbox
 
->>kubectl apply -f kube/express.yaml 
+>>kubectl apply -f kubernetes/express.yaml 
 
 >>kubectl describe services -n express mqlight - gets information about the mqlight service
 
@@ -110,8 +113,6 @@ This will continually run get http://127.0.0.1:3000/api/test without any delay b
 logged to stdout. 
 
 API Call can be one of:
-
->>version 
 
 >>info 
 
