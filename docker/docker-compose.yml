@@ -16,7 +16,7 @@ services:
     image: ibmcom/mqlight
     environment:
       - LICENSE=accept
-    por
+    ports:
       - "5672:5672"
       - "9180:9180"
     volumes:
