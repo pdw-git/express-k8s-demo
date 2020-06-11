@@ -11,7 +11,7 @@ The application being deployed comes from the pdw-git/express-api repository. Th
 container boselane6633/expres-api-app on dockerhub.com.
 
 The application has an API layer, a persistance layer and a messaging layer. The applicaiton has a basic configuration
-which is maintained in the persistence layer. Any changes to the configuration and communicated to the API layer. There
+which is maintained in the persistence layer. Any changes to the configuration are communicated to the API layer. There
 could be multiple instances of the API deployed and a pub/sub mechanism has been employed to enable communication between 
 the various API instances. This feature can be demonstrated to show that changing the configuraiton through one instance
 of the API will alter the behaviour of all instances of the API. 
@@ -58,7 +58,7 @@ By default encryption is disabled.
 
 ## Kubernetes
 
-There is a yaml files to enable the deployment of the app and the supporting containers in Kubernetes.
+There is a yaml file to enable the deployment of the app and the supporting containers in Kubernetes.
 
 Assuming there is a kubernetes environment the application can be deployed into a a new namespace using the following command
 run from the directory that contains kube. 
@@ -83,7 +83,7 @@ The YAML file will create a name space called express create a replication set w
 
 >>> an express-api-app deployment
 
-NOTE: This yaml file sets up a application that has encryption enabled and makes the mqlight http server available. 
+NOTE: This yaml file sets up a application that has no encryption enabled and makes the mqlight http server available. 
 
 To test there needs to be a kubernetes cluster. One that is easily attainable and simple to use is minikube:
 
@@ -107,7 +107,7 @@ There is an application that will send a stream of client requests that can be p
 
 node appTest.js [delay (ms)] [ip address] [API call] [ignore tests already running errors]
 
-e.g node appTest.js 0 127.0.0.1:3000 test true
+>e.g node appTest.js 0 127.0.0.1:3000 test true
 
 This will continually run get http://127.0.0.1:3000/api/test without any delay between API calls. A simple report is 
 logged to stdout. 
@@ -127,7 +127,7 @@ API Call can be one of:
 Using random will cause the application to randomly choose which of the API calls to send to the application.
 
 When using GET test it can take between 700 and 1200 ms to complete. If running multiple appTest.js it is possible that 
-API calls  will fails with a status code of 500 and a message stating that a test is already running. Due to the very 
+API calls  will fail with a status code of 500 and a message stating that a test is already running. Due to the very 
 high volumes of these messages it is possible to disable this particular response. Setting 
 [ignore tests already running error] true these errors will not be logged to the console. 
 
@@ -136,7 +136,7 @@ exercises all the API calls available in the application.
 
 ## docker-compose
 
-Incase there is no access to a kubernetes cluster there is a docker-compose file that can be used to validate the application 
+In case there is no access to a kubernetes cluster there is a docker-compose file that can be used to validate the application 
 is working. The following mandatory environment varidable needs to be set. 
 
 >>DKR_MQLIGHT_DIR=[directory of a shared volume for the mqlight service]
