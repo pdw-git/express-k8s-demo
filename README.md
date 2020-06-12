@@ -145,4 +145,10 @@ To run the applicaiton use:
 
 >>docker-compose-up
 
+This will install the application behind an Nginx load balancer. To access the application use port 4000.
+
+>>http://[local-ip-address]:4000/api/api-docs
+
+
+
 
