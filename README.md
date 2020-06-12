@@ -149,6 +149,7 @@ This will install the application behind an Nginx load balancer. To access the a
 
 >>http://[local-ip-address]:4000/api/api-docs
 
-
+NOTE: in the docker-compose file we do not map the ports, we only externalise the container port. 
+The external mapping is done through the load balancer. 
 
 
